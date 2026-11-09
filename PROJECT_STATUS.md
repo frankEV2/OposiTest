@@ -162,7 +162,14 @@ test-fixtures/ PDF de prueba generados (ley-prueba, norma-prueba, escaneado) —
 - [x] Sincronización entre dispositivos con Google Drive: motor probado con dos dispositivos simulados (alta, cambios,
   edición, renombrado, borrados, PDF duplicado, PDF ausente). 50 tests. Falta probar contra Google real (requiere el ID de cliente).
 
+- Estructura en catalán (Portal Jurídic / DOGC): Article, Títol, Capítol, Secció, Disposició + ordinales catalanes; cifras
+  árabes en títulos/capítulos por errores de OCR ("Títol 11"). Rúbrica en la línea siguiente al artículo solo si es corta,
+  sin puntuación final ni conector final, empieza en mayúscula y la línea siguiente no sigue en minúscula.
+- «Generar test» explica por qué un documento no da preguntas (`DocReport.hint`): escaneado, sin artículos, idioma
+  catalán (las reglas del motor son en castellano) o sin expresiones reconocibles.
+
 ## Limitaciones conocidas
+- Reglas de preguntas solo en castellano (los textos en catalán se estructuran pero no generan preguntas).
 - Sin OCR: los PDF escaneados se detectan pero no se procesan (OCR local, p. ej. Tesseract.js, sería pesado ~10 MB+; valorar más adelante).
 - Parser validado con 3 normas consolidadas del BOE; otros formatos (BOJA/DOGC, temarios de academias, PDF a dos columnas,
   tablas) pueden necesitar reglas nuevas.

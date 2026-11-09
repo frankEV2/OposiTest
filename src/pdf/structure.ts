@@ -20,6 +20,9 @@ const LEVEL: Record<SectionKind, number> = {
 
 const ORD = '(?:primera|segunda|tercera|cuarta|quinta|sexta|s[ée]ptima|octava|novena|d[ée]cima|und[ée]cima|duod[ée]cima|vig[ée]sima|trig[ée]sima|[\\p{L}]+(?:primera|segunda|tercera|cuarta|quinta|sexta|s[ée]ptima|octava|novena)|[úu]nica)';
 
+/** Ordinales en catalán (Portal Jurídic de Catalunya, DOGC). */
+const ORD_CA = '(?:primera|segona|tercera|quarta|cinquena|sisena|setena|vuitena|novena|desena|onzena|dotzena|tretzena|catorzena|quinzena|setzena|dissetena|divuitena|dinovena|vintena|[úu]nica)';
+
 interface Rule {
   kind: SectionKind;
   re: RegExp;
@@ -43,6 +46,21 @@ const RULES: Rule[] = [
   { kind: 'disposicion', re: /^((?:Disposici[óo]n|DISPOSICI[ÓO]N)\s+(?:derogatoria|final|DEROGATORIA|FINAL))\.?\s*()$/u },
   { kind: 'anexo', re: /^(ANEXO(?:\s+[IVXLC\d]+)?)\.?\s*(.*)$/u },
   { kind: 'preambulo', re: /^(PRE[ÁA]MBULO|EXPOSICI[ÓO]N DE MOTIVOS)\s*$/u },
+
+  // --- Catalán. Se admiten cifras árabes en títulos/capítulos porque el OCR suele leer "II" como "11".
+  { kind: 'libro', re: /^((?:LLIBRE|Llibre)\s+(?:[IVXLC]+|\d{1,2}|PRELIMINAR|[Pp]reliminar))\.?\s*(.*)$/u },
+  { kind: 'titulo', re: /^((?:T[ÍI]TOL|T[íi]tol)\s+(?:[IVXLC]+|\d{1,2}|PRELIMINAR|[Pp]reliminar))\.?\s*(.*)$/u },
+  { kind: 'capitulo', re: /^((?:CAP[ÍI]TOL|Cap[íi]tol)\s+(?:[IVXLC]+|\d{1,2}|PRELIMINAR|[Pp]reliminar|[ÚU]NIC|[úu]nic))\.?\s*(.*)$/u },
+  { kind: 'seccion', re: /^((?:Secci[óo]|SECCI[ÓO])\s+(?:\d+\.?a|[IVXLC]+|\d+|[ÚU]NICA|[úu]nica))\.?\s*(.*)$/u },
+  { kind: 'articulo', re: /^((?:Article|ARTICLE)\s+\d+(?:\s+(?:bis|ter|quater))?)\.\s*(.*)$/u },
+  { kind: 'articulo', re: /^((?:Article|ARTICLE)\s+(?:\d+(?:\s+(?:bis|ter|quater))?|[úu]nic))\s*()$/u },
+  {
+    kind: 'disposicion',
+    re: new RegExp(`^((?:Disposici[óo]|DISPOSICI[ÓO])\\s+(?:addicional|transit[òo]ria|derogat[òo]ria|final|ADDICIONAL|TRANSIT[ÒO]RIA|DEROGAT[ÒO]RIA|FINAL)\\s+${ORD_CA})\\.?\\s*(.*)$`, 'iu'),
+  },
+  { kind: 'disposicion', re: /^((?:Disposici[óo]|DISPOSICI[ÓO])\s+(?:derogat[òo]ria|final|DEROGAT[ÒO]RIA|FINAL))\.?\s*()$/u },
+  { kind: 'anexo', re: /^(ANNEX(?:\s+[IVXLC\d]+)?)\.?\s*(.*)$/u },
+  { kind: 'preambulo', re: /^(PRE[ÀA]MBUL|Pre[àa]mbul|EXPOSICI[ÓO] DE MOTIUS)\s*$/u },
 ];
 
 const APARTADO = /^(\d{1,2})\.\s+\S/;
@@ -56,9 +74,9 @@ const MAX_QUOTE_LINES = 400;
 /** Normaliza la etiqueta: "ARTÍCULO 5" → "Artículo 5". */
 function prettyLabel(kind: SectionKind, raw: string): string {
   const s = raw.replace(/\s+/g, ' ').trim();
-  if (kind === 'articulo') return s.replace(/^(art[íi]culo|art\.)/i, 'Artículo');
+  if (kind === 'articulo') return s.replace(/^(art[íi]culo|art\.)/i, 'Artículo').replace(/^article/i, 'Article');
   if (kind === 'disposicion') {
-    const low = s.toLowerCase().replace(/^disposicion/, 'disposición');
+    const low = s.toLowerCase().replace(/^disposicion(?=\s)/, 'disposición').replace(/^disposicio(?=\s)/, 'disposició');
     return low.charAt(0).toUpperCase() + low.slice(1);
   }
   return s;
@@ -87,7 +105,7 @@ export function parseStructure(pages: string[]): ParsedSection[] {
     out.push({ kind, label, heading: heading.trim(), text: '', pageStart: page, parent });
     stack.push(out.length - 1);
     current = { idx: out.length - 1, lines: [] };
-    awaitingHeading = !heading.trim() && LEVEL[kind] <= 3;
+    awaitingHeading = !heading.trim() && (LEVEL[kind] <= 3 || kind === 'articulo' || kind === 'disposicion');
   };
 
   // Texto citado entre « » (p. ej. una disposición que da nueva redacción a otra ley): sus
@@ -96,8 +114,10 @@ export function parseStructure(pages: string[]): ParsedSection[] {
   let quoteLines = 0;
 
   pages.forEach((pageText, p) => {
-    for (const rawLine of pageText.split('\n')) {
+    const pageLines = pageText.split('\n');
+    for (const [li, rawLine] of pageLines.entries()) {
       const line = rawLine.trim();
+      const nextLine = pageLines.slice(li + 1).find((l) => l.trim())?.trim() ?? '';
       if (!line) {
         current?.lines.push('');
         continue;
@@ -127,9 +147,19 @@ export function parseStructure(pages: string[]): ParsedSection[] {
         continue;
       }
       if (awaitingHeading && current) {
-        out[current.idx].heading = line;
         awaitingHeading = false;
-        continue;
+        const k = out[current.idx].kind;
+        // En artículos/disposiciones sin rúbrica en su línea (Constitución, textos en catalán), la línea
+        // siguiente solo es rúbrica si lo parece: corta, sin puntuación final y sin numeración.
+        const looksLikeHeading = LEVEL[k] <= 3 ||
+          (line.length <= 75 && !/[.;:,]$/.test(line) && !APARTADO.test(line) && !/^[a-zñ]\)/u.test(line) && /^\p{Lu}/u.test(line) &&
+            !/\s(?:de|del|la|el|y|e|o|u|por|para|que|en|a|al|los|las|con|sin|se|su|sus|i|dels|les|amb|per)$/iu.test(line) &&
+            // y la línea siguiente empieza párrafo (no es continuación en minúscula de esta)
+            !/^\p{Ll}/u.test(nextLine));
+        if (looksLikeHeading) {
+          out[current.idx].heading = line;
+          continue;
+        }
       }
       const cur = current as { idx: number; lines: string[] } | null;
       if (cur && APARTADO.test(line)) {

@@ -90,6 +90,7 @@ export default function Generate() {
               <div key={r.documentId} className="result">
                 <strong>{r.title}</strong>: {r.added} nuevas
                 {r.duplicates > 0 && <span className="muted"> · {r.duplicates} ya estaban en el banco</span>}
+                {r.hint && <div className="warning">{r.hint}</div>}
                 {disc.length > 0 && (
                   <details>
                     <summary className="muted small">{disc.reduce((a, [, n]) => a + n, 0)} candidatas descartadas</summary>

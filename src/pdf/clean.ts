@@ -33,7 +33,7 @@ export function stripRepeatedLines(pages: string[]): string[] {
 }
 
 /** Encabezados estructurales que nunca deben tratarse como cabecera/pie repetido. */
-const STRUCTURE = /^(art[íi]culo|t[íi]tulo|cap[íi]tulo|secci[óo]n|disposici[óo]n|anexo|libro)\b/i;
+const STRUCTURE = /^(art[íi]culo|article|t[íi]tulo|t[íi]tol|cap[íi]tulo|cap[íi]tol|secci[óo]n?|disposici[óo]n?|anexo|annex|libro|llibre)\b/i;
 
 /** Une palabras partidas con guion a final de línea y normaliza espacios. */
 export function normalizeText(s: string): string {

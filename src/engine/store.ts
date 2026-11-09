@@ -18,6 +18,32 @@ export interface DocReport {
   added: number;
   duplicates: number;
   discarded: Record<string, number>;
+  /** Artículos/apartados con texto analizados. */
+  units: number;
+  /** Explicación cuando no sale ninguna pregunta nueva. */
+  hint?: string;
+}
+
+const CATALAN = /\b(?:Article|Títol|Capítol|Disposició|aquesta|els|dels|amb|perquè)\b/u;
+
+/** Motivo legible de que un documento no haya dado preguntas. */
+function explain(doc: { extraction: string; warnings: string[]; pageCount: number }, units: Unit[], drafts: number, duplicates: number): string | undefined {
+  if (drafts > 0 && duplicates < drafts) return undefined;
+  if (duplicates > 0) return 'Todas las preguntas que se pueden generar ya estaban en el banco.';
+  const scanned = doc.warnings.find((w) => /sin texto extraíble|escaneado/.test(w));
+  if (doc.extraction === 'scanned') {
+    return 'El PDF es una imagen escaneada: no tiene texto que analizar. Usa la versión con texto (p. ej. el PDF del BOE) o pásalo por un programa de OCR.';
+  }
+  if (!units.length) {
+    return `No se han detectado artículos en el documento${scanned ? ` y hay páginas escaneadas sin texto (${scanned.match(/\(([\d,\s…]+)\)/)?.[1] ?? ''})` : ''}. ` +
+      'El generador trabaja sobre artículos («Artículo 1.», «Article 1»…). Si es un temario o apuntes sin artículos, todavía no se pueden generar preguntas de él.';
+  }
+  const sample = units.map((u) => u.text).join(' ').slice(0, 5000);
+  const lang = CATALAN.test(sample)
+    ? ' El texto está en catalán y las reglas de preguntas solo reconocen expresiones en castellano (plazo, corresponde, deberá…): usa la versión en castellano de la norma.'
+    : '';
+  return `Se analizaron ${units.length} artículos/apartados, pero no contienen plazos, definiciones, enumeraciones, competencias ni otras expresiones que el generador reconozca con suficientes alternativas reales.${lang}` +
+    (scanned ? ` Además, hay páginas escaneadas sin texto (${scanned.match(/\(([\d,\s…]+)\)/)?.[1] ?? ''}).` : '');
 }
 
 /**
@@ -55,7 +81,8 @@ export async function generateForDocuments(documentIds: ID[]): Promise<DocReport
     if (fresh.length) await db.questions.bulkAdd(fresh);
     reports.push({
       documentId: id, title: doc.title, added: fresh.length,
-      duplicates: drafts.length - fresh.length, discarded: own.discarded,
+      duplicates: drafts.length - fresh.length, discarded: own.discarded, units: units.length,
+      hint: explain(doc, units, drafts.length, drafts.length - fresh.length),
     });
   }
   return reports;

@@ -65,7 +65,7 @@ export function windowAround(s: string, start: number, end: number, max = 320): 
 
 /** "Artículo 21.2" → "art. 21.2"; "Disposición adicional primera" se mantiene. */
 export function shortRef(label: string): string {
-  return label.replace(/^Artículo\s+/i, 'art. ');
+  return label.replace(/^(Artículo|Article)\s+/i, 'art. ');
 }
 
 export const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);

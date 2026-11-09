@@ -144,3 +144,38 @@ Disposición adicional prevista en la ley anterior para el sistema de registro.`
     expect(r[0].text).toContain('Disposición adicional prevista');
   });
 });
+
+describe('textos en catalán', () => {
+  it('detecta títols, capítols, articles amb rúbrica a la línia següent i disposicions', () => {
+    const r = parseStructure([`Títol preliminar
+Article 1
+Objecte de la Llei
+1. Aquesta Llei té per objecte actuar contra la violència.
+2. Aquesta Llei estableix mesures de protecció integral.
+Títol 11
+Drets de les dones víctimes de violència de gènere
+Capítol 1
+Dret a la informació
+Article 17
+Garantia dels drets de les víctimes
+1. Totes les dones víctimes tenen garantits els drets.
+Disposició addicional primera. Pensió de viduïtat.
+Text de la disposició.
+Disposició final
+Text final.`]);
+    const labels = r.map((x) => x.label);
+    expect(labels).toEqual(expect.arrayContaining(['Títol preliminar', 'Article 1', 'Article 1.1', 'Títol 11', 'Capítol 1', 'Article 17', 'Disposició addicional primera', 'Disposició final']));
+    const a1 = r.find((x) => x.label === 'Article 1')!;
+    expect(a1.heading).toBe('Objecte de la Llei');
+    expect(a1.text).toContain('actuar contra la violència');
+    const a17 = r.find((x) => x.label === 'Article 17')!;
+    expect(r[a17.parent!].label).toBe('Capítol 1');
+    expect(r.find((x) => x.label === 'Títol 11')!.heading).toBe('Drets de les dones víctimes de violència de gènere');
+  });
+
+  it('no toma como rúbrica la primera frase de un artículo sin rúbrica', () => {
+    const r = parseStructure(['Artículo 14\nLos españoles son iguales ante la ley, sin que pueda prevalecer discriminación alguna.']);
+    expect(r[0].heading).toBe('');
+    expect(r[0].text).toContain('Los españoles son iguales');
+  });
+});

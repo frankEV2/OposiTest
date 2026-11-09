@@ -116,3 +116,25 @@ describe('banco', () => {
     await expect(saveQuestion({ ...input, options: ['A', 'A', 'C', 'D'] })).rejects.toThrow(/repetidas/);
   });
 });
+
+describe('explicación cuando no hay preguntas', () => {
+  beforeEach(async () => {
+    await Promise.all(db.tables.map((t) => t.clear()));
+  });
+
+  it('explica el escaneado, la falta de artículos y el idioma', async () => {
+    const scan = await importPdf(new File(['s'], 's.pdf'), {}, undefined, async () => ({ pages: ['', '', ''] }));
+    const noArts = await importPdf(new File(['n'], 'n.pdf'), {}, undefined, async () => ({
+      pages: ['Tema 1. La organización del Estado y sus principios fundamentales en el ordenamiento.'],
+    }));
+    const cat = await importPdf(new File(['c'], 'c.pdf'), {}, undefined, async () => ({
+      pages: ['Article 1\nObjecte de la Llei\n1. Aquesta Llei té per objecte actuar contra la violència dels homes.'],
+    }));
+    const [r1, r2, r3] = await generateForDocuments([scan, noArts, cat]);
+    expect(r1.hint).toMatch(/imagen escaneada/);
+    expect(r2.hint).toMatch(/No se han detectado artículos/);
+    expect(r1.hint).not.toContain('(s)');
+    expect(r3.units).toBe(1);
+    expect(r3.hint).toMatch(/catalán/);
+  });
+});
