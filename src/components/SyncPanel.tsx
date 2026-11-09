@@ -101,7 +101,7 @@ export default function SyncPanel() {
           <li>Copia el <strong>ID de cliente</strong> (termina en <code>.apps.googleusercontent.com</code>) y pégalo arriba.
             Haz lo mismo en el móvil (o sincroniza una vez y ya quedará guardado).</li>
         </ol>
-        {clientId && <button className="link" onClick={() => db.settings.delete('googleClientId')}>Cambiar ID de cliente</button>}
+        {clientId && <p className="muted small">ID en uso: <code>{clientId}</code></p>}
       </details>
     </div>
   );

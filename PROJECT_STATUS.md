@@ -109,7 +109,9 @@ test-fixtures/ PDF de prueba generados (ley-prueba, norma-prueba, escaneado) —
 
 - Sincronización (posterior a la fase 8) con Google Drive del usuario, sin servidor propio:
   - Carpeta privada `appDataFolder` (permiso `drive.appdata`), Google Identity Services (token ~1 h en localStorage).
-    ID de cliente OAuth: lo pega el usuario en Configuración (`settings.googleClientId`) o `VITE_GOOGLE_CLIENT_ID` al compilar.
+    ID de cliente OAuth en `.env` (`VITE_GOOGLE_CLIENT_ID`, proyecto Google Cloud `opositest-514218`, origen autorizado
+    `https://frankev2.github.io`, app en modo «Prueba» con franev21@gmail.com como usuario de prueba). Se puede
+    sobrescribir en Configuración (`settings.googleClientId`).
   - Remoto: `opositest-state.json` (instantánea) + `pdf-<sha256>.pdf`. El texto/estructura NO se sube: cada dispositivo
     lo recalcula desde el PDF y las preguntas se enlazan por (documento, `order` de la sección).
   - Claves naturales: documento `uid` (sha original, estable al sustituir), pregunta `uid` (hash original, estable al
