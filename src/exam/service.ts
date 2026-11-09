@@ -2,6 +2,7 @@ import { db } from '../db/db';
 import type { Exam, ExamConfig, ID } from '../db/types';
 import { filterQuestions, pickQuestions, scoreExam, type SelectionContext } from './logic';
 import { nextReview } from '../review/srs';
+import { qKey, recordDeletions } from '../sync/keys';
 
 export async function selectionContext(): Promise<SelectionContext> {
   const seen = new Set((await db.attempts.toArray()).map((a) => a.questionId));
@@ -58,7 +59,7 @@ export async function setAnswer(examId: ID, index: number, answer: number | null
 
 /** Cierra el examen: calcula la nota y registra un intento por pregunta. Idempotente. */
 export async function finishExam(examId: ID, at = Date.now()): Promise<Exam | undefined> {
-  return db.transaction('rw', [db.exams, db.questions, db.attempts, db.sessions, db.reviews], async () => {
+  return db.transaction('rw', [db.exams, db.questions, db.attempts, db.sessions, db.reviews, db.deletions], async () => {
     const e = await db.exams.get(examId);
     if (!e || e.finishedAt) return e;
     const qs = await db.questions.bulkGet(e.questionIds);
@@ -82,7 +83,10 @@ export async function finishExam(examId: ID, at = Date.now()): Promise<Exam | un
       if (!qs[i]) continue;
       const change = nextReview(existing[i], qid, e.answers[i] !== null && e.answers[i] === correctIdx[i], at);
       if (change && 'put' in change) await db.reviews.put(change.put);
-      else if (change) await db.reviews.delete(change.remove);
+      else if (change) {
+        await db.reviews.delete(change.remove);
+        await recordDeletions([`rev:${qKey(qs[i]!)}`], at); // dominada: sale del repaso en todos los dispositivos
+      }
     }
     await db.sessions.add({ startedAt: e.startedAt, endedAt: e.startedAt + durationSec * 1000, activity: 'examen' });
     return { ...e, ...finished };

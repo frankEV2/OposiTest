@@ -1,6 +1,7 @@
 import Dexie, { type EntityTable, type Table } from 'dexie';
 import type {
   Attempt,
+  Deletion,
   DocumentFile,
   DocumentMeta,
   DocumentPage,
@@ -31,6 +32,7 @@ export class OposiDB extends Dexie {
   materials!: EntityTable<StudyMaterial, 'id'>;
   sessions!: EntityTable<StudySession, 'id'>;
   settings!: Table<Setting, string>;
+  deletions!: Table<Deletion, string>;
 
   constructor(name = 'opositest') {
     super(name);
@@ -50,6 +52,8 @@ export class OposiDB extends Dexie {
       sessions: '++id, startedAt',
       settings: 'key',
     });
+    // v2: registro de borrados para la sincronización entre dispositivos.
+    this.version(2).stores({ deletions: 'key' });
   }
 }
 

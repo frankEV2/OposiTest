@@ -50,7 +50,7 @@ export async function generateForDocuments(documentIds: ID[]): Promise<DocReport
     );
     const now = Date.now();
     const fresh = drafts.filter((d) => !existing.has(d.hash)).map((d): Question => ({
-      ...d, temaId: doc.temaId, status: 'pending', createdAt: now, updatedAt: now,
+      ...d, uid: d.hash, temaId: doc.temaId, status: 'pending', createdAt: now, updatedAt: now,
     }));
     if (fresh.length) await db.questions.bulkAdd(fresh);
     reports.push({
@@ -73,10 +73,12 @@ export async function saveQuestion(input: QuestionInput, id?: ID): Promise<ID> {
   if (dup && dup.id !== id) throw new Error('Ya existe una pregunta igual en el banco.');
   const now = Date.now();
   if (id) {
-    await db.questions.update(id, { ...input, hash: h, status: 'validated', updatedAt: now });
+    const before = await db.questions.get(id);
+    // uid estable: al editar el enunciado cambia el hash, pero sigue siendo la misma pregunta al sincronizar.
+    await db.questions.update(id, { ...input, uid: before?.uid ?? before?.hash, hash: h, status: 'validated', updatedAt: now });
     return id;
   }
   return (await db.questions.add({
-    ...input, hash: h, status: 'validated', rule: 'manual', createdAt: now, updatedAt: now,
+    ...input, hash: h, uid: h, status: 'validated', rule: 'manual', createdAt: now, updatedAt: now,
   })) as ID;
 }

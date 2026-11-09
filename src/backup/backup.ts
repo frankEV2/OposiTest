@@ -12,14 +12,14 @@
 import { strFromU8, strToU8, unzipSync, zipSync, type Zippable } from 'fflate';
 import { db } from '../db/db';
 import type {
-  Attempt, DocumentMeta, DocumentPage, Exam, ID, Materia, Oposicion, Question, ReviewItem, Section, Setting,
+  Attempt, Deletion, DocumentMeta, DocumentPage, Exam, ID, Materia, Oposicion, Question, ReviewItem, Section, Setting,
   StudyMaterial, StudySession, Tema,
 } from '../db/types';
 
 export const BACKUP_FORMAT = 1;
 const DATA_TABLES = [
   'oposiciones', 'materias', 'temas', 'documents', 'pages', 'sections', 'questions',
-  'exams', 'attempts', 'reviews', 'materials', 'sessions', 'settings',
+  'exams', 'attempts', 'reviews', 'materials', 'sessions', 'settings', 'deletions',
 ] as const;
 type DataTable = (typeof DATA_TABLES)[number];
 
@@ -37,6 +37,7 @@ export interface BackupData {
   materials: StudyMaterial[];
   sessions: StudySession[];
   settings: Setting[];
+  deletions: Deletion[];
 }
 
 export interface Manifest {
@@ -239,6 +240,10 @@ export async function restoreMerge(p: ParsedBackup): Promise<RestoreReport> {
       if (did === undefined) continue;
       await db.materials.add({ ...strip(m), documentId: did, sectionIds: m.sectionIds.map((x) => sec.get(x)).filter((x): x is ID => x !== undefined) });
       inc(added, 'materials');
+    }
+    for (const d of p.data.deletions) {
+      const ex = await db.deletions.get(d.key);
+      if (!ex || ex.deletedAt < d.deletedAt) await db.deletions.put(d);
     }
     // Ajustes: solo los que no existen localmente.
     for (const s of p.data.settings) {

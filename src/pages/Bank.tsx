@@ -5,6 +5,7 @@ import type { Difficulty, ID, Question, QuestionRule, QuestionStatus } from '../
 import { RULE_LABEL } from '../engine/generate';
 import { saveQuestion } from '../engine/store';
 import { fold } from '../engine/text';
+import { qKey, recordDeletions } from '../sync/keys';
 
 const PAGE = 25;
 const STATUS_LABEL: Record<QuestionStatus, string> = { pending: 'Sin revisar', validated: 'Validada', rejected: 'Rechazada' };
@@ -105,7 +106,8 @@ function QuestionCard({ q, onEdit }: { q: Question; onEdit: () => void }) {
   const setStatus = (status: QuestionStatus) => db.questions.update(q.id!, { status, updatedAt: Date.now() });
   async function remove() {
     if (!confirm('¿Eliminar esta pregunta definitivamente? (Si la rechazas, no se volverá a generar.)')) return;
-    await db.transaction('rw', db.questions, db.reviews, async () => {
+    await db.transaction('rw', db.questions, db.reviews, db.deletions, async () => {
+      await recordDeletions([`q:${qKey(q)}`]);
       await db.reviews.delete(q.id!);
       await db.questions.delete(q.id!);
     });

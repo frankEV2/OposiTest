@@ -13,11 +13,13 @@ export interface Oposicion {
   createdAt: number;
 }
 
+
 export interface Materia {
   id?: ID;
   oposicionId: ID;
   name: string;
   order: number;
+  createdAt?: number;
 }
 
 export interface Tema {
@@ -25,6 +27,7 @@ export interface Tema {
   materiaId: ID;
   name: string;
   order: number;
+  createdAt?: number;
 }
 
 /** Calidad de la extracción de texto del PDF (fase 2). */
@@ -37,6 +40,8 @@ export interface DocumentMeta {
   size: number;
   /** SHA-256 del fichero para detectar duplicados. */
   sha256: string;
+  /** Identificador estable para sincronizar (SHA-256 original; no cambia al sustituir el PDF). */
+  uid?: string;
   pageCount: number;
   oposicionId?: ID;
   materiaId?: ID;
@@ -102,6 +107,8 @@ export interface Question {
   id?: ID;
   /** Hash normalizado de enunciado + respuesta correcta: evita duplicados. */
   hash: string;
+  /** Identificador estable para sincronizar (hash original; no cambia al editar). */
+  uid?: string;
   documentId?: ID;
   sectionId?: ID;
   temaId?: ID;
@@ -194,6 +201,13 @@ export interface StudySession {
   startedAt: number;
   endedAt: number;
   activity: 'examen' | 'repaso' | 'lectura' | 'material';
+}
+
+/** Registro de un borrado, para propagarlo a otros dispositivos al sincronizar. */
+export interface Deletion {
+  /** "doc:<uid>", "q:<uid>", "rev:<uid pregunta>", "tax:<ruta>" */
+  key: string;
+  deletedAt: number;
 }
 
 export interface Setting {

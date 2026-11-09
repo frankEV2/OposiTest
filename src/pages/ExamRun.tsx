@@ -4,6 +4,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { db } from '../db/db';
 import { formatDuration } from '../exam/logic';
 import { abandonExam, finishExam, setAnswer } from '../exam/service';
+import { autoSync } from '../sync/auto';
 
 const LETTERS = ['a', 'b', 'c', 'd'];
 
@@ -26,6 +27,7 @@ export default function ExamRun() {
     if (finishing.current) return;
     finishing.current = true;
     await finishExam(id);
+    void autoSync();
     navigate(`/examen/${id}/resultado`, { replace: true });
   }, [id, navigate]);
 

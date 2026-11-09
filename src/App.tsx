@@ -1,9 +1,10 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Link, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import UpdatePrompt from './components/UpdatePrompt';
 import { useTheme } from './hooks/useTheme';
 import Home from './pages/Home';
+import { autoSync } from './sync/auto';
 
 // Cada sección se descarga al visitarla por primera vez (el service worker las precachea igualmente).
 const Settings = lazy(() => import('./pages/Settings'));
@@ -28,6 +29,7 @@ function NotFound() {
 
 export default function App() {
   useTheme();
+  useEffect(() => { void autoSync(); }, []);
   return (
     <Layout>
       <Suspense fallback={<p className="muted" role="status">Cargando…</p>}>

@@ -2,6 +2,7 @@ import { db } from '../db/db';
 import type { DocumentMeta, ID } from '../db/types';
 import { assessQuality, normalizeText, stripRepeatedLines } from '../pdf/clean';
 import { parseStructure } from '../pdf/structure';
+import { docKey, qKey, recordDeletions } from '../sync/keys';
 
 export async function sha256(buf: ArrayBuffer): Promise<string> {
   const h = await crypto.subtle.digest('SHA-256', buf);
@@ -82,7 +83,7 @@ export async function importPdf(
   return db.transaction('rw', [db.documents, db.documentFiles, db.pages, db.sections], async () => {
     const id = (await db.documents.add({
       title: title || file.name.replace(/\.pdf$/i, ''),
-      fileName: file.name, size: file.size, sha256: hash, pageCount: pages.length,
+      fileName: file.name, size: file.size, sha256: hash, uid: hash, pageCount: pages.length,
       ...cls, extraction: p.extraction, warnings: p.warnings, importedAt: now, updatedAt: now,
     })) as ID;
     await db.documentFiles.put({ documentId: id, blob: new Blob([buf], { type: 'application/pdf' }) });
@@ -108,8 +109,11 @@ export async function replacePdf(
   if (dup && dup.id !== documentId) throw new DuplicateError(dup);
   const { pages } = await (extract ?? (await defaultExtractor()))(buf, onProgress);
   const p = processPages(pages);
+  const before = await db.documents.get(documentId);
   await db.transaction('rw', [db.documents, db.documentFiles, db.pages, db.sections, db.questions], async () => {
     await db.documents.update(documentId, {
+      // El uid no cambia: en otros dispositivos se reconoce como el mismo documento con un PDF nuevo.
+      uid: before ? docKey(before) : hash,
       fileName: file.name, size: file.size, sha256: hash, pageCount: pages.length,
       extraction: p.extraction, warnings: p.warnings, updatedAt: Date.now(),
     });
@@ -123,15 +127,29 @@ export async function replacePdf(
 /** Elimina el documento con su contenido, preguntas generadas, repasos y materiales. */
 export async function deleteDocument(documentId: ID): Promise<void> {
   await db.transaction('rw',
-    [db.documents, db.documentFiles, db.pages, db.sections, db.questions, db.reviews, db.materials],
+    [db.documents, db.documentFiles, db.pages, db.sections, db.questions, db.reviews, db.materials, db.deletions],
     async () => {
-      const qids = (await db.questions.where('documentId').equals(documentId).primaryKeys()) as ID[];
+      const doc = await db.documents.get(documentId);
+      const qs = await db.questions.where('documentId').equals(documentId).toArray();
+      // Se anotan los borrados para que la sincronización los aplique en los demás dispositivos.
+      await recordDeletions([...(doc ? [`doc:${docKey(doc)}`] : []), ...qs.map((q) => `q:${qKey(q)}`)]);
+      const qids = qs.map((q) => q.id!);
       await db.reviews.bulkDelete(qids);
       await db.questions.bulkDelete(qids);
-      await db.materials.where('documentId').equals(documentId).delete();
-      await db.sections.where('documentId').equals(documentId).delete();
-      await db.pages.where('documentId').equals(documentId).delete();
-      await db.documentFiles.delete(documentId);
-      await db.documents.delete(documentId);
+      await deleteDocumentContent(documentId);
     });
+}
+
+/**
+ * Borra solo el documento y su contenido (PDF, páginas, secciones, materiales), sin tocar preguntas
+ * ni anotar borrados. Lo usa la sincronización al recibir el borrado de un documento.
+ */
+export async function deleteDocumentContent(documentId: ID): Promise<void> {
+  await db.transaction('rw', [db.documents, db.documentFiles, db.pages, db.sections, db.materials], async () => {
+    await db.materials.where('documentId').equals(documentId).delete();
+    await db.sections.where('documentId').equals(documentId).delete();
+    await db.pages.where('documentId').equals(documentId).delete();
+    await db.documentFiles.delete(documentId);
+    await db.documents.delete(documentId);
+  });
 }

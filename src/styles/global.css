@@ -257,3 +257,6 @@ textarea { font: inherit; padding: 7px 10px; border: 1px solid var(--border); bo
 .update-banner { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; gap: 12px;
   align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
   box-shadow: 0 6px 20px rgba(0,0,0,.15); max-width: calc(100vw - 32px); }
+.guide { padding-left: 20px; }
+.guide li { margin-bottom: 6px; }
+code { font-size: 0.85em; background: var(--bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }

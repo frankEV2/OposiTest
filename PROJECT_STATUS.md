@@ -20,6 +20,8 @@ src/
   pdf/        extractCore.ts (extracción, común a navegador y Node), extract.ts (PDF.js legacy + worker local, carga diferida), clean.ts (limpieza/calidad), structure.ts (parser jurídico)
   library/    service.ts (importar/sustituir/eliminar), search.ts
   exam/       logic.ts (filtro, selección, nota — puro), service.ts (crear/responder/finalizar)
+  sync/       keys.ts (claves naturales + registro de borrados), snapshot.ts (construir/fusionar), sync.ts,
+              remote.ts (interfaz + memoria), gdrive.ts (Google Drive appDataFolder), auto.ts
   backup/     backup.ts (exportar ZIP, parsear, restaurar fusionando/reemplazando)
   review/     srs.ts (Leitner, puro)
   stats/      stats.ts (agregados, puro)
@@ -105,6 +107,23 @@ test-fixtures/ PDF de prueba generados (ley-prueba, norma-prueba, escaneado) —
   Mermaid es la mayor parte) para que mapas y PDF.js funcionen offline. `base: './'` → desplegable en cualquier ruta.
 - Búsqueda: en memoria sobre `sections` (sin apartados), sin tildes, todas las palabras o "frase exacta", máx. 100.
 
+- Sincronización (posterior a la fase 8) con Google Drive del usuario, sin servidor propio:
+  - Carpeta privada `appDataFolder` (permiso `drive.appdata`), Google Identity Services (token ~1 h en localStorage).
+    ID de cliente OAuth: lo pega el usuario en Configuración (`settings.googleClientId`) o `VITE_GOOGLE_CLIENT_ID` al compilar.
+  - Remoto: `opositest-state.json` (instantánea) + `pdf-<sha256>.pdf`. El texto/estructura NO se sube: cada dispositivo
+    lo recalcula desde el PDF y las preguntas se enlazan por (documento, `order` de la sección).
+  - Claves naturales: documento `uid` (sha original, estable al sustituir), pregunta `uid` (hash original, estable al
+    editar), taxonomía por nombres, examen por `startedAt`, repaso por pregunta.
+  - Fusión: añadir lo que falta; si existe en ambos gana `updatedAt` (o `lastReviewed`); exámenes/respuestas/sesiones
+    solo se añaden. Borrados: tabla `deletions` (Dexie v2) con `doc:`, `q:`, `rev:`, `tax:`; un borrado se aplica si es
+    posterior a la última modificación del elemento. Renombrar taxonomía = borrar ruta antigua + crear nueva (y se
+    "tocan" documentos/preguntas para propagar la clasificación). Los borrados remotos de taxonomía se aplican SIN
+    cambiar fechas (si no, taparían los cambios recibidos).
+  - Mismo PDF importado por separado en dos dispositivos: se unifican adoptando la menor de las dos claves.
+  - Auto-sync opcional al abrir y al terminar examen, solo si el token sigue vigente (nunca abre ventanas).
+  - Límite conocido: dos dispositivos sincronizando a la vez → gana la última escritura del estado (la siguiente
+    sincronización lo recompone, salvo cambios hechos en ese intervalo exacto). Los PDF borrados no se eliminan de Drive.
+
 ## Terminado
 - [x] Fase 1: estructura, esquema Dexie, CRUD de taxonomía, ajustes (penalización, nº preguntas, cronómetro, tema),
   info de almacenamiento + solicitud de almacenamiento persistente, layout responsive, Inicio con contadores reales.
@@ -137,6 +156,9 @@ test-fixtures/ PDF de prueba generados (ley-prueba, norma-prueba, escaneado) —
   pools únicos), carga diferida de páginas (bundle inicial 445 → 367 KB), revisión móvil 375 px + modo oscuro en las
   14 pantallas (sin desbordamiento), contraste y accesibilidad, compatibilidad Safari (PDF.js legacy). 47 tests pasan;
   build de producción verificada (importación con el worker legacy, aviso de actualización del SW).
+
+- [x] Sincronización entre dispositivos con Google Drive: motor probado con dos dispositivos simulados (alta, cambios,
+  edición, renombrado, borrados, PDF duplicado, PDF ausente). 50 tests. Falta probar contra Google real (requiere el ID de cliente).
 
 ## Limitaciones conocidas
 - Sin OCR: los PDF escaneados se detectan pero no se procesan (OCR local, p. ej. Tesseract.js, sería pesado ~10 MB+; valorar más adelante).

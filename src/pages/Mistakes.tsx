@@ -7,6 +7,7 @@ import type { ExamMode, ID, Question, ReviewItem } from '../db/types';
 import { createExamFromIds } from '../exam/service';
 import { DAY, MAX_BOX } from '../review/srs';
 import { failStats, isHard, type FailStat } from '../stats/stats';
+import { qKey, recordDeletions } from '../sync/keys';
 
 type Tab = 'hoy' | 'repaso' | 'falladas' | 'dificiles';
 
@@ -33,7 +34,7 @@ function Row({ q, review, stat, now }: { q: Question; review?: ReviewItem; stat?
         {q.explanation && <p className="small muted">{q.explanation}</p>}
       </details>
       {review && (
-        <button className="link" onClick={() => db.reviews.delete(q.id!)}>Quitar del repaso</button>
+        <button className="link" onClick={async () => { await recordDeletions([`rev:${qKey(q)}`]); await db.reviews.delete(q.id!); }}>Quitar del repaso</button>
       )}
     </div>
   );

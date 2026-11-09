@@ -1,6 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useState, type FormEvent } from 'react';
 import BackupPanel from '../components/BackupPanel';
+import SyncPanel from '../components/SyncPanel';
 import { db } from '../db/db';
 import { getSettings, PENALTIES, setSetting, type AppSettings } from '../db/settings';
 import {
@@ -168,6 +169,7 @@ export default function Settings() {
       <p className="sub">Clasificación de tus documentos y preferencias de examen.</p>
       <Taxonomy />
       <Preferences />
+      <SyncPanel />
       <BackupPanel />
       <Storage />
     </>
