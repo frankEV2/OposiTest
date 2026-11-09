@@ -138,3 +138,13 @@ describe('explicación cuando no hay preguntas', () => {
     expect(r3.hint).toMatch(/catalán/);
   });
 });
+
+describe('nombre corto de la norma', () => {
+  it('abrevia títulos oficiales y deja los demás', async () => {
+    const { shortDocTitle } = await import('./generate');
+    expect(shortDocTitle('Ley Orgánica 1/2004, de 28 de diciembre, de Medidas de Protección Integral contra la Violencia de Género.')).toBe('Ley Orgánica 1/2004');
+    expect(shortDocTitle('Real Decreto Legislativo 2/2011, de 5 de septiembre, por el que se aprueba…')).toBe('Real Decreto Legislativo 2/2011');
+    expect(shortDocTitle('Orden HAP/1234/2020, de 1 de enero')).toBe('Orden HAP/1234/2020');
+    expect(shortDocTitle('Constitución Española.')).toBe('Constitución Española');
+  });
+});

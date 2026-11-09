@@ -69,7 +69,30 @@ const timeUnit = (d: string) => {
   return m ? m[1] : 'otro';
 };
 
-const cleanItem = (s: string) => s.replace(/[;,.]?\s*(?:y|o)?\s*$/u, '').replace(/[;.]$/, '').trim();
+// Quita la puntuación final, el "y"/"o" que enlaza el último elemento y las comillas de cierre de textos citados.
+const cleanItem = (s: string) => s.replace(/[»"”]+\s*$/u, '').replace(/[;,.]?\s*(?:y|o)?\s*$/u, '').replace(/[;.]$/, '').trim();
+
+/** Nombre corto de la norma para los enunciados: "Ley Orgánica 1/2004, de 28 de diciembre, de…" → "Ley Orgánica 1/2004". */
+export function shortDocTitle(title: string): string {
+  const t = title.trim().replace(/\.$/, '');
+  if (/^(?:Ley|Real Decreto|Decreto|Orden|Reglamento|Instrucción|Resolución|Llei|Decret|Ordre)\b/u.test(t)) {
+    const m = t.match(/^(.*?\d+\/\d{4})(?=[,\s]|$)/u);
+    if (m) return m[1];
+  }
+  return t.length > 80 ? `${t.slice(0, t.lastIndexOf(' ', 80))}…` : t;
+}
+
+const firstWord = (s: string) => s.split(/\s+/)[0].toLowerCase();
+/**
+ * Ordena los elementos ajenos por parecido con los de la lista (misma palabra inicial y longitud
+ * similar), para que los distractores no se descarten solo por su estilo.
+ */
+function bySimilarity(cands: string[], items: string[]): string[] {
+  const starts = new Set(items.map(firstWord));
+  const avg = items.reduce((a, x) => a + x.length, 0) / Math.max(1, items.length);
+  const score = (c: string) => (starts.has(firstWord(c)) ? 0 : 2) + Math.abs(c.length - avg) / avg;
+  return [...new Set(cands)].sort((a, b) => score(a) - score(b) || a.localeCompare(b)).slice(0, 8);
+}
 
 export interface Enumeration {
   intro: string;
@@ -278,7 +301,8 @@ function* enumerationQuestions(c: Ctx): Generator<Result> {
 
     // Forma negativa: tres elementos de la lista y uno ajeno.
     const own = pick(e.items, '', c.rand, 3);
-    const outsider = pick(foreign, '', c.rand, 1, e.items);
+    const close = bySimilarity(foreign, e.items);
+    const outsider = pick(close, '', c.rand, 1, e.items);
     if (own && outsider) {
       const stem = `${intro(c)} («${introTxt}»), ¿cuál de los siguientes NO figura en la enumeración?`;
       yield assemble(c, 'enumeracion', stem, outsider[0], own, `${expl} «${outsider[0]}» no aparece en ella.`,
@@ -288,7 +312,7 @@ function* enumerationQuestions(c: Ctx): Generator<Result> {
     }
     // Forma positiva: un elemento de la lista y tres ajenos.
     const correct = e.items[Math.floor(c.rand() * e.items.length)];
-    const others = pick(foreign, correct, c.rand, 3, e.items);
+    const others = pick(close, correct, c.rand, 3, e.items);
     if (others) {
       const stem = `${intro(c)} («${introTxt}»), ¿cuál de los siguientes figura en la enumeración?`;
       yield assemble(c, 'enumeracion', stem, correct, others, expl, `${e.intro}\n${listing}`, 2);
@@ -326,7 +350,8 @@ function capShare(drafts: Draft[], discard: (r: string) => void): Draft[] {
 }
 
 /** Genera preguntas para un documento. `corpus` aporta distractores (por defecto, las propias unidades). */
-export function generate(units: Unit[], docTitle: string, corpus: Unit[] | Pools = units): GenerationReport {
+export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pools = units): GenerationReport {
+  const docTitle = shortDocTitle(fullTitle);
   const pools = Array.isArray(corpus) ? buildPools(corpus) : corpus;
   const drafts: Draft[] = [];
   const discarded: Record<string, number> = {};
