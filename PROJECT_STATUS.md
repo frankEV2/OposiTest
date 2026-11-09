@@ -157,6 +157,13 @@ test-fixtures/ PDF de prueba generados (ley-prueba, norma-prueba, escaneado) —
 3. Mejoras posibles: cronometrar tiempo de lectura/material; OCR opcional (Tesseract.js, carga bajo demanda);
    reducir precache excluyendo diagramas de Mermaid no usados.
 
+## Publicación
+- Repositorio: https://github.com/frankEV2/OposiTest (público). Web: **https://frankev2.github.io/OposiTest/**
+- GitHub Pages sirve la rama `gh-pages` (contenido de `dist/`). Para publicar cambios: `npm run deploy`
+  (pruebas + build + `scripts/deploy.mjs`, que hace push forzado de `dist/` a `gh-pages`) y `git push` para el código.
+- No hay workflow de Actions: el token de `gh` no tiene el scope `workflow`. Si se quiere despliegue automático,
+  `gh auth refresh -s workflow` y añadir `.github/workflows/`.
+
 ## Uso
 ```
 export PATH=~/.local/node/bin:$PATH
