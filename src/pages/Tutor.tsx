@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { db } from '../db/db';
 import { askTutor, saveTutorConfig, tutorConfig, type ChatMsg } from '../tutor/client';
 import { retrieve } from '../tutor/rag';
-import { canListen, canSpeak, listenOnce, Speaker, takeSentences } from '../tutor/voice';
+import { canListen, canSpeak, listenOnce, ScreenAwake, Speaker, takeSentences } from '../tutor/voice';
 import { activeWorkspace } from '../workspaces';
 
 const HISTORY = 'tutorHistory'; // en la base de datos de la oposición abierta → historiales separados
@@ -81,6 +81,9 @@ export default function Tutor() {
   const active = useRef(false);
   const paused = useRef<null | (() => void)>(null);
   const silenced = useRef(false);
+  const sessionId = useRef(0);
+  const everHeard = useRef(false);
+  const awake = useRef(new ScreenAwake());
   const msgsRef = useRef<ChatMsg[] | null>(null);
   msgsRef.current = msgs;
   useEffect(() => { speaker.current.lang = lang; }, [lang]);
@@ -156,34 +159,58 @@ export default function Tutor() {
   }
 
   /** Conversación por turnos: escuchar → responder (en voz) → volver a escuchar. */
-  async function voiceLoop() {
-    let empty = 0;
-    while (active.current) {
+  /**
+   * Máquina de estados de la conversación (un solo bucle, nunca dos a la vez):
+   *   escuchando → (fin de intervención por silencio) → procesando → hablando → escuchando …
+   * El micrófono está cerrado mientras habla el tutor, así nunca transcribe su propia voz.
+   * Un silencio sin palabras no detiene nada: se vuelve a escuchar. Solo «Finalizar» termina la sesión.
+   */
+  async function voiceLoop(session: number) {
+    let failures = 0;
+    let lastSent = '';
+    while (active.current && session === sessionId.current) {
       if (paused.current !== null) {
         setV('paused');
         await new Promise<void>((r) => { paused.current = r; });
         paused.current = null;
-        if (!active.current) break;
+        continue;
       }
       setV('listening');
       setPartial('');
+      const started = Date.now();
       const l = listenOnce(lang, setPartial);
       listener.current = l;
       let heard = '';
-      try { heard = await l.done; } catch (e) { setVError((e as Error).message); stopVoice(); return; }
-      listener.current = null;
-      if (!active.current || paused.current !== null) continue;
-      if (!heard) {
-        if (++empty >= 2) { setVError('No te he oído. Pulsa «Continuar» cuando quieras hablar.'); paused.current = () => {}; }
+      try {
+        heard = await l.done;
+        failures = 0;
+      } catch (e) {
+        listener.current = null;
+        const msg = (e as Error).message || String(e);
+        if (/denegado|not-allowed/i.test(msg) && Date.now() - started > 0 && everHeard.current) {
+          // Safari puede exigir un toque para volver a abrir el micrófono: se ofrece «Toca para hablar».
+          setVError('El navegador ha cerrado el micrófono. Toca «🎙️ Hablar» para seguir.');
+          paused.current = () => {};
+          continue;
+        }
+        if (++failures >= 3 || /denegado/i.test(msg)) { setVError(msg); stopVoice(); return; }
+        await new Promise((r) => setTimeout(r, 400 * failures)); // error puntual (red, audio): reintento
         continue;
       }
-      empty = 0;
+      listener.current = null;
+      if (!active.current || session !== sessionId.current || paused.current !== null) continue;
+      heard = heard.trim();
+      if (!heard) { await new Promise((r) => setTimeout(r, 150)); continue; } // silencio: seguir escuchando
+      everHeard.current = true;
       setVError('');
-      if (/^(fin|finalizar|terminar|adiós|adeu|para|stop)[.!]?$/i.test(heard.trim())) { stopVoice(); return; }
+      if (/^(fin|finalizar|terminar|adiós|adeu|para|stop)[.!]?$/i.test(heard)) { stopVoice(); return; }
+      // Evita enviar dos veces la misma intervención (resultados repetidos del reconocedor).
+      if (heard === lastSent && Date.now() - started < 3000) continue;
+      lastSent = heard;
       setV('thinking');
       await askAloud(heard);
     }
-    setV('off');
+    if (session === sessionId.current) setV('off');
   }
 
   function startVoice() {
@@ -192,13 +219,16 @@ export default function Tutor() {
     speaker.current.muted = muted;
     active.current = true;
     paused.current = null;
-    void voiceLoop();
+    void awake.current.acquire();
+    void voiceLoop(++sessionId.current);
   }
   function stopVoice() {
     active.current = false;
+    sessionId.current++;
     listener.current?.abort();
     speaker.current.cancel();
     abort.current?.abort();
+    awake.current.release();
     const resume = paused.current;
     paused.current = null;
     resume?.();
@@ -213,12 +243,19 @@ export default function Tutor() {
   }
   function resumeVoice() {
     setVError('');
+    speaker.current.unlock();
     const r = paused.current;
     paused.current = null;
     if (active.current) r?.(); else startVoice();
   }
-  /** Interrumpir: corta la lectura y pasa a escuchar. */
+  /** Interrumpir: corta la lectura (y la respuesta que aún llega) y pasa a escuchar. */
   function interrupt() { silenced.current = true; speaker.current.cancel(); }
+  /** Botón principal del micrófono, según el estado. */
+  function micButton() {
+    if (vstate === 'speaking' || vstate === 'thinking') interrupt();
+    else if (vstate === 'paused') resumeVoice();
+    else if (vstate === 'listening') pauseVoice();
+  }
   function toggleMute() {
     const m = !muted;
     setMuted(m);
@@ -253,39 +290,19 @@ export default function Tutor() {
         </div>
       </div>
 
-      {mode === 'voz' && (
-        <div className="voice card">
-          {!canListen() && (
-            <p className="voice-note">Este navegador no permite reconocer la voz (o la app está instalada en el iPhone).
-              Alternativa gratuita: pulsa el <strong>micrófono del teclado</strong> en la caja de texto para dictar;
-              las respuestas se leerán en voz alta. En iPhone funciona mejor abriendo la web en Safari.</p>
-          )}
-          {!canSpeak() && <p className="voice-note">Este navegador no puede leer en voz alta; verás las respuestas por escrito.</p>}
-          {canListen() && (<>
-            <div className={`voice-orb ${vstate}`} aria-hidden="true">
-              {vstate === 'listening' ? '🎙️' : vstate === 'thinking' ? '⏳' : vstate === 'speaking' ? '🔊' : vstate === 'paused' ? '⏸️' : '🎓'}
-            </div>
-            <p className="voice-status" role="status">
-              {{ off: 'Pulsa «Iniciar» y habla con tu tutor.', listening: 'Te escucho…', thinking: 'Consultando el temario…',
-                speaking: 'Respondiendo… (pulsa «Hablar» para interrumpir)', paused: 'En pausa' }[vstate]}
-            </p>
-            {vstate === 'listening' && partial && <p className="voice-partial">«{partial}»</p>}
-            <div className="voice-controls">
-              {vstate === 'off' && <button className="primary" onClick={startVoice}>▶ Iniciar</button>}
-              {vstate === 'speaking' && <button className="primary" onClick={interrupt}>🎙️ Hablar</button>}
-              {vstate === 'listening' && <button onClick={() => listener.current?.stop()}>✓ He terminado</button>}
-              {(vstate === 'listening' || vstate === 'speaking' || vstate === 'thinking') && <button onClick={pauseVoice}>⏸ Pausar</button>}
-              {vstate === 'paused' && <button className="primary" onClick={resumeVoice}>▶ Continuar</button>}
-              <button onClick={toggleMute} aria-pressed={muted}>{muted ? '🔇 Sin voz' : '🔈 Con voz'}</button>
-              {vstate !== 'off' && <button className="danger" onClick={stopVoice}>■ Finalizar</button>}
-            </div>
-            <div className="voice-options">
-              <label><input type="checkbox" checked={showTx} onChange={(e) => setShowTx(e.target.checked)} /> Transcripción</label>
-              <label>Idioma <select value={lang} disabled={vstate !== 'off'} onChange={(e) => setLang(e.target.value)}>
-                <option value="es-ES">Castellano</option><option value="ca-ES">Català</option></select></label>
-            </div>
-          </>)}
-          {vError && <p className="voice-error" role="alert">{vError}</p>}
+      {mode === 'voz' && (!canListen() || !canSpeak()) && (
+        <div className="voice-note card">
+          {!canListen() && <p>Este navegador no permite reconocer la voz (o la app está instalada en el iPhone).
+            Alternativa gratuita: pulsa el <strong>micrófono del teclado</strong> en la caja de texto para dictar;
+            las respuestas se leerán en voz alta. En iPhone funciona mejor abriendo la web en Safari.</p>}
+          {!canSpeak() && <p>Este navegador no puede leer en voz alta; verás las respuestas por escrito.</p>}
+        </div>
+      )}
+      {mode === 'voz' && canListen() && vstate === 'off' && (
+        <div className="voice-options">
+          <label><input type="checkbox" checked={showTx} onChange={(e) => setShowTx(e.target.checked)} /> Transcripción</label>
+          <label>Idioma <select value={lang} onChange={(e) => setLang(e.target.value)}>
+            <option value="es-ES">Castellano</option><option value="ca-ES">Català</option></select></label>
         </div>
       )}
 
@@ -313,6 +330,34 @@ export default function Tutor() {
         ))}
         <div ref={end} />
       </div>
+
+      {mode === 'voz' && canListen() && (
+        <div className="voicebar" role="region" aria-label="Controles de voz">
+          {(partial && vstate === 'listening') || vError
+            ? <p className={`voicebar-line${vError ? ' err' : ''}`} role={vError ? 'alert' : undefined}>{vError || `«${partial}»`}</p>
+            : null}
+          <div className="voicebar-row">
+            <button className="vb-mode" onClick={() => { stopVoice(); setMode('chat'); }} aria-label="Cambiar a chat escrito">💬</button>
+            <div className={`vb-status ${vstate}`} role="status">
+              <span className="vb-dot" aria-hidden="true" />
+              {{ off: 'Listo para hablar', listening: 'Escuchando…', thinking: 'Procesando…',
+                speaking: 'Hablando… toca ✋ para interrumpir', paused: 'Micrófono en pausa' }[vstate]}
+            </div>
+            {vstate !== 'off' && (
+              <button className={`vb-mic ${vstate}`} onClick={micButton}
+                aria-label={vstate === 'listening' ? 'Silenciar micrófono' : vstate === 'paused' ? 'Reactivar micrófono' : 'Interrumpir y hablar'}>
+                {vstate === 'listening' ? '🎙️' : vstate === 'paused' ? '🔇' : '✋'}
+              </button>
+            )}
+            <button className="vb-tts" onClick={toggleMute} aria-pressed={muted} aria-label={muted ? 'Activar la voz del tutor' : 'Silenciar la voz del tutor'}>
+              {muted ? '🔕' : '🔈'}
+            </button>
+            {vstate === 'off'
+              ? <button className="vb-main start" onClick={startVoice}>▶ Iniciar conversación</button>
+              : <button className="vb-main end" onClick={stopVoice}>■ Finalizar</button>}
+          </div>
+        </div>
+      )}
 
       {(mode === 'chat' || !canListen()) && (
       <form className="composer" onSubmit={(e) => { e.preventDefault(); void submit(); }}>

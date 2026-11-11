@@ -22,24 +22,41 @@ export const canSpeak = () => typeof speechSynthesis !== 'undefined';
  * Escucha una intervención. Devuelve el texto final (o '' si no se entendió nada).
  * `onPartial` recibe la transcripción provisional mientras se habla.
  */
+/** iPhone/iPad: el modo continuo de Safari duplica resultados; allí se usa el fin de turno del propio navegador. */
+export const isIOS = () => /iP(hone|ad|od)/.test(navigator.userAgent)
+  || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+/** Pausa de silencio (ms) que se considera fin de la intervención. */
+export const END_SILENCE = 1500;
+
 export function listenOnce(lang: string, onPartial: (t: string) => void): { done: Promise<string>; stop: () => void; abort: () => void } {
   const Ctor = RecCtor();
   if (!Ctor) return { done: Promise.reject(new Error('Reconocimiento de voz no disponible')), stop() {}, abort() {} };
   const rec = new Ctor();
   rec.lang = lang;
-  rec.continuous = false; // un turno: termina al hacer una pausa (comportamiento fiable también en iOS)
+  // Fuera de iOS se escucha en continuo y el fin de turno lo marca una pausa de silencio (permite frases largas
+  // con pausas breves); en iOS, el navegador corta solo al detectar la pausa.
+  const continuous = !isIOS();
+  rec.continuous = continuous;
   rec.interimResults = true;
   rec.maxAlternatives = 1;
   let finalText = '';
   let interim = '';
+  let silence: ReturnType<typeof setTimeout> | undefined;
   const done = new Promise<string>((resolve, reject) => {
     rec.onresult = (e) => {
       interim = '';
-      for (let i = e.resultIndex; i < e.results.length; i++) {
+      let fin = '';
+      for (let i = 0; i < e.results.length; i++) {
         const r = e.results[i];
-        if (r.isFinal) finalText += r[0].transcript; else interim += r[0].transcript;
+        if (r.isFinal) fin += r[0].transcript; else if (i >= e.resultIndex) interim += r[0].transcript;
       }
+      finalText = fin;
       onPartial(`${finalText}${interim}`.trim());
+      if (continuous) {
+        clearTimeout(silence);
+        silence = setTimeout(() => rec.stop(), END_SILENCE);
+      }
     };
     rec.onerror = (e) => {
       if (e.error === 'no-speech' || e.error === 'aborted') return; // se resuelve en onend
@@ -47,10 +64,31 @@ export function listenOnce(lang: string, onPartial: (t: string) => void): { done
         ? 'Permiso de micrófono denegado. Actívalo en los ajustes del navegador.'
         : `Error de reconocimiento de voz (${e.error})`));
     };
-    rec.onend = () => resolve(`${finalText || interim}`.trim());
+    rec.onend = () => { clearTimeout(silence); resolve(`${finalText || interim}`.trim()); };
   });
-  rec.start();
-  return { done, stop: () => rec.stop(), abort: () => rec.abort() };
+  try { rec.start(); } catch (e) { return { done: Promise.reject(e as Error), stop() {}, abort() {} }; }
+  return { done, stop: () => rec.stop(), abort: () => { clearTimeout(silence); rec.abort(); } };
+}
+
+/** Mantiene la pantalla encendida durante la conversación (gratis; Chrome y Safari 16.4+). */
+export class ScreenAwake {
+  private lock: { release(): Promise<void> } | null = null;
+  private onVis = () => { if (document.visibilityState === 'visible' && this.want) void this.acquire(); };
+  private want = false;
+  async acquire() {
+    this.want = true;
+    document.addEventListener('visibilitychange', this.onVis);
+    try {
+      const wl = (navigator as unknown as { wakeLock?: { request(t: 'screen'): Promise<{ release(): Promise<void> }> } }).wakeLock;
+      this.lock = (await wl?.request('screen')) ?? null;
+    } catch { /* no disponible: sin efecto */ }
+  }
+  release() {
+    this.want = false;
+    document.removeEventListener('visibilitychange', this.onVis);
+    void this.lock?.release().catch(() => {});
+    this.lock = null;
+  }
 }
 
 /** Texto apto para leer en voz alta: sin marcas de formato ni referencias entre corchetes. */

@@ -304,18 +304,29 @@ code { font-size: 0.85em; background: var(--bg); padding: 1px 5px; border-radius
 .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
 .seg button { border: 0; border-radius: 0; background: transparent; padding: 6px 12px; }
 .seg button.on { background: var(--primary); color: var(--bg); }
-.voice { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.voice-orb { width: 96px; height: 96px; border-radius: 50%; display: grid; place-items: center; font-size: 2.4rem;
-  background: var(--primary-soft, var(--surface)); border: 2px solid var(--border); transition: transform .2s; }
-.voice-orb.listening { border-color: #d92d20; animation: pulse 1.2s infinite; }
-.voice-orb.speaking { border-color: var(--primary); animation: pulse 1.8s infinite; }
-.voice-orb.thinking { opacity: .8; }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-@media (prefers-reduced-motion: reduce) { .voice-orb { animation: none !important; } }
-.voice-status { margin: 0; font-weight: 600; }
-.voice-partial { margin: 0; color: var(--muted); font-style: italic; }
-.voice-controls { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-.voice-controls button { min-height: 44px; }
-.voice-options { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; font-size: .9rem; color: var(--muted); }
-.voice-note { margin: 0; font-size: .9rem; color: var(--muted); text-align: left; }
-.voice-error { margin: 0; color: #d92d20; }
+.voice-options { display: flex; gap: 16px; flex-wrap: wrap; font-size: .9rem; color: var(--muted); margin-bottom: 8px; }
+.voice-note p { margin: 0; font-size: .9rem; color: var(--muted); }
+/* Barra de voz fija: siempre visible, respeta la zona segura del iPhone; el historial se desplaza por detrás. */
+.tutor:has(.voicebar) .chat { padding-bottom: 110px; }
+.voicebar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface);
+  border-top: 1px solid var(--border); box-shadow: 0 -4px 16px rgb(0 0 0 / .12);
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); }
+@media (min-width: 801px) { .voicebar { left: var(--sidebar-w); } }
+.voicebar-line { margin: 0 0 6px; font-size: .9rem; color: var(--muted); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.voicebar-line.err { color: #d92d20; font-style: normal; white-space: normal; }
+.voicebar-row { display: flex; align-items: center; gap: 8px; max-width: 900px; margin: 0 auto; }
+.voicebar button { min-height: 44px; min-width: 44px; border-radius: 999px; }
+.vb-status { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: .9rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vb-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--muted); flex: none; }
+.vb-status.listening .vb-dot { background: #d92d20; animation: pulse 1.2s infinite; }
+.vb-status.thinking .vb-dot { background: #f79009; animation: pulse .8s infinite; }
+.vb-status.speaking .vb-dot { background: var(--primary); animation: pulse 1.6s infinite; }
+.vb-status.paused .vb-dot { background: var(--muted); }
+.vb-mic { font-size: 1.3rem; padding: 0; width: 52px; height: 52px; }
+.vb-mic.listening { background: #d92d20; color: #fff; border-color: #d92d20; }
+.vb-main.start { background: var(--primary); color: var(--bg); border-color: var(--primary); font-weight: 600; }
+.vb-main.end { color: #d92d20; border-color: #d92d20; }
+@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.25); opacity: .7; } }
+@media (prefers-reduced-motion: reduce) { .vb-dot { animation: none !important; } }
+body:has(.voicebar) .update-banner { bottom: calc(96px + env(safe-area-inset-bottom)); }
