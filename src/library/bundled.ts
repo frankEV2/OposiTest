@@ -89,7 +89,19 @@ async function run(onProgress?: (done: number, total: number, name: string) => v
   }
   // Banco de preguntas listo sin pasos manuales: se genera en local y queda guardado en IndexedDB.
   // Se hace una sola vez por versión del documento (clave = SHA-256), aunque la carga se interrumpiera antes.
-  const bank = new Set(((await db.settings.get('bundledBank'))?.value as string[] | undefined) ?? []);
+  const { ENGINE_VERSION } = await import('../engine/generate');
+  let bank = new Set(((await db.settings.get('bundledBank'))?.value as string[] | undefined) ?? []);
+  if ((await db.settings.get('bundledBankVersion'))?.value !== ENGINE_VERSION) {
+    // Motor nuevo: se sustituyen las preguntas automáticas sin revisar del temario integrado
+    // (las validadas, editadas, manuales y rechazadas se conservan; el historial de exámenes también).
+    const ids = (await db.documents.toArray()).filter((d) => files.has(d.fileName)).map((d) => d.id!);
+    const old = (await db.questions.where('documentId').anyOf(ids).toArray())
+      .filter((q) => q.status === 'pending' && q.rule !== 'manual').map((q) => q.id!);
+    await db.reviews.where('questionId').anyOf(old).delete();
+    await db.questions.bulkDelete(old);
+    bank = new Set();
+    await db.settings.put({ key: 'bundledBankVersion', value: ENGINE_VERSION });
+  }
   const todo = (await db.documents.toArray()).filter((d) => files.has(d.fileName) && !bank.has(d.sha256));
   if (todo.length) {
     const { generateForDocuments } = await import('../engine/store');

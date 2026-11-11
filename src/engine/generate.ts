@@ -77,12 +77,29 @@ export interface Pools {
   organs: Set<string>;
   quantities: Set<string>;
   definitions: { term: string; def: string; sectionId: number }[];
-  enumItems: { item: string; sectionId: number }[];
+  enumItems: { item: string; sectionId: number; documentId: number }[];
   /** Rúbricas de artículo por documento (pregunta de rúbrica). */
   headings: Map<number, Map<string, string>>;
   /** Frases literales de cada unidad (pregunta de atribución). */
   statements: { s: string; sectionId: number; article: string; documentId: number }[];
+  /** Todo el texto normalizado: una variante "falsa" que aparezca aquí no se usa. */
+  textNorm: string;
 }
+
+/** Opción compuesta independiente de la posición (las opciones se barajan). */
+const ALL_OK = 'Todas las demás opciones son correctas';
+const MAJORITIES = ['mayoría absoluta', 'mayoría simple', 'mayoría de dos tercios', 'mayoría de tres quintos'];
+/** Plazos habituales por unidad, para completar distractores de la misma unidad. */
+const COMMON_DUR: Record<string, string[]> = {
+  dia: ['diez días', 'quince días', 'veinte días', 'treinta días', 'cinco días', 'tres días'],
+  mes: ['un mes', 'dos meses', 'tres meses', 'seis meses'],
+  ano: ['un año', 'dos años', 'cuatro años', 'cinco años'],
+  hora: ['veinticuatro horas', 'cuarenta y ocho horas', 'setenta y dos horas'],
+  semana: ['una semana', 'dos semanas', 'cuatro semanas'],
+};
+
+/** Sube cuando cambia el estilo de las preguntas: el temario integrado se regenera. */
+export const ENGINE_VERSION = 2;
 
 /** Frases aptas como afirmación completa: ni muy cortas ni muy largas y sin remisiones vacías. */
 function statementsOf(u: Unit): string[] {
@@ -162,7 +179,7 @@ export function findDefinitions(text: string): { term: string; def: string }[] {
 }
 
 export function buildPools(units: Unit[]): Pools {
-  const p: Pools = { durations: new Map(), organs: new Set(), quantities: new Set(), definitions: [], enumItems: [], headings: new Map(), statements: [] };
+  const p: Pools = { durations: new Map(), organs: new Set(), quantities: new Set(), definitions: [], enumItems: [], headings: new Map(), statements: [], textNorm: "" };
   for (const u of units) {
     const art = u.article ?? u.label;
     for (const s of statementsOf(u)) p.statements.push({ s, sectionId: u.sectionId, article: art, documentId: u.documentId });
@@ -180,9 +197,10 @@ export function buildPools(units: Unit[]): Pools {
     for (const m of u.text.matchAll(QUANTITY)) p.quantities.add(m[0].toLowerCase());
     for (const d of findDefinitions(u.text)) p.definitions.push({ ...d, sectionId: u.sectionId });
     for (const e of findEnumerations(u.text)) {
-      for (const item of e.items) p.enumItems.push({ item, sectionId: u.sectionId });
+      for (const item of e.items) p.enumItems.push({ item, sectionId: u.sectionId, documentId: u.documentId });
     }
   }
+  p.textNorm = units.map((u) => norm(u.text)).join(" | ");
   return p;
 }
 
@@ -245,9 +263,94 @@ function cloze(c: Ctx, rule: QuestionRule, sentence: string, at: number, answer:
     const filled = norm(sentence.slice(Math.max(0, at - 30), at) + d + sentence.slice(at + answer.length, at + answer.length + 30));
     if (unitNorm.includes(filled)) return { discard: 'distractor también válido en el texto' };
   }
-  const stem = `${intro(c)}, complete el texto: «${shown}»`;
   const expl = `${cap(refWithArticle(c.unit.label))} dice literalmente: «${windowAround(sentence, at, at + answer.length, 420)}»`;
+  // Estilo de examen oficial: el enunciado es el inicio de la frase y las opciones, su continuación
+  // completa, que solo se diferencia en el dato preguntado (plazo, órgano, cifra, verbo…).
+  const before = sentence.slice(0, at).trimEnd();
+  if (before.length >= 10 && !/[«(]$/.test(before)) {
+    const lead = before.length <= 260 ? before : `…${before.slice(before.indexOf(' ', before.length - 250) + 1)}`;
+    let tail = sentence.slice(at + answer.length).replace(/[.;:]$/, '');
+    if (tail.length > 110) tail = `${tail.slice(0, tail.lastIndexOf(' ', 110))}…`;
+    const opt = (x: string) => `${x}${tail}`;
+    const stem = `${intro(c)}, ${lead.charAt(0).toLowerCase()}${lead.slice(1)}…`;
+    return assemble(c, rule, stem, opt(answer), distractors.map(opt), expl, sentence, difficulty);
+  }
+  const stem = `${intro(c)}, complete el texto: «${shown}»`;
   return assemble(c, rule, stem, answer, distractors, expl, sentence, difficulty);
+}
+
+// ---------------------------------------------------------------- variantes falsas plausibles
+
+/** Cambios mínimos que invierten o alteran el sentido (como los distractores de los exámenes oficiales). */
+const SWAPS: [string, string][] = [
+  ['no podrán', 'podrán'], ['no podrá', 'podrá'], ['podrán', 'no podrán'], ['podrá', 'no podrá'],
+  ['deberán', 'podrán'], ['deberá', 'podrá'], ['en ningún caso', 'en todo caso'], ['en todo caso', 'en ningún caso'],
+  ['máximo', 'mínimo'], ['mínimo', 'máximo'], ['máxima', 'mínima'], ['mínima', 'máxima'],
+  ['superior', 'inferior'], ['inferior', 'superior'], ['mayor', 'menor'], ['menor', 'mayor'],
+  ['anterior', 'posterior'], ['posterior', 'anterior'], ['salvo que', 'siempre que'], ['siempre que', 'salvo que'],
+  ['obligatoria', 'voluntaria'], ['obligatorio', 'voluntario'], ['expresa', 'tácita'], ['expreso', 'tácito'],
+  ['únicamente', 'preferentemente'], ['exclusivamente', 'preferentemente'], ['directa', 'indirecta'],
+  ['del Congreso de los Diputados', 'del Senado'], ['del Senado', 'del Congreso de los Diputados'],
+  ['el Congreso de los Diputados', 'el Senado'], ['el Senado', 'el Congreso de los Diputados'],
+  ['a las Cortes Generales', 'al Congreso de los Diputados'], ['de las Cortes Generales', 'del Congreso de los Diputados'],
+  ['por las Cortes Generales', 'por el Congreso de los Diputados'], ['absoluta', 'simple'], ['simple', 'absoluta'],
+  ['hábiles', 'naturales'], ['naturales', 'hábiles'], ['gratuita', 'onerosa'], ['prohibida', 'permitida'],
+];
+const swapRe = new Map(SWAPS.map(([a]) => [a, new RegExp(`(?<!\\p{L})${a}(?!\\p{L})`, 'u')]));
+
+/** Variantes falsas de una frase: cada una cambia un solo dato y no aparece en ningún texto del temario. */
+export function mutations(s: string, c: Pick<Ctx, 'pools' | 'rand'>): string[] {
+  const out = new Set<string>();
+  for (const [a, b] of SWAPS) {
+    const m = swapRe.get(a)!.exec(s);
+    if (m) out.add(s.slice(0, m.index) + b + s.slice(m.index + a.length));
+  }
+  const durs = [...s.matchAll(DURATION)];
+  if (durs.length === 1) {
+    const d = durs[0];
+    const alt = pick(c.pools.durations.get(timeUnit(d[0])) ?? [], d[0], c.rand, 2) ?? [];
+    for (const x of alt) out.add(s.slice(0, d.index!) + x + s.slice(d.index! + d[0].length));
+  }
+  for (const m of s.matchAll(COMPETENCE)) {
+    const at = m.index! + m[0].length - m[1].length;
+    for (const o of pick(c.pools.organs, m[1], c.rand, 2) ?? []) out.add(s.slice(0, at) + o + s.slice(at + m[1].length));
+    break;
+  }
+  // Cifras sueltas (edades, porcentajes, números de artículo): ±1 o ±2, salvo años y referencias "N/AAAA".
+  // Solo cifras con magnitud (edades, porcentajes, miembros…), no números de artículo ni direcciones.
+  const num = [...s.matchAll(/(?<![\d/.,])(\d{1,3})(?=\s*(?:%|por\s+(?:ciento|100)|años|días|meses|horas|semanas|miembros|personas|trabajadores|vocales|representantes|votos))/gu)].find((x) => +x[1] > 1);
+  if (num) {
+    const n = +num[1];
+    for (const k of [n + 1, n - 1, n + 2]) if (k > 0) out.add(s.slice(0, num.index!) + k + s.slice(num.index! + num[1].length));
+  }
+  return shuffle([...out], c.rand).filter((v) => !c.pools.textNorm.includes(norm(v)));
+}
+
+/**
+ * «Señale la afirmación correcta / INCORRECTA» sobre el artículo: una frase literal frente a variantes
+ * con un dato cambiado, o tres frases literales frente a una alterada.
+ */
+function* afirmacionQuestions(c: Ctx): Generator<Result> {
+  const sts = shuffle(statementsOf(c.unit), c.rand);
+  if (!sts.length) return;
+  const ref = refWithArticle(c.unit.label);
+  const head = `Según ${ref} de ${c.docTitle}, señale la afirmación`;
+  const withMut = sts.map((s) => ({ s, m: mutations(s, c) })).filter((x) => x.m.length);
+  if (!withMut.length) return;
+  const negative = sts.length >= 4 && c.rand() < 0.5;
+  if (negative) {
+    const { s, m } = withMut[0];
+    const others = sts.filter((x) => x !== s).slice(0, 3);
+    yield assemble(c, 'afirmacion', `${head} INCORRECTA:`, m[0], others,
+      `Es incorrecta: ${ref} dice «${s}». Las demás reproducen literalmente el artículo.`, s, 3);
+    return;
+  }
+  const { s, m } = withMut[0];
+  const fill = [...m, ...withMut.slice(1).flatMap((x) => x.m)];
+  const d = pick(fill, s, c.rand);
+  if (!d) { yield { discard: 'afirmación sin suficientes variantes' }; return; }
+  yield assemble(c, 'afirmacion', `${head} correcta:`, s, d,
+    `${cap(ref)} dice literalmente: «${s}». Las demás opciones alteran algún dato del texto.`, s, 3);
 }
 
 const lenDifficulty = (s: string): Difficulty => (s.split(/\s+/).length > 45 ? 3 : 2);
@@ -258,9 +361,10 @@ function* plazoQuestions(c: Ctx, sents: string[]): Generator<Result> {
     const m = [...s.matchAll(DURATION)];
     if (m.length !== 1) continue; // con varios plazos la frase es ambigua
     const ans = m[0][0];
-    const pool = c.pools.durations.get(timeUnit(ans)) ?? new Set<string>();
+    // Alternativas de la misma unidad (días con días…): primero del temario y, si faltan, plazos habituales.
+    const pool = [...(c.pools.durations.get(timeUnit(ans)) ?? []), ...(COMMON_DUR[timeUnit(ans)] ?? [])];
     const all = [...c.pools.durations.values()].flatMap((x) => [...x]);
-    const d = pick(pool, ans, c.rand) ?? pick(all, ans, c.rand);
+    const d = pick(pool.filter((x) => !norm(s).includes(norm(x))), ans, c.rand) ?? pick(all, ans, c.rand);
     if (!d) { yield { discard: 'plazo sin suficientes alternativas en el corpus' }; continue; }
     yield cloze(c, 'plazo', s, m[0].index!, ans, d, s.length > 220 ? 2 : 1);
   }
@@ -283,7 +387,11 @@ function* quantityQuestions(c: Ctx, sents: string[]): Generator<Result> {
   for (const s of sents) {
     const m = [...s.matchAll(QUANTITY)];
     if (m.length !== 1) continue;
-    const d = pick(c.pools.quantities, m[0][0], c.rand);
+    const q = m[0][0].toLowerCase();
+    // Mayorías con mayorías, porcentajes con porcentajes.
+    const same = /^(mayor|major)/.test(q) ? [...MAJORITIES, ...[...c.pools.quantities].filter((x) => /^(mayor|major)/.test(x))]
+      : [...c.pools.quantities].filter((x) => !/^(mayor|major)/.test(x));
+    const d = pick(same, m[0][0], c.rand);
     if (!d) { yield { discard: 'cuantía sin suficientes alternativas en el corpus' }; continue; }
     yield cloze(c, 'concepto', s, m[0].index!, m[0][0], d, 2);
   }
@@ -328,9 +436,11 @@ function* enumerationQuestions(c: Ctx): Generator<Result> {
   for (const e of findEnumerations(c.unit.text)) {
     const inList = new Set(e.items.map(norm));
     const listText = norm(c.unit.text);
-    const foreign = c.pools.enumItems
-      .filter((x) => x.sectionId !== c.unit.sectionId && !inList.has(norm(x.item)) && !listText.includes(norm(x.item)))
-      .map((x) => x.item);
+    const all = c.pools.enumItems
+      .filter((x) => x.sectionId !== c.unit.sectionId && !inList.has(norm(x.item)) && !listText.includes(norm(x.item)));
+    // Elementos ajenos de la misma norma (más plausibles); los de otras normas solo si no bastan.
+    const sameDoc = all.filter((x) => x.documentId === c.unit.documentId).map((x) => x.item);
+    const foreign = sameDoc.length >= 3 ? sameDoc : all.map((x) => x.item);
     const listing = e.items.map((it, i) => `${String.fromCharCode(97 + i)}) ${it}`).join('; ');
     const introTxt = windowAround(e.intro.replace(/^\d{1,2}\.\s+/, ''), 0, 0, 220);
     const expl = `${cap(refWithArticle(c.unit.label))} enumera: ${listing}.`;
@@ -346,12 +456,16 @@ function* enumerationQuestions(c: Ctx): Generator<Result> {
     } else {
       yield { discard: 'enumeración sin elementos ajenos en el corpus' };
     }
-    // Forma positiva: un elemento de la lista y tres ajenos.
-    const correct = e.items[Math.floor(c.rand() * e.items.length)];
-    const others = pick(close, correct, c.rand, 3, e.items);
-    if (others) {
-      const stem = `${intro(c)} («${introTxt}»), ¿cuál de los siguientes figura en la enumeración?`;
-      yield assemble(c, 'enumeracion', stem, correct, others, expl, `${e.intro}\n${listing}`, 2);
+    // Forma positiva, al estilo de los exámenes oficiales, con «Todas las demás opciones son correctas»
+    // unas veces como respuesta verdadera (tres elementos de la lista) y otras como falsa (uno solo).
+    const stemPos = `${intro(c)} («${introTxt}»), ¿cuál de las siguientes respuestas es correcta?`;
+    const three = pick(e.items, '', c.rand, 3);
+    if (three && e.items.length >= 3 && c.rand() < 0.5) {
+      yield assemble(c, 'enumeracion', stemPos, ALL_OK, three, `${expl} Los tres elementos figuran en ella.`, `${e.intro}\n${listing}`, 3);
+    } else {
+      const correct = e.items[Math.floor(c.rand() * e.items.length)];
+      const others = pick(close, correct, c.rand, 2, e.items);
+      if (others) yield assemble(c, 'enumeracion', stemPos, correct, [...others, ALL_OK], expl, `${e.intro}\n${listing}`, 3);
     }
   }
 }
@@ -449,7 +563,7 @@ export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pool
     const c: Ctx = { lang, unit, docTitle, pools, rand: rng(`${docTitle}|${unit.label}|${unit.text.length}`) };
     const sents = sentences(unit.text).map((s) => s.replace(/^\d{1,2}\.\s+/, "")).filter((s) => s.length >= 30 && s.length <= 900);
     const gens = [
-      definitionQuestions(c), plazoQuestions(c, sents), competenciaQuestions(c, sents),
+      definitionQuestions(c), afirmacionQuestions(c), plazoQuestions(c, sents), competenciaQuestions(c, sents),
       enumerationQuestions(c), quantityQuestions(c, sents), exceptionQuestions(c, sents),
       obligationQuestions(c, sents), rubricaQuestions(c, rubricas), atribucionQuestions(c),
     ];
@@ -462,7 +576,9 @@ export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pool
         if (seen.has(r.hash)) continue;
         // Los artículos de definiciones generan una pregunta por término.
         // La rúbrica no cuenta para el límite: asegura al menos una pregunta por artículo.
-        if (r.rule !== 'definicion' && r.rule !== 'rubrica' && !(r.rule === 'atribucion' && count === 0) && count >= MAX_PER_UNIT) { discard('límite de preguntas por artículo'); continue; }
+        // Rúbrica y atribución son más sencillas: solo se usan si el artículo no ha dado otra pregunta.
+        if ((r.rule === 'rubrica' || r.rule === 'atribucion') && count > 0) continue;
+        if (r.rule !== 'definicion' && r.rule !== 'rubrica' && r.rule !== 'atribucion' && count >= MAX_PER_UNIT) { discard('límite de preguntas por artículo'); continue; }
         seen.add(r.hash);
         drafts.push(r);
         count++;
@@ -476,7 +592,7 @@ export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pool
 
 export const RULE_LABEL: Record<QuestionRule, string> = {
   definicion: 'Definición', plazo: 'Plazo', competencia: 'Competencia', obligacion: 'Obligación',
-  excepcion: 'Excepción', enumeracion: 'Enumeración', concepto: 'Cuantía/mayoría', rubrica: 'Rúbrica', atribucion: 'Texto del artículo', manual: 'Manual',
+  excepcion: 'Excepción', enumeracion: 'Enumeración', concepto: 'Cuantía/mayoría', rubrica: 'Rúbrica', atribucion: 'Texto del artículo', afirmacion: 'Afirmación correcta/incorrecta', manual: 'Manual',
 };
 
 export { cap };

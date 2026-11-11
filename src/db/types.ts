@@ -103,6 +103,7 @@ export type QuestionRule =
   | 'concepto'
   | 'rubrica'
   | 'atribucion'
+  | 'afirmacion'
   | 'manual';
 
 export interface Question {

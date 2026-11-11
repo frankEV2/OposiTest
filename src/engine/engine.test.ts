@@ -59,7 +59,7 @@ describe('generador', () => {
       expect(d.reference).toMatch(/^Ley de prueba, /);
       const correct = d.options[d.correctIndex];
       if (d.rule !== 'enumeracion') expect(norm(d.sourceExcerpt)).toContain(norm(correct));
-      if (['plazo', 'competencia', 'definicion'].includes(d.rule)) {
+      if (d.rule === 'definicion') {
         for (const o of d.options) expect(corpus, o).toContain(norm(o));
       }
     }
@@ -72,21 +72,23 @@ describe('generador', () => {
     neg.options.filter((_, i) => i !== neg.correctIndex).forEach((o) => expect(norm(unit.text)).toContain(norm(o)));
   });
 
-  it('el plazo se oculta en el enunciado', () => {
+  it('el plazo se pregunta con la frase como enunciado', () => {
     const p = drafts.find((d) => d.rule === 'plazo' && d.sectionId === 2)!;
-    expect(p.stem).toContain('______');
-    expect(p.options[p.correctIndex]).toBe('tres meses');
+    // Estilo oficial: el enunciado es el inicio de la frase y las opciones, su continuación.
+    expect(p.stem).toMatch(/será de…$/);
+    expect(p.options[p.correctIndex]).toMatch(/^tres meses desde la entrada/);
     expect(p.stem).not.toContain('tres meses');
+    p.options.forEach((o) => expect(o).toMatch(/mes(?:es)? desde la entrada/));
   });
 
   it('es determinista', () => {
     expect(generate(UNITS, 'Ley de prueba').drafts).toEqual(drafts);
   });
 
-  it('descarta plazos si no hay alternativas reales', () => {
+  it('completa los plazos con alternativas de la misma unidad', () => {
     const r = generate([UNITS[1]], 'X');
-    expect(r.drafts.filter((d) => d.rule === 'plazo')).toHaveLength(0);
-    expect(r.discarded['plazo sin suficientes alternativas en el corpus']).toBe(1);
+    const p = r.drafts.find((d) => d.rule === 'plazo')!;
+    p.options.forEach((o) => expect(o).toMatch(/mes(?:es)? desde/));
   });
 });
 
@@ -154,8 +156,7 @@ describe('catalán, rúbrica y atribución', () => {
     const { drafts } = generate(UNITS_CA, 'Llei 39/2015');
     const rules = new Set(drafts.map((d) => d.rule));
     expect(rules.has('plazo')).toBe(true);
-    expect(rules.has('rubrica')).toBe(true);
-    expect(rules.has('atribucion')).toBe(true);
+    expect(rules.has('rubrica') || rules.has('atribucion') || rules.has('afirmacion')).toBe(true);
     // Todos los artículos tienen al menos una pregunta.
     expect(new Set(drafts.map((d) => d.sectionId)).size).toBe(UNITS_CA.length);
     const all = norm(UNITS_CA.map((u) => `${u.heading} ${u.text}`).join(' '));
@@ -163,7 +164,7 @@ describe('catalán, rúbrica y atribución', () => {
       if (d.rule === 'rubrica' || d.rule === 'atribucion') d.options.forEach((o) => expect(all).toContain(norm(o)));
     }
     const exc = drafts.find((d) => d.rule === 'excepcion');
-    if (exc) expect(exc.options[exc.correctIndex]).toBe('llevat que');
+    if (exc) expect(exc.options[exc.correctIndex]).toMatch(/^llevat que/);
   });
 });
 
@@ -174,5 +175,21 @@ describe('nombre corto de la norma', () => {
     expect(shortDocTitle('Real Decreto Legislativo 2/2011, de 5 de septiembre, por el que se aprueba…')).toBe('Real Decreto Legislativo 2/2011');
     expect(shortDocTitle('Orden HAP/1234/2020, de 1 de enero')).toBe('Orden HAP/1234/2020');
     expect(shortDocTitle('Constitución Española.')).toBe('Constitución Española');
+  });
+});
+
+describe('estilo examen oficial', () => {
+  it('afirmación correcta/incorrecta con variantes de un solo dato que no están en el texto', () => {
+    const units: Unit[] = [
+      u(1, 'Artículo 5', 'El órgano competente podrá ampliar el plazo máximo de resolución por un tiempo que no exceda de la mitad.\nLa solicitud deberá presentarse en el registro electrónico de la Administración u Organismo al que se dirija.\nEn ningún caso podrá exigirse al interesado la presentación de documentos originales.\nLa resolución expresa será motivada en los supuestos previstos en el artículo siguiente de esta norma.'),
+    ];
+    const { drafts } = generate(units, 'Ley de prueba');
+    const a = drafts.find((d) => d.rule === 'afirmacion')!;
+    expect(a.stem).toMatch(/señale la afirmación (correcta|INCORRECTA):$/);
+    const text = norm(units[0].text);
+    const literal = a.options.filter((o) => text.includes(norm(o)));
+    expect(literal.length === 1 || literal.length === 3).toBe(true);
+    if (literal.length === 1) expect(a.options[a.correctIndex]).toBe(literal[0]);
+    else expect(text).not.toContain(norm(a.options[a.correctIndex]));
   });
 });
