@@ -280,3 +280,22 @@ code { font-size: 0.85em; background: var(--bg); padding: 1px 5px; border-radius
 .ws-box small { color: var(--muted); font-size: .75rem; }
 .ws-box strong { font-size: .9rem; line-height: 1.25; }
 .ws-box .link { align-self: flex-start; padding: 4px 0 0; font-size: .85rem; }
+
+/* ---- Tutor IA ---- */
+.tutor { display: flex; flex-direction: column; min-height: calc(100dvh - 120px); }
+.chat { flex: 1; display: flex; flex-direction: column; gap: 10px; padding-bottom: 12px; }
+.chat-empty { color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chips button { border-radius: 999px; font-size: .85rem; }
+.bubble { max-width: min(760px, 92%); padding: 10px 14px; border-radius: 16px; line-height: 1.5; overflow-wrap: anywhere; }
+.bubble p { margin: 0 0 6px; } .bubble p:last-child { margin-bottom: 0; }
+.bubble ul { margin: 4px 0 6px; padding-left: 20px; }
+.bubble.user { align-self: flex-end; background: var(--primary); color: var(--bg); border-bottom-right-radius: 4px; }
+.bubble.model { align-self: flex-start; background: var(--surface); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+.bubble.error { border-color: #d92d20; color: #d92d20; }
+.refs { margin-top: 8px; font-size: .82rem; color: var(--muted); }
+.refs ul { margin: 4px 0 0; }
+.composer { position: sticky; bottom: 0; display: flex; gap: 8px; align-items: flex-end; padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+  background: var(--bg); border-top: 1px solid var(--border); }
+.composer textarea { flex: 1; resize: none; font: inherit; font-size: 16px; padding: 10px; border-radius: 12px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); }

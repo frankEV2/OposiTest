@@ -6,6 +6,7 @@ export const NAV = [
   { path: '/banco', label: 'Banco de preguntas' },
   { path: '/errores', label: 'Mis errores' },
   { path: '/material', label: 'Esquemas y resúmenes' },
+  { path: '/tutor', label: 'Tutor IA' },
   { path: '/estadisticas', label: 'Estadísticas' },
   { path: '/configuracion', label: 'Configuración' },
 ] as const;

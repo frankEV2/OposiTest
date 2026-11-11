@@ -17,6 +17,7 @@ const ExamResult = lazy(() => import('./pages/ExamResult'));
 const Materials = lazy(() => import('./pages/Materials'));
 const Mistakes = lazy(() => import('./pages/Mistakes'));
 const Stats = lazy(() => import('./pages/Stats'));
+const Tutor = lazy(() => import('./pages/Tutor'));
 
 function NotFound() {
   return (
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="/material" element={<Materials />} />
           <Route path="/errores" element={<Mistakes />} />
           <Route path="/estadisticas" element={<Stats />} />
+          <Route path="/tutor" element={<Tutor />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
