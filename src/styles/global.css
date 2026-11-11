@@ -338,3 +338,7 @@ body:has(.voicebar) .update-banner { bottom: calc(96px + env(safe-area-inset-bot
   border-radius: 12px; background: var(--bg); border: 1px solid var(--border); color: var(--text); font: inherit; cursor: pointer; }
 .quiz-opts button:hover, .quiz-opts button:focus-visible { border-color: var(--primary); background: var(--primary-soft, var(--surface)); }
 .quiz-letter { font-weight: 700; margin-right: 4px; }
+.quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.quick-replies button { border-radius: 999px; min-height: 40px; padding: 6px 14px; border: 1px solid var(--primary); color: var(--primary);
+  background: transparent; font: inherit; cursor: pointer; }
+.quick-replies button:hover, .quick-replies button:focus-visible { background: var(--primary); color: var(--bg); }

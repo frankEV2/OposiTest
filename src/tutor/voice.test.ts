@@ -13,3 +13,9 @@ describe('voz', () => {
     expect(speakable('**Ojo**: el art. 5 [Ley 39/2015, art. 5.1] dice\n- esto')).toBe('Ojo: el artículo 5 dice\nesto');
   });
 });
+
+describe('respuestas rápidas', () => {
+  it('no lee en voz alta la línea OPCIONES', () => {
+    expect(speakable('¿Seguimos?\nOPCIONES: Sí, otra pregunta | Terminar')).toBe('¿Seguimos?');
+  });
+});

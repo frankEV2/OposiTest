@@ -94,6 +94,7 @@ export class ScreenAwake {
 /** Texto apto para leer en voz alta: sin marcas de formato ni referencias entre corchetes. */
 export function speakable(md: string): string {
   return md
+    .replace(/^\s*\**OPCIONES:.*$/gim, '') // respuestas rápidas: solo se muestran como botones
     .replace(/\[[^\]]{2,120}\]/g, '')
     .replace(/(?<!\p{L})arts?\.\s*/giu, (m) => (/s/i.test(m) ? 'artículos ' : 'artículo '))
     .replace(/[*_#`>]/g, '')

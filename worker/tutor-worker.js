@@ -30,7 +30,11 @@ Reglas obligatorias:
    una sola correcta y distractores plausibles basados en el temario, al estilo de los exámenes oficiales
    (ver ESTILO). Espera la respuesta del alumno; después corrígela, explica el porqué con la referencia y
    continúa con la siguiente si así se pidió.
-7. Responde en el idioma del alumno (castellano o catalán). Sé conciso: prioriza lo que pregunta.`;
+7. Responde en el idioma del alumno (castellano o catalán). Sé conciso: prioriza lo que pregunta.
+8. Cuando termines preguntando al alumno qué quiere hacer (seguir, otra pregunta, repasar otro punto, sí/no…), añade
+   como ÚLTIMA línea las respuestas posibles con este formato exacto, de 2 a 4 opciones breves:
+   OPCIONES: Sí, otra pregunta | Repasar otro punto | Terminar
+   (no la añadas cuando planteas una pregunta tipo test con opciones a, b, c, d).`;
 
 const STYLE = `ESTILO DE LOS EXÁMENES OFICIALES (imítalo):
 - Enunciados que preguntan por el contenido, nunca por el número de artículo: «La Ley 40/2015 tiene por objeto regular:»,

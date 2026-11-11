@@ -43,7 +43,19 @@ function render(text: string, onOption?: (letter: string, option: string) => voi
     }
     opts = [];
   };
-  for (const line of text.split('\n')) {
+  // Respuestas rápidas: línea «OPCIONES: a | b | c» (nunca se muestra como texto).
+  const lines = text.split('\n');
+  const quickIdx = lines.findIndex((l) => /^\s*\**OPCIONES:?\**\s*/i.test(l));
+  const quick = quickIdx >= 0
+    ? lines[quickIdx].replace(/^\s*\**OPCIONES:?\**\s*/i, '').split('|').map((s) => s.trim().replace(/\*+/g, '')).filter(Boolean).slice(0, 4)
+    : [];
+  if (quickIdx >= 0) lines.splice(quickIdx, 1);
+  const hasQuiz = lines.filter((l) => OPTION.test(l)).length >= 3;
+  // Respaldo: termina con una pregunta de sí/no y no trae opciones.
+  const lastLine = lines.filter((l) => l.trim()).at(-1) ?? '';
+  const replies = quick.length ? quick
+    : (!hasQuiz && /\?\s*\**$/.test(lastLine) && /(quieres|te gustaría|vols|t'agradaria|seguimos|continuamos|pasamos)/i.test(lastLine) ? ['Sí', 'No'] : []);
+  for (const line of lines) {
     const op = line.match(OPTION);
     if (op) { flush(); opts.push({ letter: op[1].toLowerCase(), text: op[2].replace(/\*\*$/, '') }); continue; }
     if (line.trim()) flushOpts();
@@ -56,6 +68,13 @@ function render(text: string, onOption?: (letter: string, option: string) => voi
   }
   flush();
   flushOpts();
+  if (replies.length && onOption) {
+    blocks.push(
+      <div key={blocks.length} className="quick-replies" role="group" aria-label="Respuestas rápidas">
+        {replies.map((r) => <button key={r} type="button" onClick={() => onOption('', r)}>{r}</button>)}
+      </div>,
+    );
+  }
   return blocks;
 }
 
@@ -352,7 +371,7 @@ export default function Tutor() {
             {m.role === 'model'
               ? (m.text
                 ? render(m.text, i === msgs.length - 1 && !busy && mode === 'chat'
-                  ? (letter, option) => void send(`${letter}) ${option}`)
+                  ? (letter, option) => void send(letter ? `${letter}) ${option}` : option)
                   : undefined)
                 : <p className="muted">Consultando el temario…</p>)
               : <p>{m.text}</p>}
