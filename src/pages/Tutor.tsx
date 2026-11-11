@@ -11,14 +11,42 @@ import GeminiUsage from '../components/GeminiUsage';
 const HISTORY = 'tutorHistory'; // en la base de datos de la oposición abierta → historiales separados
 const MAX_HISTORY = 200;
 
-/** Markdown mínimo y seguro (sin HTML): negritas, listas y párrafos. */
-function render(text: string): ReactNode {
+/** Opción de pregunta tipo test: «a) …», «**B.** …», «c - …». */
+const OPTION = /^\s*[-*•]?\s*\**\(?([a-dA-D])\s*[).:-]\**\s+(.+)$/;
+
+/**
+ * Markdown mínimo y seguro (sin HTML): negritas, listas y párrafos.
+ * Si `onOption` se indica, las opciones a)–d) de una pregunta tipo test se muestran como botones.
+ */
+function render(text: string, onOption?: (letter: string, option: string) => void): ReactNode {
   const inline = (s: string) => s.split(/(\*\*[^*]+\*\*)/g).map((p, i) =>
     p.startsWith('**') && p.endsWith('**') ? <strong key={i}>{p.slice(2, -2)}</strong> : <Fragment key={i}>{p}</Fragment>);
   const blocks: ReactNode[] = [];
   let list: ReactNode[] = [];
+  let opts: { letter: string; text: string }[] = [];
   const flush = () => { if (list.length) { blocks.push(<ul key={blocks.length}>{list}</ul>); list = []; } };
+  const flushOpts = () => {
+    if (!opts.length) return;
+    // Solo es una pregunta de test si hay al menos 3 opciones seguidas.
+    if (opts.length >= 3 && onOption) {
+      blocks.push(
+        <div key={blocks.length} className="quiz-opts" role="group" aria-label="Opciones de respuesta">
+          {opts.map((o) => (
+            <button key={o.letter} type="button" onClick={() => onOption(o.letter, o.text)}>
+              <span className="quiz-letter">{o.letter})</span> {inline(o.text)}
+            </button>
+          ))}
+        </div>,
+      );
+    } else {
+      opts.forEach((o) => blocks.push(<p key={blocks.length}>{o.letter}) {inline(o.text)}</p>));
+    }
+    opts = [];
+  };
   for (const line of text.split('\n')) {
+    const op = line.match(OPTION);
+    if (op) { flush(); opts.push({ letter: op[1].toLowerCase(), text: op[2].replace(/\*\*$/, '') }); continue; }
+    if (line.trim()) flushOpts();
     const li = line.match(/^\s*(?:[-*•]|\d+[.)])\s+(.*)$/);
     if (li) { list.push(<li key={list.length}>{inline(li[1])}</li>); continue; }
     flush();
@@ -27,6 +55,7 @@ function render(text: string): ReactNode {
     else if (line.trim()) blocks.push(<p key={blocks.length}>{inline(line)}</p>);
   }
   flush();
+  flushOpts();
   return blocks;
 }
 
@@ -320,7 +349,13 @@ export default function Tutor() {
         )}
         {msgs?.map((m, i) => (
           <div key={i} className={`bubble ${m.role}${m.error ? ' error' : ''}`}>
-            {m.role === 'model' ? (m.text ? render(m.text) : <p className="muted">Consultando el temario…</p>) : <p>{m.text}</p>}
+            {m.role === 'model'
+              ? (m.text
+                ? render(m.text, i === msgs.length - 1 && !busy && mode === 'chat'
+                  ? (letter, option) => void send(`${letter}) ${option}`)
+                  : undefined)
+                : <p className="muted">Consultando el temario…</p>)
+              : <p>{m.text}</p>}
             {m.role === 'model' && !!m.refs?.length && !m.error && (
               <details className="refs">
                 <summary>Fragmentos consultados ({m.refs.length})</summary>

@@ -333,3 +333,8 @@ body:has(.voicebar) .update-banner { bottom: calc(96px + env(safe-area-inset-bot
 .usage { font-size: .82rem; color: var(--muted); margin: 0 0 10px; }
 .usage summary { cursor: pointer; }
 .usage p { margin: 6px 0 0; }
+.quiz-opts { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+.quiz-opts button { text-align: left; white-space: normal; line-height: 1.35; padding: 10px 12px; min-height: 44px;
+  border-radius: 12px; background: var(--bg); border: 1px solid var(--border); color: var(--text); font: inherit; cursor: pointer; }
+.quiz-opts button:hover, .quiz-opts button:focus-visible { border-color: var(--primary); background: var(--primary-soft, var(--surface)); }
+.quiz-letter { font-weight: 700; margin-right: 4px; }
