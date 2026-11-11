@@ -175,6 +175,11 @@ test-fixtures/ PDF de prueba generados (ley-prueba, norma-prueba, escaneado) —
   genera `index.json` con SHA-256. Al abrir la app `library/bundled.ts` importa solo lo que falta o cambió (si cambia,
   sustituye el documento con el mismo `fileName`), clasifica por carpetas y respeta los borrados del usuario.
 
+- Motor bilingüe (2026-11-11): reglas en castellano y catalán (`langOf` elige conectores/modales; distractores ajenos solo
+  del mismo idioma). Reglas nuevas: `rubrica` (título del artículo) y `atribucion` (frase literal del artículo frente a
+  frases literales de otros artículos), que garantizan al menos una pregunta por artículo/apartado. Limpieza de cabeceras
+  BOE y líneas cortadas en los .md. Temario integrado: 11 normas de `NORMATIVA PUERTO` (solo .md; los PDF son la misma fuente).
+
 ## Limitaciones conocidas
 - Reglas de preguntas solo en castellano (los textos en catalán se estructuran pero no generan preguntas).
 - Sin OCR: los PDF escaneados se detectan pero no se procesan (OCR local, p. ej. Tesseract.js, sería pesado ~10 MB+; valorar más adelante).

@@ -1,6 +1,6 @@
 import { db } from '../db/db';
 import { ensureTax, resolveCls } from '../sync/snapshot';
-import { importPdf, replacePdf } from './service';
+import { deleteDocument, importPdf, replacePdf } from './service';
 
 /** Entrada de `public/temario/index.json` (generado por scripts/temario-index.mjs). */
 export interface BundledEntry {
@@ -34,6 +34,11 @@ async function run(onProgress?: (done: number, total: number, name: string) => v
     list = await r.json();
   } catch {
     return 0;
+  }
+  // Documentos integrados que ya no están en el temario (su fileName es una ruta de temario/): se retiran.
+  const files = new Set(list.map((e) => e.file));
+  for (const d of await db.documents.toArray()) {
+    if (d.fileName.includes('/') && /\.(md|markdown)$/i.test(d.fileName) && !files.has(d.fileName)) await deleteDocument(d.id!);
   }
   const docs = await db.documents.toArray();
   const bySha = new Set(docs.map((d) => d.sha256));

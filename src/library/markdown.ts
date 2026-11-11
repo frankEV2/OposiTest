@@ -25,6 +25,38 @@ function plain(line: string): string {
 
 interface MdLine { text: string; level: number }
 
+/** Cabeceras y pies de BOE/DOGC que quedan al convertir un PDF a texto. */
+const NOISE = [
+  /^BOLET[IÍ]N\s+OFICIAL\s+DEL\s+ESTADO$/iu,
+  /^LEGISLACI[OÓ]N\s+CONSOLIDADA$/iu,
+  /^Suplement en llengua catalana al n[uú]m\.?\s*\d+$/iu,
+  /^Secc?\.\s*[IVXl1]+\.?\s+P[àaá]g\.\s*\d+$/iu,
+  /^N[uú]m\.\s*\d+(?:\s+.*\d{4})?$/iu,
+  /^P[àaá]gina\s+\d+$/iu,
+  /^(?:Dilluns|Dimarts|Dimecres|Dijous|Divendres|Dissabte|Diumenge|Lunes|Martes|Mi[eé]rcoles|Jueves|Viernes|S[aá]bado|Domingo)\s+\d{1,2}\s+d[e'’]\s*\p{L}+\s+de\s+\d{4}$/iu,
+  /^Portal Jur[ií]dic de Catalunya$/iu,
+  /^cve:\s*BOE-.*$/iu,
+  /^Verificable en https?:.*$/iu,
+  /^\d{1,4}$/u,
+];
+
+/** Une líneas cortadas por la conversión (también a través de líneas en blanco) cuando la frase sigue en minúscula. */
+function joinBroken(lines: MdLine[]): MdLine[] {
+  const out: MdLine[] = [];
+  for (const l of lines) {
+    const prev = [...out].reverse().find((x) => x.text.trim());
+    const t = l.text.trim();
+    if (!l.level && t && prev && !prev.level && /^[\p{Ll}(]/u.test(t) && !/[.:;!?»]$/u.test(prev.text.trim())
+      && !/^[a-zñ]\)\s/u.test(t)) {
+      while (out.length && !out[out.length - 1].text.trim()) out.pop();
+      out[out.length - 1] = { ...prev, text: `${prev.text.trimEnd()} ${t}` };
+      continue;
+    }
+    out.push(l);
+  }
+  return out;
+}
+
 function parseLines(md: string): MdLine[] {
   const out: MdLine[] = [];
   let fence = false;
@@ -33,10 +65,15 @@ function parseLines(md: string): MdLine[] {
     if (!fence && /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(raw) && raw.includes('|')) continue; // separador de tabla
     if (!fence && /^\s{0,3}([-*_])(\s*\1){2,}\s*$/.test(raw)) { out.push({ text: '', level: 0 }); continue; } // regla horizontal
     const h = fence ? null : /^\s{0,3}(#{1,6})\s+(.*?)\s*#*\s*$/.exec(raw);
-    if (h) out.push({ text: plain(h[2]), level: h[1].length });
-    else out.push({ text: fence ? raw : plain(raw), level: 0 });
+    if (h) { out.push({ text: plain(h[2]), level: h[1].length }); continue; }
+    if (fence) { out.push({ text: raw, level: 0 }); continue; }
+    const t = plain(raw).replace(/\s{2,}/g, ' ').trim()
+      // OCR: "Artículo l." (ele) en lugar de "Artículo 1."
+      .replace(/^(Art[ií]culo|Article)\s+[lI](?=[.\s]|$)/u, '$1 1');
+    if (NOISE.some((re) => re.test(t))) continue;
+    out.push({ text: t, level: 0 });
   }
-  return out;
+  return joinBroken(out);
 }
 
 /** Divide en páginas virtuales cortando preferentemente antes de un encabezado. */

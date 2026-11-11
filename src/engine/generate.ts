@@ -17,6 +17,8 @@ export interface Unit {
   label: string;
   heading: string;
   text: string;
+  /** Artículo al que pertenece un apartado: "Artículo 21". */
+  article?: string;
 }
 
 export type Draft = Omit<Question, 'id' | 'createdAt' | 'updatedAt' | 'status' | 'temaId'>;
@@ -28,30 +30,44 @@ export interface GenerationReport {
 
 // ---------------------------------------------------------------- patrones
 
-const UNITS = '(?:un|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve)';
-const TENS = '(?:treinta|cuarenta|cincuenta|sesenta|setenta|ochenta|noventa)';
-// Compuestos primero ("setenta y dos") para no capturar solo "dos".
-const NUM = `(?:\\d+|${TENS}\\s+y\\s+${UNITS}|ciento\\s+(?:veinte|ochenta)|veinti(?:uno|ún|una|dós|dos|trés|tres|cuatro|cinco|séis|seis|siete|ocho|nueve)|dieci(?:séis|seis|siete|ocho|nueve)|${TENS}|${UNITS}|diez|once|doce|trece|catorce|quince|veinte|cien)`;
-const UNIT_RE = '(?:días?|mes(?:es)?|años?|horas?|semanas?)';
-export const DURATION = new RegExp(`\\b${NUM}\\s+${UNIT_RE}(?:\\s+(?:hábiles|naturales))?\\b`, 'giu');
+// Castellano y catalán (muchas normas se estudian en su versión catalana).
+const UNITS = '(?:un|una|uno|dos|dues|tres|cuatro|quatre|cinco|cinc|seis|sis|siete|set|ocho|vuit|nueve|nou)';
+const TENS = '(?:treinta|cuarenta|cincuenta|sesenta|setenta|ochenta|noventa|trenta|quaranta|cinquanta|seixanta|setanta|vuitanta|noranta)';
+// Compuestos primero ("setenta y dos", "trenta-dos") para no capturar solo "dos".
+const NUM = `(?:\\d+|${TENS}\\s+y\\s+${UNITS}|${TENS}-${UNITS}|vint-i-(?:u|un|una|dos|dues|tres|quatre|cinc|sis|set|vuit|nou)|ciento\\s+(?:veinte|ochenta)|veinti(?:uno|ún|una|dós|dos|trés|tres|cuatro|cinco|séis|seis|siete|ocho|nueve)|dieci(?:séis|seis|siete|ocho|nueve)|${TENS}|${UNITS}|diez|deu|once|onze|doce|dotze|trece|tretze|catorce|catorze|quince|quinze|setze|disset|divuit|dinou|veinte|vint|cien|cent)`;
+const UNIT_RE = '(?:días?|dies|dia|mes(?:es|os)?|años?|anys?|horas?|hores|semanas?|setmanes|setmana)';
+export const DURATION = new RegExp(`(?<!\\p{L})${NUM}\\s+${UNIT_RE}(?:\\s+(?:hábiles|naturales|hàbils|naturals))?(?!\\p{L})`, 'giu');
 
-const ORGAN = '((?:\\p{Lu}[\\p{L}]+)(?:\\s+(?:de|del|de la|de las|de los|y|para|\\p{Lu}[\\p{L}]+))*\\s*(?:\\p{Lu}[\\p{L}]+))';
+const AP = "['’]";
+const ORGAN = `((?:\\p{Lu}[\\p{L}]+)(?:\\s+(?:de|del|de la|de las|de los|dels|de les|y|i|para|per a|\\p{Lu}[\\p{L}]+)|\\s+d${AP}(?=\\p{Lu})|\\s+de l${AP}(?=\\p{Lu}))*\\s*(?:\\p{Lu}[\\p{L}]+))`;
 export const COMPETENCE = new RegExp(
-  `(?:[Cc]orresponder[áa]n?|[Cc]orresponden?|[Cc]ompete|[Cc]ompeter[áa]|[Ss]er[áa]n? competentes?|[Ee]s competente|[Ss]on competentes)\\s+(?:a\\s+la|a\\s+los|a\\s+las|al|a|el|la|los|las)\\s+${ORGAN}`,
+  `(?:[Cc]orresponder[áa]n?|[Cc]orresponden?|[Cc]ompete|[Cc]ompeter[áa]|[Ss]er[áa]n? competentes?|[Ee]s competente|[Ss]on competentes|[Cc]orrespon(?:en)?|[Cc]orrespondr[àa]n?|[ÉéEe]s competent|[Ss]ón competents|[Ss]erà competent|[Ss]eran competents)\\s+(?:a\\s+la\\s+|a\\s+los\\s+|a\\s+las\\s+|a\\s+les\\s+|a\\s+l${AP}|als\\s+|al\\s+|a\\s+|el\\s+|la\\s+|los\\s+|las\\s+|els\\s+|les\\s+|l${AP})${ORGAN}`,
   'gu',
 );
 
-const QUANTITY = /\b(?:mayoría\s+(?:absoluta|simple|cualificada|de\s+(?:dos\s+tercios|tres\s+quintos|tres\s+cuartos))|\d+(?:,\d+)?\s+por\s+(?:ciento|100)|(?:dos|tres|cuatro)\s+(?:tercios|quintos|cuartos))\b/giu;
+const QUANTITY = /(?<!\p{L})(?:mayoría\s+(?:absoluta|simple|cualificada|de\s+(?:dos\s+tercios|tres\s+quintos|tres\s+cuartos))|majoria\s+(?:absoluta|simple|qualificada|de\s+(?:dos\s+terços|tres\s+cinquenes\s+parts|tres\s+quartes\s+parts))|\d+(?:,\d+)?\s+(?:por|per)\s+(?:ciento|cent|100)|(?:dos|tres|cuatro)\s+(?:tercios|quintos|cuartos)|(?:dos|tres)\s+terços)(?!\p{L})/giu;
 
 /** Conectores intercambiables gramaticalmente (todos introducen subordinada en subjuntivo). */
 const EXCEPTION_SAME = ['salvo que', 'a no ser que', 'excepto que', 'excepto cuando', 'salvo cuando'];
 const EXCEPTION_OTHER = ['siempre que', 'aun cuando', 'sin que', 'en tanto que', 'una vez que'];
+const EXCEPTION_SAME_CA = ['llevat que', 'tret que', 'excepte que', 'excepte quan', 'llevat de quan', 'tret de quan'];
+const EXCEPTION_OTHER_CA = ['sempre que', 'encara que', 'sense que', 'mentre que', 'un cop que'];
 
 const MODAL_SG = ['deberá', 'podrá', 'no podrá', 'no deberá'];
 const MODAL_PL = ['deberán', 'podrán', 'no podrán', 'no deberán'];
+const MODAL_SG_CA = ['ha de', 'pot', 'no pot', 'no ha de'];
+const MODAL_PL_CA = ['han de', 'poden', 'no poden', 'no han de'];
 
 const DEF_LINE = /^[a-zñ]\)\s+([^:]{2,90}):\s+(.{15,})$/u;
-const DEF_SENT = /se\s+entender[áa]\s+por\s+([^,:]{2,90})[,:]?\s+(?:el|la|los|las|aquel|aquella|aquellos|aquellas|todo|toda|cualquier)\b(.{15,})$/iu;
+const DEF_SENT = /(?:se\s+entender[áa]\s+por|s['’]entén\s+per)\s+([^,:]{2,90})[,:]?\s+(?:el|la|los|las|els|les|l['’]|aquel|aquella|aquellos|aquellas|aquell|aquells|aquelles|todo|toda|tot|tota|cualquier|qualsevol)(?!\p{L})(.{15,})$/iu;
+
+const CATALAN_RE = /(?<!\p{L})(?:Article|aquesta|aquest|els|dels|amb|perquè|també|han de|ha de)(?!\p{L})/gu;
+const SPANISH_RE = /(?<!\p{L})(?:Artículo|esta|este|los|del|con|porque|también|deberá|podrá)(?!\p{L})/gu;
+/** Idioma predominante de un texto (para elegir conectores y no mezclar distractores). */
+export function langOf(text: string): 'ca' | 'es' {
+  const t = text.slice(0, 20000);
+  return (t.match(CATALAN_RE)?.length ?? 0) > (t.match(SPANISH_RE)?.length ?? 0) ? 'ca' : 'es';
+}
 const ENUM_ITEM = /^([a-zñ]|\d{1,2}\.ª|\d{1,2}º)\)?\s+(.{4,})$/u;
 
 // ---------------------------------------------------------------- corpus
@@ -62,20 +78,30 @@ export interface Pools {
   quantities: Set<string>;
   definitions: { term: string; def: string; sectionId: number }[];
   enumItems: { item: string; sectionId: number }[];
+  /** Rúbricas de artículo por documento (pregunta de rúbrica). */
+  headings: Map<number, Map<string, string>>;
+  /** Frases literales de cada unidad (pregunta de atribución). */
+  statements: { s: string; sectionId: number; article: string; documentId: number }[];
 }
 
-const timeUnit = (d: string) => {
-  const m = norm(d).match(/(dia|mes|ano|hora|semana)/);
-  return m ? m[1] : 'otro';
-};
+/** Frases aptas como afirmación completa: ni muy cortas ni muy largas y sin remisiones vacías. */
+function statementsOf(u: Unit): string[] {
+  return sentences(u.text)
+    .map((s) => s.replace(/^\d{1,2}\.\s+/, '').replace(/^[a-zñ]\)\s+/u, ''))
+    .filter((s) => s.length >= 50 && s.length <= 300 && /[.;]$/.test(s) && !/[:]$/.test(s) && /\p{Lu}/u.test(s[0])
+      && !/(?<!\p{L})(?:Art[ií]culo|Article)\s+\d+\s+\p{L}/u.test(s));
+}
+
+const TIME_UNITS: [RegExp, string][] = [[/dia|dies/, 'dia'], [/mes/, 'mes'], [/ano|any/, 'ano'], [/hor/, 'hora'], [/seman|setman/, 'semana']];
+const timeUnit = (d: string) => TIME_UNITS.find(([re]) => re.test(norm(d)))?.[1] ?? 'otro';
 
 // Quita la puntuación final, el "y"/"o" que enlaza el último elemento y las comillas de cierre de textos citados.
-const cleanItem = (s: string) => s.replace(/[»"”]+\s*$/u, '').replace(/[;,.]?\s*(?:y|o)?\s*$/u, '').replace(/[;.]$/, '').trim();
+const cleanItem = (s: string) => s.replace(/[»"”]+\s*$/u, '').replace(/[;,.]?\s*(?:y|o|i)?\s*$/u, '').replace(/[;.]$/, '').trim();
 
 /** Nombre corto de la norma para los enunciados: "Ley Orgánica 1/2004, de 28 de diciembre, de…" → "Ley Orgánica 1/2004". */
 export function shortDocTitle(title: string): string {
   const t = title.trim().replace(/\.$/, '');
-  if (/^(?:Ley|Real Decreto|Decreto|Orden|Reglamento|Instrucción|Resolución|Llei|Decret|Ordre)\b/u.test(t)) {
+  if (/^(?:Ley|Real Decreto|Decreto|Orden|Reglamento|Instrucción|Resolución|Llei|Decret|Ordre|Reial decret)\b/iu.test(t)) {
     const m = t.match(/^(.*?\d+\/\d{4})(?=[,\s]|$)/u);
     if (m) return m[1];
   }
@@ -136,8 +162,15 @@ export function findDefinitions(text: string): { term: string; def: string }[] {
 }
 
 export function buildPools(units: Unit[]): Pools {
-  const p: Pools = { durations: new Map(), organs: new Set(), quantities: new Set(), definitions: [], enumItems: [] };
+  const p: Pools = { durations: new Map(), organs: new Set(), quantities: new Set(), definitions: [], enumItems: [], headings: new Map(), statements: [] };
   for (const u of units) {
+    const art = u.article ?? u.label;
+    for (const s of statementsOf(u)) p.statements.push({ s, sectionId: u.sectionId, article: art, documentId: u.documentId });
+    const head = cleanItem(u.heading ?? '');
+    if (head.length >= 3 && /^(Art[ií]culo|Article)\s/u.test(art)) {
+      if (!p.headings.has(u.documentId)) p.headings.set(u.documentId, new Map());
+      p.headings.get(u.documentId)!.set(art, head);
+    }
     for (const m of u.text.matchAll(DURATION)) {
       const k = timeUnit(m[0]);
       if (!p.durations.has(k)) p.durations.set(k, new Set());
@@ -156,6 +189,7 @@ export function buildPools(units: Unit[]): Pools {
 // ---------------------------------------------------------------- plantillas
 
 interface Ctx {
+  lang: 'ca' | 'es';
   unit: Unit;
   docTitle: string;
   pools: Pools;
@@ -220,7 +254,7 @@ const lenDifficulty = (s: string): Difficulty => (s.split(/\s+/).length > 45 ? 3
 
 function* plazoQuestions(c: Ctx, sents: string[]): Generator<Result> {
   for (const s of sents) {
-    if (!/plazo|dentro de|a contar|desde/i.test(s)) continue;
+    if (!/plazo|dentro de|a contar|desde|termini|dins de|a comptar|des de|des del/i.test(s)) continue;
     const m = [...s.matchAll(DURATION)];
     if (m.length !== 1) continue; // con varios plazos la frase es ambigua
     const ans = m[0][0];
@@ -256,22 +290,24 @@ function* quantityQuestions(c: Ctx, sents: string[]): Generator<Result> {
 }
 
 function* exceptionQuestions(c: Ctx, sents: string[]): Generator<Result> {
+  const [same, other] = c.lang === 'ca' ? [EXCEPTION_SAME_CA, EXCEPTION_OTHER_CA] : [EXCEPTION_SAME, EXCEPTION_OTHER];
   for (const s of sents) {
     const low = s.toLowerCase();
-    const conn = EXCEPTION_SAME.find((k) => new RegExp(`\\b${k}\\b`).test(low));
+    const conn = same.find((k) => new RegExp(`(?<!\\p{L})${k}(?!\\p{L})`, 'u').test(low));
     if (!conn) continue;
-    const at = low.search(new RegExp(`\\b${conn}\\b`));
+    const at = low.search(new RegExp(`(?<!\\p{L})${conn}(?!\\p{L})`, 'u'));
     const answer = s.slice(at, at + conn.length);
-    const d = pick(EXCEPTION_OTHER, answer, c.rand, 3, EXCEPTION_SAME)!;
+    const d = pick(other, answer, c.rand, 3, same)!;
     yield cloze(c, 'excepcion', s, at, answer, d, 3);
   }
 }
 
 function* obligationQuestions(c: Ctx, sents: string[]): Generator<Result> {
   for (const s of sents) {
-    const m = s.match(/(?<!\p{L})(deberán|deberá)(?!\p{L})/u);
-    if (!m || /(?<!\p{L})no\s+deber/u.test(s)) continue;
-    const set = m[1] === 'deberán' ? MODAL_PL : MODAL_SG;
+    const ca = c.lang === 'ca';
+    const m = ca ? s.match(/(?<!\p{L})(han de|ha de)(?!\p{L})/u) : s.match(/(?<!\p{L})(deberán|deberá)(?!\p{L})/u);
+    if (!m || (ca ? /(?<!\p{L})no\s+han?\s+de(?!\p{L})/u : /(?<!\p{L})no\s+deber/u).test(s)) continue;
+    const set = ca ? (m[1] === 'han de' ? MODAL_PL_CA : MODAL_SG_CA) : (m[1] === 'deberán' ? MODAL_PL : MODAL_SG);
     const d = set.filter((x) => x !== m[1]);
     yield cloze(c, 'obligacion', s, m.index!, m[1], d, 3);
   }
@@ -320,6 +356,55 @@ function* enumerationQuestions(c: Ctx): Generator<Result> {
   }
 }
 
+/** Rúbrica del artículo: cubre todos los artículos con título, aunque no tengan otras expresiones. */
+function* rubricaQuestions(c: Ctx, done: Set<string>): Generator<Result> {
+  const art = c.unit.article ?? c.unit.label;
+  const heads = c.pools.headings.get(c.unit.documentId);
+  const own = heads?.get(art);
+  if (!own || done.has(art)) return;
+  done.add(art);
+  let others = [...heads!.entries()].filter(([a, h]) => a !== art && norm(h) !== norm(own)).map(([, h]) => h);
+  // Documento con pocos artículos: rúbricas de las demás normas del temario (mismo idioma).
+  if (others.length < 3) {
+    others = others.concat([...c.pools.headings].filter(([d]) => d !== c.unit.documentId)
+      .flatMap(([, m]) => [...m.values()]).filter((h) => norm(h) !== norm(own)));
+  }
+  const d = pick(bySimilarity(others, [own]), own, c.rand) ?? pick(others, own, c.rand);
+  if (!d) { yield { discard: 'rúbrica sin suficientes alternativas' }; return; }
+  const ref = shortRef(art);
+  const stem = `En ${c.docTitle}, ¿cuál es la rúbrica (título) del ${ref}?`;
+  yield {
+    ...assemble(c, 'rubrica', stem, own, d, `El ${ref} de ${c.docTitle} lleva por título «${own}».`, `${art}. ${own}`, 2),
+    reference: `${c.docTitle}, ${ref}`,
+  };
+}
+
+/**
+ * Atribución: una frase literal del artículo frente a tres frases literales de otros artículos.
+ * Funciona con cualquier redacción, así que cubre todo el contenido aunque no haya plazos, órganos, etc.
+ */
+function* atribucionQuestions(c: Ctx): Generator<Result> {
+  const own = statementsOf(c.unit);
+  if (!own.length) return;
+  const art = c.unit.article ?? c.unit.label;
+  const correct = own[Math.floor(c.rand() * own.length)];
+  const unitNorm = norm(c.unit.text);
+  const cands = c.pools.statements
+    .filter((x) => x.article !== art || x.documentId !== c.unit.documentId)
+    .filter((x) => !unitNorm.includes(norm(x.s)));
+  // Preferencia: mismo documento y longitud parecida (que no se distinga por el estilo).
+  const score = (x: typeof cands[number]) =>
+    (x.documentId === c.unit.documentId ? 0 : 1) + Math.abs(x.s.length - correct.length) / correct.length;
+  const close = [...cands].sort((a, b) => score(a) - score(b)).slice(0, 12).map((x) => x.s);
+  const d = pick(close, correct, c.rand);
+  if (!d) { yield { discard: 'atribución sin suficientes frases de otros artículos' }; return; }
+  const ref = shortRef(c.unit.label);
+  const stem = `¿Cuál de los siguientes textos corresponde al ${ref} de ${c.docTitle}?`;
+  yield assemble(c, 'atribucion', stem, correct, d,
+    `El ${ref} de ${c.docTitle} dice literalmente: «${correct}». Las demás opciones pertenecen a otros artículos del temario.`,
+    correct, lenDifficulty(correct) === 3 ? 3 : 2);
+}
+
 // ---------------------------------------------------------------- validación
 
 export function validateDraft(d: Pick<Draft, 'stem' | 'options' | 'correctIndex'>): string | null {
@@ -356,15 +441,17 @@ export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pool
   const drafts: Draft[] = [];
   const discarded: Record<string, number> = {};
   const seen = new Set<string>();
+  const rubricas = new Set<string>();
+  const lang = langOf(units.map((u) => u.text).join('\n'));
   const discard = (r: string) => { discarded[r] = (discarded[r] ?? 0) + 1; };
 
   for (const unit of units) {
-    const c: Ctx = { unit, docTitle, pools, rand: rng(`${docTitle}|${unit.label}|${unit.text.length}`) };
+    const c: Ctx = { lang, unit, docTitle, pools, rand: rng(`${docTitle}|${unit.label}|${unit.text.length}`) };
     const sents = sentences(unit.text).map((s) => s.replace(/^\d{1,2}\.\s+/, "")).filter((s) => s.length >= 30 && s.length <= 900);
     const gens = [
       definitionQuestions(c), plazoQuestions(c, sents), competenciaQuestions(c, sents),
       enumerationQuestions(c), quantityQuestions(c, sents), exceptionQuestions(c, sents),
-      obligationQuestions(c, sents),
+      obligationQuestions(c, sents), rubricaQuestions(c, rubricas), atribucionQuestions(c),
     ];
     let count = 0;
     for (const g of gens) {
@@ -374,7 +461,8 @@ export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pool
         if (why) { discard(why); continue; }
         if (seen.has(r.hash)) continue;
         // Los artículos de definiciones generan una pregunta por término.
-        if (r.rule !== 'definicion' && count >= MAX_PER_UNIT) { discard('límite de preguntas por artículo'); continue; }
+        // La rúbrica no cuenta para el límite: asegura al menos una pregunta por artículo.
+        if (r.rule !== 'definicion' && r.rule !== 'rubrica' && !(r.rule === 'atribucion' && count === 0) && count >= MAX_PER_UNIT) { discard('límite de preguntas por artículo'); continue; }
         seen.add(r.hash);
         drafts.push(r);
         count++;
@@ -388,7 +476,7 @@ export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pool
 
 export const RULE_LABEL: Record<QuestionRule, string> = {
   definicion: 'Definición', plazo: 'Plazo', competencia: 'Competencia', obligacion: 'Obligación',
-  excepcion: 'Excepción', enumeracion: 'Enumeración', concepto: 'Cuantía/mayoría', manual: 'Manual',
+  excepcion: 'Excepción', enumeracion: 'Enumeración', concepto: 'Cuantía/mayoría', rubrica: 'Rúbrica', atribucion: 'Texto del artículo', manual: 'Manual',
 };
 
 export { cap };

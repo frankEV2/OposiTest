@@ -101,6 +101,8 @@ export type QuestionRule =
   | 'excepcion'
   | 'enumeracion'
   | 'concepto'
+  | 'rubrica'
+  | 'atribucion'
   | 'manual';
 
 export interface Question {

@@ -135,7 +135,35 @@ describe('explicación cuando no hay preguntas', () => {
     expect(r2.hint).toMatch(/No se han detectado artículos/);
     expect(r1.hint).not.toContain('(s)');
     expect(r3.units).toBe(1);
-    expect(r3.hint).toMatch(/catalán/);
+    expect(r3.hint).not.toMatch(/catalán/);
+  });
+});
+
+describe('catalán, rúbrica y atribución', () => {
+  const ca = (n: number, label: string, heading: string, text: string): Unit =>
+    ({ sectionId: n, documentId: 1, label, heading, text });
+  const UNITS_CA: Unit[] = [
+    ca(1, 'Article 1', 'Objecte de la Llei', 'Aquesta Llei té per objecte regular el procediment administratiu comú de les administracions.'),
+    ca(2, 'Article 2', 'Termini de presentació', 'Les al·legacions es poden presentar en el termini de deu dies hàbils a comptar de la notificació.'),
+    ca(3, 'Article 3', 'Recurs d’alçada', 'El recurs es pot interposar en el termini d’un mes des de la notificació de la resolució expressa.'),
+    ca(4, 'Article 4', 'Esmena', 'L’esmena s’ha de fer en el termini de quinze dies hàbils des del requeriment de l’òrgan.'),
+    ca(5, 'Article 5', 'Revisió', 'El recurs extraordinari s’interposa en el termini de quatre anys des de la data de la resolució.'),
+    ca(6, 'Article 6', 'Obligació de resoldre', 'L’Administració ha de dictar resolució expressa en tots els procediments, llevat que es produeixi el desistiment.'),
+  ];
+  it('genera preguntas de las normas en catalán sin salir del texto', () => {
+    const { drafts } = generate(UNITS_CA, 'Llei 39/2015');
+    const rules = new Set(drafts.map((d) => d.rule));
+    expect(rules.has('plazo')).toBe(true);
+    expect(rules.has('rubrica')).toBe(true);
+    expect(rules.has('atribucion')).toBe(true);
+    // Todos los artículos tienen al menos una pregunta.
+    expect(new Set(drafts.map((d) => d.sectionId)).size).toBe(UNITS_CA.length);
+    const all = norm(UNITS_CA.map((u) => `${u.heading} ${u.text}`).join(' '));
+    for (const d of drafts) {
+      if (d.rule === 'rubrica' || d.rule === 'atribucion') d.options.forEach((o) => expect(all).toContain(norm(o)));
+    }
+    const exc = drafts.find((d) => d.rule === 'excepcion');
+    if (exc) expect(exc.options[exc.correctIndex]).toBe('llevat que');
   });
 });
 
