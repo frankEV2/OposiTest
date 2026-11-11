@@ -44,7 +44,7 @@ function Setup({ onDone }: { onDone: () => void }) {
     <div className="card tutor-setup">
       <h2>Configurar el Tutor IA</h2>
       <p className="sub">El tutor usa Gemini (cuota gratuita) a través de tu intermediario de Cloudflare, que guarda la clave.
-        Pega aquí su dirección y tu código de acceso (se guardan solo en este dispositivo).</p>
+        Escribe tu código de acceso (el ACCESS_TOKEN de Cloudflare). Se guarda solo en este navegador: hay que ponerlo una vez en cada dispositivo.</p>
       <label>Dirección del intermediario<input value={url} onChange={(e) => setUrl(e.target.value)}
         placeholder="https://opositest-tutor.tu-usuario.workers.dev" inputMode="url" /></label>
       <label>Código de acceso<input value={token} onChange={(e) => setToken(e.target.value)} type="password" autoComplete="off" /></label>

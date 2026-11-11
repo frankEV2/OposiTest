@@ -13,7 +13,9 @@ const URL_KEY = 'opositest.tutorUrl';
 const TOKEN_KEY = 'opositest.tutorToken';
 const get = (k: string) => { try { return localStorage.getItem(k) ?? ''; } catch { return ''; } };
 
-export const tutorConfig = () => ({ url: get(URL_KEY), token: get(TOKEN_KEY) });
+/** Dirección del intermediario (pública; lo secreto es la clave de Gemini, que está en Cloudflare). */
+const DEFAULT_URL = 'https://opositest-tutor.francis-1992.workers.dev';
+export const tutorConfig = () => ({ url: get(URL_KEY) || DEFAULT_URL, token: get(TOKEN_KEY) });
 export function saveTutorConfig(url: string, token: string) {
   try { localStorage.setItem(URL_KEY, url.trim()); localStorage.setItem(TOKEN_KEY, token.trim()); } catch { /* sin almacenamiento */ }
 }
