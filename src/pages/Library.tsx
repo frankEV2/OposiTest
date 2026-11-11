@@ -121,6 +121,13 @@ export default function Library() {
           <h1>Biblioteca</h1>
           <p className="sub">Tus normas y temarios (PDF o Markdown). Los .md de la carpeta temario/ se cargan solos. El texto se extrae y se guarda solo en este dispositivo.</p>
         </div>
+        <button onClick={async () => {
+          const { restoreBundled } = await import('../library/bundled');
+          try {
+            const n = await restoreBundled();
+            alert(n ? `Restaurados ${n} documento(s) del temario, con su banco de preguntas.` : 'No falta ningún documento del temario.');
+          } catch (e) { alert((e as Error).message); }
+        }}>Restaurar temario</button>
         <button className="primary" onClick={() => importRef.current?.click()}>Importar PDF o Markdown</button>
         <input ref={importRef} type="file" accept="application/pdf,.pdf,.md,.markdown,.txt,text/markdown,text/plain" multiple hidden
           onChange={(e) => onImport(e.target.files)} />

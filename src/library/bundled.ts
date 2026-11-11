@@ -26,6 +26,24 @@ export function loadBundled(onProgress?: (done: number, total: number, name: str
   return running;
 }
 
+/**
+ * Vuelve a incorporar los documentos del temario integrado que el usuario eliminó
+ * (borra su marca de eliminación y regenera su banco de preguntas). Devuelve cuántos se restauran.
+ */
+export async function restoreBundled(): Promise<number> {
+  const r = await fetch(`${BASE}index.json`, { cache: 'no-cache' });
+  if (!r.ok) throw new Error('No se pudo leer el índice del temario.');
+  const list: BundledEntry[] = await r.json();
+  const have = new Set((await db.documents.toArray()).map((d) => d.sha256));
+  const missing = list.filter((e) => !have.has(e.sha256));
+  await db.deletions.bulkDelete(missing.map((e) => `doc:${e.sha256}`));
+  const bank = ((await db.settings.get('bundledBank'))?.value as string[] | undefined) ?? [];
+  const gone = new Set(missing.map((e) => e.sha256));
+  await db.settings.put({ key: 'bundledBank', value: bank.filter((s) => !gone.has(s)) });
+  await loadBundled();
+  return missing.length;
+}
+
 async function run(onProgress?: (done: number, total: number, name: string) => void): Promise<number> {
   let list: BundledEntry[];
   try {
