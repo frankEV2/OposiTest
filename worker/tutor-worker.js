@@ -42,7 +42,9 @@ const STYLE = `ESTILO DE LOS EXÁMENES OFICIALES (imítalo):
   procedimientos y fases, plazos y cifras, requisitos, excepciones y consecuencias jurídicas.
 - Supuestos prácticos breves cuando el texto lo permita: «Un trabajador de una Autoridad Portuaria… ¿qué derecho ejerce?».
 - Cuatro opciones completas y homogéneas (misma forma y longitud aproximada). Distractores plausibles que cambian un solo
-  elemento del texto (otro órgano, otra cifra o plazo, otro ámbito, negación invertida), nunca absurdos.
+  elemento del texto (otro órgano, otra cifra o plazo, otro ámbito, negación invertida), nunca absurdos ni de temas ajenos:
+  tómalos de otros contenidos del propio temario (otros órganos, plazos, sujetos u obligaciones que aparecen en los
+  fragmentos), de modo que solo quien conozca bien el texto acierte.
 - Se admiten como última opción «Todas las anteriores son correctas», «Ninguna de las anteriores es correcta» o
   «Las respuestas a) y b) son correctas», con moderación (no en todas las preguntas).
 - Varía la posición de la respuesta correcta y la dificultad.

@@ -85,6 +85,10 @@ export function checkAiQuestion(q: AiQ, frags: { text: string; ref: string }[]):
     return { reason: 'la correcta se delata por su longitud' };
   }
   if (/^(la|esta|dicha)\s+(norma|ley)\b/i.test(stem)) return { reason: 'enunciado sin nombrar la norma' };
+  // Distractores que se delatan con palabras absolutas que la correcta no tiene.
+  const ABS = /(?<!\p{L})(exclusivamente|únicamente|unicamente|solamente|nunca|en ningún caso|siempre y en todo caso)(?!\p{L})/iu;
+  const absWrong = opts.filter((o, i) => i !== q.correcta && ABS.test(o)).length;
+  if (absWrong >= 2 && !ABS.test(correct)) return { reason: 'distractores delatados por palabras absolutas' };
   return { stem, options: opts as [string, string, string, string], correct: q.correcta as 0 | 1 | 2 | 3, frag: frags.indexOf(frag), fixed: compound[3] };
 }
 
