@@ -45,7 +45,12 @@ const STYLE = `ESTILO DE LOS EXÁMENES OFICIALES (imítalo):
   elemento del texto (otro órgano, otra cifra o plazo, otro ámbito, negación invertida), nunca absurdos.
 - Se admiten como última opción «Todas las anteriores son correctas», «Ninguna de las anteriores es correcta» o
   «Las respuestas a) y b) son correctas», con moderación (no en todas las preguntas).
-- Varía la posición de la respuesta correcta y la dificultad.`;
+- Varía la posición de la respuesta correcta y la dificultad.
+- La opción correcta NO puede ser la más larga ni la más detallada: las cuatro deben tener longitud y nivel de detalle
+  parecidos. Los distractores no usan palabras que los delaten («exclusivamente», «únicamente», «nunca», «en ningún caso»)
+  salvo que esa palabra sea justo el dato que se pregunta.
+- Nombra la norma en el enunciado cuando haga falta para entenderlo («La Ley Orgánica 10/2022 tiene por objeto:»), nunca
+  «la norma» o «esta ley» a secas.`;
 
 const QUESTION_RULES = `Eres un tribunal de oposiciones que redacta preguntas tipo test nuevas.
 Usa EXCLUSIVAMENTE los FRAGMENTOS DEL TEMARIO. Cada respuesta correcta debe estar respaldada literalmente por un fragmento
@@ -55,7 +60,7 @@ Devuelve SOLO JSON: {"preguntas":[{"enunciado":"…","opciones":["…","…","�
 "explicacion":"por qué es correcta y por qué fallan las demás, citando la referencia","fragmento":número del fragmento,
 "cita":"copia LITERAL (exacta, 15-300 caracteres) del fragmento que justifica la respuesta","tipo":"concepto|competencia|plazo|procedimiento|requisito|derecho|obligacion|practico",
 "orden_fijo":true si alguna opción alude a otras (a y b, todas, ninguna) y entonces debe ser la última}]}
-Reparte las preguntas entre todos los fragmentos, sin repetir la misma idea con otras palabras.`;
+Reparte las preguntas entre TODOS los fragmentos (como máximo 2 por fragmento), sin repetir la misma idea con otras palabras.`;
 
 
 function cors(origin, env) {

@@ -55,6 +55,7 @@ async function callWorker(oposicion: string, frags: Frag[], count: number, avoid
     body: JSON.stringify({ task: 'questions', oposicion, count, avoid, context: frags.map((f) => ({ ref: f.ref, text: f.text })) }),
   });
   if (res.status === 429) return { quota: true as const, items: [] };
+  if (res.status >= 500) return { busy: true as const, quota: false as const, items: [] };
   if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || `Error ${res.status}`);
   const data = await res.json().catch(() => ({ preguntas: [] }));
   return { quota: false as const, items: (Array.isArray(data.preguntas) ? data.preguntas : []) as AiQ[] };
@@ -78,6 +79,12 @@ export function checkAiQuestion(q: AiQ, frags: { text: string; ref: string }[]):
   // La respuesta correcta (si no es compuesta) debe compartir contenido con la cita o el fragmento.
   const correct = opts[q.correcta];
   if (!compound[q.correcta] && similar(words(correct), words(frag.text)) < 0.5) return { reason: 'respuesta no respaldada por el texto' };
+  // Pista involuntaria: la correcta mucho más larga que todas las demás.
+  const others = opts.filter((_, i) => i !== q.correcta && !compound[i]).map((o) => o.length);
+  if (!compound[q.correcta] && others.length && correct.length > 1.5 * Math.max(...others) && correct.length - Math.max(...others) > 25) {
+    return { reason: 'la correcta se delata por su longitud' };
+  }
+  if (/^(la|esta|dicha)\s+(norma|ley)\b/i.test(stem)) return { reason: 'enunciado sin nombrar la norma' };
   return { stem, options: opts as [string, string, string, string], correct: q.correcta as 0 | 1 | 2 | 3, frag: frags.indexOf(frag), fixed: compound[3] };
 }
 
@@ -109,19 +116,26 @@ export async function generateWithAI(
     const docId = batch[0].section.documentId;
     const count = Math.max(2, Math.min(8, Math.round(batch.reduce((a, f) => a + f.text.length, 0) / 700)));
     const avoid = existing.filter((q) => q.documentId === docId && q.rule === 'ia').slice(-30).map((q) => q.stem);
-    let r = await callWorker(oposicion, batch, count, avoid, signal);
-    for (let retry = 0; r.quota && retry < 2 && !signal?.aborted; retry++) {
-      onProgress({ ...p, message: 'Cuota por minuto alcanzada: esperando 60 s…' });
-      await new Promise((ok) => setTimeout(ok, 60_000));
+    let r: Awaited<ReturnType<typeof callWorker>> = await callWorker(oposicion, batch, count, avoid, signal);
+    // Reintentos: cuota por minuto (429) o Gemini saturado (5xx) son pasajeros.
+    for (let retry = 0; (r.quota || 'busy' in r) && retry < 3 && !signal?.aborted; retry++) {
+      const wait = r.quota ? 60_000 : 15_000 * (retry + 1);
+      onProgress({ ...p, message: r.quota ? 'Cuota por minuto alcanzada: esperando 60 s…' : 'Gemini está saturado: reintentando…' });
+      await new Promise((ok) => setTimeout(ok, wait));
       r = await callWorker(oposicion, batch, count, avoid, signal);
     }
     if (r.quota) { p.message = 'Se ha agotado la cuota gratuita de hoy. Pulsa de nuevo mañana: continuará donde lo dejó.'; break; }
+    if ('busy' in r) { p.message = 'Gemini no responde ahora mismo. Vuelve a pulsar más tarde: continuará donde lo dejó.'; break; }
     const now = Date.now();
     const doc = await db.documents.get(docId);
     const fresh: Question[] = [];
+    const perFrag = new Map<number, number>();
     for (const q of r.items) {
       const v = checkAiQuestion(q, batch);
       if ('reason' in v) { reject(v.reason); continue; }
+      // Reparto: como máximo 2 preguntas por artículo en cada tanda.
+      if ((perFrag.get(v.frag) ?? 0) >= 2) { reject('demasiadas del mismo artículo'); continue; }
+      perFrag.set(v.frag, (perFrag.get(v.frag) ?? 0) + 1);
       const h = hash(`${norm(v.stem)}|${norm(v.options[v.correct])}`);
       const w = words(v.stem);
       if (hashes.has(h) || stems.some((s) => s.doc === docId && similar(s.w, w) >= 0.8)) { reject('duplicada'); continue; }
