@@ -130,6 +130,7 @@ export default function Tutor() {
   const active = useRef(false);
   const paused = useRef<null | (() => void)>(null);
   const silenced = useRef(false);
+  const tapped = useRef<string | null>(null);
   const sessionId = useRef(0);
   const everHeard = useRef(false);
   const awake = useRef(new ScreenAwake());
@@ -224,6 +225,15 @@ export default function Tutor() {
         paused.current = null;
         continue;
       }
+      // Respuesta pulsada en pantalla (botón de opción) mientras el tutor hablaba: se usa sin escuchar.
+      if (tapped.current) {
+        const t = tapped.current;
+        tapped.current = null;
+        lastSent = t;
+        setV('thinking');
+        await askAloud(t);
+        continue;
+      }
       setV('listening');
       setPartial('');
       const started = Date.now();
@@ -232,6 +242,7 @@ export default function Tutor() {
       let heard = '';
       try {
         heard = await l.done;
+        if (tapped.current) { listener.current = null; continue; } // se pulsó un botón mientras escuchaba
         failures = 0;
       } catch (e) {
         listener.current = null;
@@ -299,6 +310,27 @@ export default function Tutor() {
   }
   /** Interrumpir: corta la lectura (y la respuesta que aún llega) y pasa a escuchar. */
   function interrupt() { silenced.current = true; speaker.current.cancel(); }
+  /**
+   * Respuesta pulsada (opción de test o respuesta rápida). En chat se envía sin más; en voz se integra en la
+   * conversación: corta lo que esté haciendo (escuchar o hablar) y el tutor contesta en voz alta.
+   */
+  function answerTap(text: string) {
+    if (mode === 'chat') { void send(text); return; }
+    speaker.current.unlock();
+    speaker.current.muted = muted;
+    if (active.current) {
+      tapped.current = text;
+      silenced.current = true;
+      speaker.current.cancel();
+      listener.current?.abort();
+      const r = paused.current;
+      paused.current = null;
+      r?.();
+    } else {
+      void askAloud(text);
+    }
+  }
+
   /** Botón principal del micrófono, según el estado. */
   function micButton() {
     if (vstate === 'speaking' || vstate === 'thinking') interrupt();
@@ -370,8 +402,8 @@ export default function Tutor() {
           <div key={i} className={`bubble ${m.role}${m.error ? ' error' : ''}`}>
             {m.role === 'model'
               ? (m.text
-                ? render(m.text, i === msgs.length - 1 && !busy && mode === 'chat'
-                  ? (letter, option) => void send(letter ? `${letter}) ${option}` : option)
+                ? render(m.text, i === msgs.length - 1 && !busy
+                  ? (letter, option) => answerTap(letter ? `${letter}) ${option}` : option)
                   : undefined)
                 : <p className="muted">Consultando el temario…</p>)
               : <p>{m.text}</p>}
