@@ -1,5 +1,455 @@
 [
  {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 01. Règim jurídic de la prevenció de riscos laborals/Ley 31-1995 PRL.md",
+  "size": 13041,
+  "sha256": "9dad437a092be767c506edcfa1a25c2066045625c05d2fce0d1a728a347c1ddc",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 01. Règim jurídic de la prevenció de riscos laborals"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 02. Organització de la prevenció/Ley 31-1995 PRL.md",
+  "size": 7816,
+  "sha256": "58f45f1ff54d1499786bfe1c535c5b7556ad96d68d1209ec84cf6849784ca51c",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 02. Organització de la prevenció"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 02. Organització de la prevenció/RD 39-1997 Servicios de prevencion.md",
+  "size": 8306,
+  "sha256": "e8886548eabbfed7c6ba818da8e53224b81883d79310fe046d2f6fee554bbdfd",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 02. Organització de la prevenció"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 03. Informació, consulta, participació i representació/Ley 31-1995 PRL.md",
+  "size": 14966,
+  "sha256": "a03168beba7e6249f7c5c265ec932697515e916cd5f6e945e34e39b938ead346",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 03. Informació, consulta, participació i representació"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 04. Comitè de seguretat i salut/Ley 31-1995 PRL.md",
+  "size": 4100,
+  "sha256": "a7bd17d59bb247b6c815f20b1ac22cb4a0c7c7a63a07a068873a990991d8e7ff",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 04. Comitè de seguretat i salut"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 05. El Pla de prevenció de riscos laborals/Ley 31-1995 PRL.md",
+  "size": 4153,
+  "sha256": "5e1def55b637ffea90318f928655a566b25c9da138f51fac3dac383db4b50bf4",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 05. El Pla de prevenció de riscos laborals"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 05. El Pla de prevenció de riscos laborals/RD 39-1997 Servicios de prevencion.md",
+  "size": 5173,
+  "sha256": "d6e820e554525e26d55196cc67a83f1e93ecae569d5bc50d4fdd16a450161424",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 05. El Pla de prevenció de riscos laborals"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 06. Avaluació de riscos i planificació/RD 39-1997 Servicios de prevencion.md",
+  "size": 9079,
+  "sha256": "d63e3e81e9a1ab42fd1e9dcb23baad72ea0f2ce114bd12f0ecd19a44b5542a90",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 06. Avaluació de riscos i planificació"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 07. Seguiment de la planificació de l’activitat preventiva/RD 39-1997 Servicios de prevencion.md",
+  "size": 2042,
+  "sha256": "26b1d851987ba3333a3434a9c4be44cc0f555a717aece41e98240d80986d2fde",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 07. Seguiment de la planificació de l’activitat preventiva"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 08. Formació i informació en matèria de prevenció/Ley 31-1995 PRL.md",
+  "size": 2950,
+  "sha256": "84d49415caa2f1467167599484cb5d0a433b774ec7bafd36f0d31ee3ea1d0166",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 08. Formació i informació en matèria de prevenció"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 09. Accidents de treball. Concepte i marc normatiu/RDL 8-2015 LGSS.md",
+  "size": 3120,
+  "sha256": "1f0dfd9fab8d7c3e3726264bd80570d834c255fa0198b06741a16a1961eee8d8",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 09. Accidents de treball. Concepte i marc normatiu"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 10. Accidents de treball. Tramitació, notificació i investigació/Orden TAS-2926-2002.md",
+  "size": 2691,
+  "sha256": "b06341cd4b607d6b8724c739cd1dd540ef966e6516c579430ec344a5a1f818cd",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 10. Accidents de treball. Tramitació, notificació i investigació"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 11. Vigilància de la salut/Ley 31-1995 PRL.md",
+  "size": 3053,
+  "sha256": "9e49b51cb283fccc56787431e3ef60241c204c4e2941b46ec60fcdcedf25c06d",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 11. Vigilància de la salut"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 11. Vigilància de la salut/RD 39-1997 Servicios de prevencion.md",
+  "size": 6061,
+  "sha256": "3c675c1fa5b0d3f0e59be249fb5be1911b5f54867b861bd113c8112f88c1420c",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 11. Vigilància de la salut"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 12. Protecció dels empleats especialment sensibles/Ley 31-1995 PRL.md",
+  "size": 1793,
+  "sha256": "19b0add80272d89bbae2b4c4b560bbdac93b9978bd2e96273d51b038c72ac9c3",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 12. Protecció dels empleats especialment sensibles"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 13. Protecció de la maternitat i la lactància natural/Ley 31-1995 PRL.md",
+  "size": 4321,
+  "sha256": "b6f961b06258e88000e29763a8497585540f39226edb08e8ff0b050fc8611878",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 13. Protecció de la maternitat i la lactància natural"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 13. Protecció de la maternitat i la lactància natural/RDL 8-2015 LGSS.md",
+  "size": 3448,
+  "sha256": "1d91e9837d86a0af6852feca8a8bafa9cb91d6b56248782902f25c45154fc6cc",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 13. Protecció de la maternitat i la lactància natural"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 14. Documentació preventiva/Ley 31-1995 PRL.md",
+  "size": 2326,
+  "sha256": "04edc515e23eb100710106c7ea6803088f01268169739d3b37d8f7a26c0417e9",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 14. Documentació preventiva"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 15. Prevenció i actuació en incendis/RD 513-2017 RIPCI.md",
+  "size": 3855,
+  "sha256": "4eb737519903fff451d1175cbf24ae1ad50d36df42fa8a944177e5605d08ba02",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 15. Prevenció i actuació en incendis"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 16. Actuacions en cas d’emergència/Ley 31-1995 PRL.md",
+  "size": 1215,
+  "sha256": "c1e759fa4da0c80c4defaebaf306f9454bd25d350389db7c68e9ce4bcc92be0e",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 16. Actuacions en cas d’emergència"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 16. Actuacions en cas d’emergència/RD 393-2007 Autoproteccion.md",
+  "size": 2578,
+  "sha256": "849f69047615eeced0d58b34dbf096314234a7c2fd1e437678cb43299ad5d629",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 16. Actuacions en cas d’emergència"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 17. Coordinació d’activitats empresarials/Ley 31-1995 PRL.md",
+  "size": 2306,
+  "sha256": "bec9dc7a10314ecf915c15e007d847386ef11bb6017d95ed3ba62fdaec897133",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 17. Coordinació d’activitats empresarials"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 17. Coordinació d’activitats empresarials/RD 171-2004 Coordinacion.md",
+  "size": 13638,
+  "sha256": "a649a545a7e44735ecffcb120b769d7be8bbcc52be1341db541d9615edb58dfe",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 17. Coordinació d’activitats empresarials"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 18. La figura del recurs preventiu/Ley 31-1995 PRL.md",
+  "size": 2470,
+  "sha256": "73c0462b8843d4864d16654bf903116ba2c88b78bca34b3dc81cfff452ab67d6",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 18. La figura del recurs preventiu"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 18. La figura del recurs preventiu/RD 39-1997 Servicios de prevencion.md",
+  "size": 8298,
+  "sha256": "a9ea62d70575b63af75ff26b2c7b020b434935a552f24573ccc67461c541ffa5",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 18. La figura del recurs preventiu"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 19. Condicions generals de seguretat i salut en els llocs de treball/RD 486-1997 Lugares de trabajo.md",
+  "size": 10924,
+  "sha256": "a71c3591b6d905471d852635aafd1e10063650e8f57ef418af51e8eee856c161",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 19. Condicions generals de seguretat i salut en els llocs de treball"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 20. Senyalització de seguretat i salut en el treball/RD 485-1997 Senalizacion.md",
+  "size": 6568,
+  "sha256": "b99aa1dc94fdf108852fd2c2c39dae66ffd2c0fa70ca3a98d88286bdc353b481",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 20. Senyalització de seguretat i salut en el treball"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 21. Equips de treball/RD 1215-1997 Equipos de trabajo.md",
+  "size": 8255,
+  "sha256": "2dccc59042f353e277f422d51e99e196283bbcf8932e786127768b76e30fb6b1",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 21. Equips de treball"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 22. Protecció individual i col·lectiva. Equips de protecció individual/Ley 31-1995 PRL.md",
+  "size": 3820,
+  "sha256": "fb813003232ad74d72d2ec6c31a47df50731ee04351efa8db753e9267cd6e7a7",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 22. Protecció individual i col·lectiva. Equips de protecció individual"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 22. Protecció individual i col·lectiva. Equips de protecció individual/RD 773-1997 EPI.md",
+  "size": 9958,
+  "sha256": "f7d918cd8c0ccec4d868a1921b6d7b8eefaaa3531b968877330e571ad6174500",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 22. Protecció individual i col·lectiva. Equips de protecció individual"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 23. Risc elèctric/RD 614-2001 Riesgo electrico.md",
+  "size": 7591,
+  "sha256": "e8543b2fe3d5c053d1a0bd90360def0bcfe1488fbc7b746cac428e0a99d3ddbe",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 23. Risc elèctric"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 24. Higiene industrial/RD 374-2001 Agentes quimicos.md",
+  "size": 6092,
+  "sha256": "85b431abaaccd514b5eec39418e4352e438e0f50487e85a5a48d4260e495be08",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 24. Higiene industrial"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 25. Contaminants químics. Fitxa de dades de seguretat/RD 374-2001 Agentes quimicos.md",
+  "size": 15380,
+  "sha256": "0fc742e0f2ff2c09a414d75012eb10accfdb3cff1d814cbda1a301a37e3b5f78",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 25. Contaminants químics. Fitxa de dades de seguretat"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 26. Exposició al soroll/RD 286-2006 Ruido.md",
+  "size": 6422,
+  "sha256": "c5ec0043919fa38b0ce8599315fd30ac2fd25319dcf9e20dbcb734135f0dcfc3",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 26. Exposició al soroll"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 27. Agents biològics/RD 664-1997 Agentes biologicos.md",
+  "size": 7325,
+  "sha256": "9d259fd37f08c5072643d4df1924801fe5eacba4b838781b172efe107848ddc0",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 27. Agents biològics"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 29. Manipulació manual de càrregues, moviments repetitius i postures forçades/RD 487-1997 Manipulacion de cargas.md",
+  "size": 2797,
+  "sha256": "3ad530a9717c95df1e5d37160373b86cae7affd2b404826d280984aab8e45b52",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 29. Manipulació manual de càrregues, moviments repetitius i postures forçades"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 30. Pantalles de visualització de dades/RD 488-1997 Pantallas.md",
+  "size": 11439,
+  "sha256": "26ff801645e0c65564a2ac990755cdcf45f7d77551a52ff06355e6c0248aa278",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 30. Pantalles de visualització de dades"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari específic/Tema 32. Violència laboral i assetjament/LO 3-2007 Igualdad.md",
+  "size": 1213,
+  "sha256": "ec9d69ed362b4bf10dcbc47b6becaa2a3b3234a72e6b66fa39213cb9dd1e059d",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari específic",
+   "tema": "Tema 32. Violència laboral i assetjament"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari general/Tema 01. El terme municipal. La població. L'empadronament/Apunts.md",
+  "size": 1853,
+  "sha256": "7ccecd2815a2663977e3712be310f033c8d38f31bbcdb593e2086accf65bd2d7",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari general",
+   "tema": "Tema 01. El terme municipal. La població. L'empadronament"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari general/Tema 02. El procediment administratiu general. Principis del procediment administratiu. F/Apunts.md",
+  "size": 2221,
+  "sha256": "fb656d62cc51e0fb3f982a2b49df90e2cbc60901c4a1605928909b1cfc03dc1d",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari general",
+   "tema": "Tema 02. El procediment administratiu general. Principis del procediment administratiu. F"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari general/Tema 03. Drets i deures de la ciutadania davant l'Administració/Apunts.md",
+  "size": 1675,
+  "sha256": "22816cd54ccb612f2fcc8be965481df97ccc82d6f1fb49c43aa79340ea515e97",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari general",
+   "tema": "Tema 03. Drets i deures de la ciutadania davant l'Administració"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari general/Tema 04. Ordenances i reglaments de les entitats locals. Classes/Apunts.md",
+  "size": 1841,
+  "sha256": "75fe1e9dabd507371e8520f2d87b0c2a4c6d07d47da0b21c1f8401041feccfab",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari general",
+   "tema": "Tema 04. Ordenances i reglaments de les entitats locals. Classes"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari general/Tema 05. Classes de béns de les entitats locals/Apunts.md",
+  "size": 690,
+  "sha256": "67d247a595c81dbb742313392db5d959f20a7a4062ce45ce30220876e30aa26d",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari general",
+   "tema": "Tema 05. Classes de béns de les entitats locals"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari general/Tema 06. El pressupost general de les entitats locals. Concepte i contingut. La gestió de/Apunts.md",
+  "size": 2225,
+  "sha256": "6d963dfb0841e05884b9649d933068173a600782f285667938db34e02cf2f114",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari general",
+   "tema": "Tema 06. El pressupost general de les entitats locals. Concepte i contingut. La gestió de"
+  }
+ },
+ {
+  "file": "Ayuntamiento de Tarragona/Temari general/Tema 07. La igualtat d'oportunitats. Principis d'igualtat/Apunts.md",
+  "size": 1804,
+  "sha256": "c11f7433114babd78f63472aa4e71ad8323d8f51df8ae2c21ba8559b93542b06",
+  "tax": {
+   "opo": "Ayuntamiento de Tarragona",
+   "mat": "Temari general",
+   "tema": "Tema 07. La igualtat d'oportunitats. Principis d'igualtat"
+  }
+ },
+ {
   "file": "Puertos del Estado/Temario oficial/01 Constitucion Espanola.md",
   "size": 48803,
   "sha256": "45864f7b79ffecab5ed17a31660a0f7c6c7e50a4a02ceda55baf6932d54226cc",

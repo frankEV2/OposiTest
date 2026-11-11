@@ -1,0 +1,556 @@
+{
+ "out": "public/temario/Ayuntamiento de Tarragona/Temari específic",
+ "inventario": "inventario-prl.md",
+ "normas": [
+  {
+   "tema": "Tema 01. Règim jurídic de la prevenció de riscos laborals",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "1-4,14,29"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 02. Organització de la prevenció",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "30,31"
+      }
+     ]
+    },
+    {
+     "id": "BOE-A-1997-1853",
+     "file": "RD 39-1997 Servicios de prevencion.md",
+     "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención",
+     "select": [
+      {
+       "arts": "10-15"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 03. Informació, consulta, participació i representació",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "33-37"
+      }
+     ]
+    }
+   ],
+   "nota": "Registre de delegats de prevenció: normativa autonòmica (no BOE)"
+  },
+  {
+   "tema": "Tema 04. Comitè de seguretat i salut",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "38,39"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 05. El Pla de prevenció de riscos laborals",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "16"
+      }
+     ]
+    },
+    {
+     "id": "BOE-A-1997-1853",
+     "file": "RD 39-1997 Servicios de prevencion.md",
+     "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención",
+     "select": [
+      {
+       "arts": "1,2"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 06. Avaluació de riscos i planificació",
+   "parts": [
+    {
+     "id": "BOE-A-1997-1853",
+     "file": "RD 39-1997 Servicios de prevencion.md",
+     "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención",
+     "select": [
+      {
+       "arts": "3-7"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 07. Seguiment de la planificació de l’activitat preventiva",
+   "parts": [
+    {
+     "id": "BOE-A-1997-1853",
+     "file": "RD 39-1997 Servicios de prevencion.md",
+     "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención",
+     "select": [
+      {
+       "arts": "8,9"
+      }
+     ]
+    }
+   ],
+   "nota": "Inspeccions de seguretat i controls d’activitats: sense regulació específica"
+  },
+  {
+   "tema": "Tema 08. Formació i informació en matèria de prevenció",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "18,19"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 09. Accidents de treball. Concepte i marc normatiu",
+   "parts": [
+    {
+     "id": "BOE-A-2015-11724",
+     "file": "RDL 8-2015 LGSS.md",
+     "title": "Real Decreto Legislativo 8/2015, de 30 de octubre, texto refundido de la Ley General de la Seguridad Social",
+     "select": [
+      {
+       "arts": "156"
+      }
+     ]
+    }
+   ],
+   "nota": "Procediment d’assistència sanitària: protocol intern (no BOE)"
+  },
+  {
+   "tema": "Tema 10. Accidents de treball. Tramitació, notificació i investigació",
+   "parts": [
+    {
+     "id": "BOE-A-2002-22650",
+     "file": "Orden TAS-2926-2002.md",
+     "title": "Orden TAS/2926/2002, de 19 de noviembre, nuevos modelos para la notificación de los accidentes de trabajo",
+     "select": [
+      {
+       "arts": "1-4"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 11. Vigilància de la salut",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "22"
+      }
+     ]
+    },
+    {
+     "id": "BOE-A-1997-1853",
+     "file": "RD 39-1997 Servicios de prevencion.md",
+     "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención",
+     "select": [
+      {
+       "arts": "37"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 12. Protecció dels empleats especialment sensibles",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "25"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 13. Protecció de la maternitat i la lactància natural",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "26"
+      }
+     ]
+    },
+    {
+     "id": "BOE-A-2015-11724",
+     "file": "RDL 8-2015 LGSS.md",
+     "title": "Real Decreto Legislativo 8/2015, de 30 de octubre, texto refundido de la Ley General de la Seguridad Social",
+     "select": [
+      {
+       "arts": "186-189"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 14. Documentació preventiva",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "23"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 15. Prevenció i actuació en incendis",
+   "parts": [
+    {
+     "id": "BOE-A-2017-6606",
+     "file": "RD 513-2017 RIPCI.md",
+     "title": "Real Decreto 513/2017, de 22 de mayo, Reglamento de instalaciones de protección contra incendios",
+     "select": [
+      {
+       "arts": "1-3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 16. Actuacions en cas d’emergència",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "20"
+      }
+     ]
+    },
+    {
+     "id": "BOE-A-2007-6237",
+     "file": "RD 393-2007 Autoproteccion.md",
+     "title": "Real Decreto 393/2007, de 23 de marzo, Norma Básica de Autoprotección",
+     "select": [
+      {
+       "arts": "1-3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 17. Coordinació d’activitats empresarials",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "24"
+      }
+     ]
+    },
+    {
+     "id": "BOE-A-2004-1848",
+     "file": "RD 171-2004 Coordinacion.md",
+     "title": "Real Decreto 171/2004, de 30 de enero, coordinación de actividades empresariales",
+     "select": [
+      {
+       "arts": "1-12"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 18. La figura del recurs preventiu",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "32 bis"
+      }
+     ]
+    },
+    {
+     "id": "BOE-A-1997-1853",
+     "file": "RD 39-1997 Servicios de prevencion.md",
+     "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención",
+     "select": [
+      {
+       "arts": "22 bis"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 19. Condicions generals de seguretat i salut en els llocs de treball",
+   "parts": [
+    {
+     "id": "BOE-A-1997-8669",
+     "file": "RD 486-1997 Lugares de trabajo.md",
+     "title": "Real Decreto 486/1997, de 14 de abril, disposiciones mínimas de seguridad y salud en los lugares de trabajo",
+     "select": [
+      {
+       "arts": "1,2",
+       "anexos": "I,II,III,IV,V,VI"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 20. Senyalització de seguretat i salut en el treball",
+   "parts": [
+    {
+     "id": "BOE-A-1997-8668",
+     "file": "RD 485-1997 Senalizacion.md",
+     "title": "Real Decreto 485/1997, de 14 de abril, señalización de seguridad y salud en el trabajo",
+     "select": [
+      {
+       "arts": "1-6"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 21. Equips de treball",
+   "parts": [
+    {
+     "id": "BOE-A-1997-17824",
+     "file": "RD 1215-1997 Equipos de trabajo.md",
+     "title": "Real Decreto 1215/1997, de 18 de julio, utilización de los equipos de trabajo",
+     "select": [
+      {
+       "arts": "1-5"
+      }
+     ]
+    }
+   ],
+   "nota": "Eines manuals: sense regulació específica"
+  },
+  {
+   "tema": "Tema 22. Protecció individual i col·lectiva. Equips de protecció individual",
+   "parts": [
+    {
+     "id": "BOE-A-1995-24292",
+     "file": "Ley 31-1995 PRL.md",
+     "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+     "select": [
+      {
+       "arts": "15,17"
+      }
+     ]
+    },
+    {
+     "id": "BOE-A-1997-12735",
+     "file": "RD 773-1997 EPI.md",
+     "title": "Real Decreto 773/1997, de 30 de mayo, utilización de equipos de protección individual",
+     "select": [
+      {
+       "arts": "1-9"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 23. Risc elèctric",
+   "parts": [
+    {
+     "id": "BOE-A-2001-11881",
+     "file": "RD 614-2001 Riesgo electrico.md",
+     "title": "Real Decreto 614/2001, de 8 de junio, protección frente al riesgo eléctrico",
+     "select": [
+      {
+       "arts": "1-4"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 24. Higiene industrial",
+   "parts": [
+    {
+     "id": "BOE-A-2001-8436",
+     "file": "RD 374-2001 Agentes quimicos.md",
+     "title": "Real Decreto 374/2001, de 6 de abril, riesgos relacionados con los agentes químicos",
+     "select": [
+      {
+       "arts": "1,2"
+      }
+     ]
+    }
+   ],
+   "nota": "Concepte i classificació de riscos higiènics: doctrina tècnica, no normativa"
+  },
+  {
+   "tema": "Tema 25. Contaminants químics. Fitxa de dades de seguretat",
+   "parts": [
+    {
+     "id": "BOE-A-2001-8436",
+     "file": "RD 374-2001 Agentes quimicos.md",
+     "title": "Real Decreto 374/2001, de 6 de abril, riesgos relacionados con los agentes químicos",
+     "select": [
+      {
+       "arts": "3-5,9"
+      }
+     ]
+    }
+   ],
+   "nota": "Fitxa de dades de seguretat: Reglament (CE) 1907/2006 REACH (no BOE)"
+  },
+  {
+   "tema": "Tema 26. Exposició al soroll",
+   "parts": [
+    {
+     "id": "BOE-A-2006-4414",
+     "file": "RD 286-2006 Ruido.md",
+     "title": "Real Decreto 286/2006, de 10 de marzo, exposición al ruido",
+     "select": [
+      {
+       "arts": "1-5"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 27. Agents biològics",
+   "parts": [
+    {
+     "id": "BOE-A-1997-11144",
+     "file": "RD 664-1997 Agentes biologicos.md",
+     "title": "Real Decreto 664/1997, de 12 de mayo, exposición a agentes biológicos",
+     "select": [
+      {
+       "arts": "1-4"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 28. Ergonomia",
+   "parts": [],
+   "nota": "Conceptes i objectius: doctrina tècnica, no normativa"
+  },
+  {
+   "tema": "Tema 29. Manipulació manual de càrregues, moviments repetitius i postures forçades",
+   "parts": [
+    {
+     "id": "BOE-A-1997-8670",
+     "file": "RD 487-1997 Manipulacion de cargas.md",
+     "title": "Real Decreto 487/1997, de 14 de abril, manipulación manual de cargas",
+     "select": [
+      {
+       "arts": "1-4"
+      }
+     ]
+    }
+   ],
+   "nota": "Moviments repetitius i postures forçades: doctrina tècnica"
+  },
+  {
+   "tema": "Tema 30. Pantalles de visualització de dades",
+   "parts": [
+    {
+     "id": "BOE-A-1997-8671",
+     "file": "RD 488-1997 Pantallas.md",
+     "title": "Real Decreto 488/1997, de 14 de abril, equipos con pantallas de visualización",
+     "select": [
+      {
+       "arts": "1-4",
+       "anexos": "unico"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "tema": "Tema 31. Factors de risc psicosocial",
+   "parts": [],
+   "nota": "Concepte: doctrina tècnica, no normativa"
+  },
+  {
+   "tema": "Tema 32. Violència laboral i assetjament",
+   "parts": [
+    {
+     "id": "BOE-A-2007-6115",
+     "file": "LO 3-2007 Igualdad.md",
+     "title": "Ley Orgánica 3/2007, de 22 de marzo, para la igualdad efectiva de mujeres y hombres",
+     "select": [
+      {
+       "arts": "7"
+      }
+     ]
+    }
+   ],
+   "nota": "Assetjament laboral i discriminatori: protocols (no BOE); també als apunts del temari general"
+  }
+ ]
+}

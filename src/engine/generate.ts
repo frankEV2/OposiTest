@@ -68,7 +68,7 @@ export function langOf(text: string): 'ca' | 'es' {
   const t = text.slice(0, 20000);
   return (t.match(CATALAN_RE)?.length ?? 0) > (t.match(SPANISH_RE)?.length ?? 0) ? 'ca' : 'es';
 }
-const ENUM_ITEM = /^([a-zñ]|\d{1,2}\.ª|\d{1,2}º)\)?\s+(.{4,})$/u;
+const ENUM_ITEM = /^([a-zñ]|\d{1,2}\.ª|\d{1,2}º|[-•])\)?\s+(.{4,})$/u;
 
 // ---------------------------------------------------------------- corpus
 
@@ -99,7 +99,7 @@ const COMMON_DUR: Record<string, string[]> = {
 };
 
 /** Sube cuando cambia el estilo de las preguntas: el temario integrado se regenera. */
-export const ENGINE_VERSION = 2;
+export const ENGINE_VERSION = 3;
 
 /** Frases aptas como afirmación completa: ni muy cortas ni muy largas y sin remisiones vacías. */
 function statementsOf(u: Unit): string[] {
@@ -113,7 +113,7 @@ const TIME_UNITS: [RegExp, string][] = [[/dia|dies/, 'dia'], [/mes/, 'mes'], [/a
 const timeUnit = (d: string) => TIME_UNITS.find(([re]) => re.test(norm(d)))?.[1] ?? 'otro';
 
 // Quita la puntuación final, el "y"/"o" que enlaza el último elemento y las comillas de cierre de textos citados.
-const cleanItem = (s: string) => s.replace(/[»"”]+\s*$/u, '').replace(/[;,.]?\s*(?:y|o|i)?\s*$/u, '').replace(/[;.]$/, '').trim();
+const cleanItem = (s: string) => s.replace(/[»"”]+\s*$/u, '').replace(/[;,.]?(?:\s+(?:y|o|i))?\s*$/u, '').replace(/[;.]$/, '').trim();
 
 /** Nombre corto de la norma para los enunciados: "Ley Orgánica 1/2004, de 28 de diciembre, de…" → "Ley Orgánica 1/2004". */
 export function shortDocTitle(title: string): string {
@@ -221,7 +221,11 @@ const refOf = (c: Ctx) => `${c.docTitle}, ${shortRef(c.unit.label)}`;
 export const refWithArticle = (label: string) =>
   /^disposici/i.test(label) ? `la ${label.charAt(0).toLowerCase()}${label.slice(1)}`
     : /^(anexo|pre[áa]mbulo)/i.test(label) ? `el ${label}` : `el ${shortRef(label)}`;
-const intro = (c: Ctx) => `Según ${refWithArticle(c.unit.label)} de ${c.docTitle}`;
+/** Unidad de una norma (artículo, disposición, anexo) o apartado de unos apuntes/temario. */
+const isLegal = (label: string) => /^(Art[ií]culo|Article|Disposici|Anexo|ANEXO|Pre[áa]mbulo|Annex)/u.test(label);
+const intro = (c: Ctx) => isLegal(c.unit.label)
+  ? `Según ${refWithArticle(c.unit.label)} de ${c.docTitle}`
+  : `En relación con «${c.unit.label}» (${c.docTitle})`;
 
 /** Elige `n` distractores distintos entre sí y de la respuesta (comparación normalizada). */
 function pick(cands: Iterable<string>, correct: string, rand: () => number, n = 3, exclude: string[] = []): string[] | null {
@@ -334,7 +338,7 @@ function* afirmacionQuestions(c: Ctx): Generator<Result> {
   const sts = shuffle(statementsOf(c.unit), c.rand);
   if (!sts.length) return;
   const ref = refWithArticle(c.unit.label);
-  const head = `Según ${ref} de ${c.docTitle}, señale la afirmación`;
+  const head = `${intro(c)}, señale la afirmación`;
   const withMut = sts.map((s) => ({ s, m: mutations(s, c) })).filter((x) => x.m.length);
   if (!withMut.length) return;
   const negative = sts.length >= 4 && c.rand() < 0.5;
@@ -512,7 +516,7 @@ function* atribucionQuestions(c: Ctx): Generator<Result> {
   const close = [...cands].sort((a, b) => score(a) - score(b)).slice(0, 12).map((x) => x.s);
   const d = pick(close, correct, c.rand);
   if (!d) { yield { discard: 'atribución sin suficientes frases de otros artículos' }; return; }
-  const ref = shortRef(c.unit.label);
+  const ref = isLegal(c.unit.label) ? shortRef(c.unit.label) : `apartado «${c.unit.label}»`;
   const stem = `¿Cuál de los siguientes textos corresponde al ${ref} de ${c.docTitle}?`;
   yield assemble(c, 'atribucion', stem, correct, d,
     `El ${ref} de ${c.docTitle} dice literalmente: «${correct}». Las demás opciones pertenecen a otros artículos del temario.`,

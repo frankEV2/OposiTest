@@ -10,7 +10,9 @@ import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..', '..');
-const spec = JSON.parse(readFileSync(join(here, 'temario.json'), 'utf8'));
+// Fichero de temario: el indicado como argumento (p. ej. scripts/boe/temario-prl.json) o temario.json.
+const specPath = process.argv.slice(2).find((a) => !a.startsWith('--')) ?? join(here, 'temario.json');
+const spec = JSON.parse(readFileSync(specPath, 'utf8'));
 const cacheDir = join(here, 'cache');
 const refresh = process.argv.includes('--refresh');
 mkdirSync(cacheDir, { recursive: true });
@@ -65,6 +67,15 @@ function elements(ps) {
       const prev = out[out.length - 1];
       if (p.cls.endsWith('_tit') && prev?.kind === 'head' && prev.level === LEVEL[base] && !prev.title) prev.title = p.text;
       else out.push({ kind: 'head', level: LEVEL[base], label: p.text, title: '' });
+    } else if (p.cls === 'anexo_num') {
+      // Los anexos se tratan como artículos ("anexo ii"); un anexo partido en varios bloques se une.
+      const num = `anexo ${fold(p.text).replace(/^ANEXO\s*/, '').toLowerCase() || 'unico'}`;
+      const prev = out.findLast((e) => e.kind === 'art');
+      if (prev?.num === num) continue;
+      out.push({ kind: 'art', num, label: p.text, body: [] });
+    } else if (p.cls === 'anexo_tit') {
+      const last = out[out.length - 1];
+      if (last?.kind === 'art' && last.num.startsWith('anexo') && !last.body.length && !last.label.includes('.')) last.label += `. ${p.text}`;
     } else if (p.cls === 'articulo') {
       const m = fold(p.text).match(/^ARTICULO\s+(\d+(?:\s+(?:BIS|TER|QUATER))?|[A-Z]+)/);
       const num = m ? (ORD[m[1]] ? String(ORD[m[1]]) : m[1].toLowerCase()) : '?';
@@ -104,8 +115,14 @@ function parseArts(s) {
   });
 }
 
+// Cada entrada es una norma (temario por artículos) o un epígrafe con varias normas (`parts`),
+// cada una en su propio fichero dentro de la carpeta del epígrafe. `nota` = epígrafe sin norma en el BOE.
+const jobs = spec.normas.flatMap((e) => e.parts
+  ? [...e.parts.map((p) => ({ ...p, file: `${e.tema}/${p.file}`, tema: e.tema })), ...(e.nota ? [{ tema: e.tema, nota: e.nota, select: [] }] : [])]
+  : [e]);
 const inventory = [];
-for (const n of spec.normas) {
+for (const n of jobs) {
+  if (!n.id) { inventory.push({ n: { ...n, title: n.tema, id: '—', file: '—' }, rows: [{ sel: 'sin norma en el BOE', found: [], missing: [], nota: n.nota }], total: 0 }); continue; }
   const xml = await fetchXml(n);
   const els = elements(paragraphs(xml, n.diario));
   const keep = new Set();
@@ -118,14 +135,14 @@ for (const n of spec.normas) {
       for (let k = r[0]; k < r[1]; k++) { keep.add(k); if (els[k].kind === 'art') found.push(els[k].num); }
       rows.push({ sel: sel.path.join(' › '), found, missing: found.length ? [] : ['(sin artículos)'] });
     } else {
-      const want = parseArts(sel.arts);
+      const want = [...(sel.arts ? parseArts(sel.arts) : []), ...(sel.anexos ?? '').split(',').filter(Boolean).map((x) => `anexo ${x.trim().toLowerCase()}`)];
       const found = [], missing = [];
       for (const w of want) {
         const k = els.findIndex((e) => e.kind === 'art' && e.num === w);
         if (k < 0) { missing.push(w); continue; }
         found.push(w); keep.add(k);
       }
-      rows.push({ sel: `arts. ${sel.arts}`, found, missing });
+      rows.push({ sel: [sel.arts && `arts. ${sel.arts}`, sel.anexos && `anexos ${sel.anexos}`].filter(Boolean).join(' + '), found, missing });
     }
   }
   // Cabeceras de contexto (título/capítulo) de cada artículo incluido, para conservar la estructura.
@@ -135,7 +152,7 @@ for (const n of spec.normas) {
     if (e.kind === 'head') { while (stack.length && els[stack[stack.length - 1]].level >= e.level) stack.pop(); stack.push(k); }
     else if (keep.has(k)) stack.forEach((h) => ctx.add(h));
   });
-  const lines = [`# ${n.title}`, '', `Fuente: BOE ${n.id} (${n.diario ? 'Diario Oficial' : 'texto consolidado'}). Solo los artículos del temario.`, ''];
+  const lines = [`# ${n.title}${n.tema ? ` (${n.tema.match(/^Tema \d+/)[0]})` : ''}`, '', `Fuente: BOE ${n.id} (${n.diario ? 'Diario Oficial' : 'texto consolidado'}). Solo los artículos del temario.`, ''];
   els.forEach((e, k) => {
     if (!keep.has(k) && !ctx.has(k)) return;
     if (e.kind === 'head') lines.push(e.label, ...(e.title ? [e.title] : []), '');
@@ -154,18 +171,19 @@ for (const n of spec.normas) {
 let md = '# Inventario del temario\n\n_Generado por `scripts/boe/build.mjs`. Texto literal del BOE; nada resumido._\n\n';
 let pending = 0;
 for (const { n, rows, total } of inventory) {
-  md += `## ${n.title}\n\n${n.id} · ${total} artículos · \`${n.file}\`\n\n| Apartado del temario | Artículos encontrados | Pendientes |\n|---|---|---|\n`;
+  md += `## ${n.tema ? `${n.tema} — ` : ''}${n.title}\n\n${n.id} · ${total} artículos · \`${n.file}\`\n\n| Apartado del temario | Artículos encontrados | Pendientes |\n|---|---|---|\n`;
   for (const r of rows) {
     pending += r.missing.length;
-    md += `| ${r.sel} | ${r.found.join(', ') || '—'} | ${r.missing.join(', ') || '✔'} |\n`;
+    md += `| ${r.sel} | ${r.found.join(', ') || '—'} | ${r.nota ? `⚠ ${r.nota}` : r.missing.join(', ') || '✔'} |\n`;
   }
   md += '\n';
 }
 md += pending ? `**Pendientes: ${pending}.**\n` : '**Completo: no falta ningún artículo.**\n';
-writeFileSync(join(here, 'inventario.md'), md);
+writeFileSync(join(here, spec.inventario ?? 'inventario.md'), md);
 for (const { n, rows, total } of inventory) {
   const miss = rows.flatMap((r) => r.missing.map((m) => `${r.sel}: ${m}`));
-  console.log(`${miss.length ? '✗' : '✔'} ${n.file.padEnd(48)} ${String(total).padStart(3)} arts${miss.length ? '  FALTA → ' + miss.join('; ') : ''}`);
+  if (rows[0]?.nota) { console.log(`⚠ ${n.title.slice(0, 60).padEnd(60)} sin norma: ${rows[0].nota}`); continue; }
+  console.log(`${miss.length ? '✗' : '✔'} ${n.file.slice(-60).padEnd(60)} ${String(total).padStart(3)} arts${miss.length ? '  FALTA → ' + miss.join('; ') : ''}`);
 }
 console.log(pending ? `Pendientes: ${pending}` : 'Completo: no falta ningún artículo.');
 process.exitCode = pending ? 1 : 0;

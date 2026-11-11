@@ -8,7 +8,7 @@ export function unitsFromSections(sections: Section[]): Unit[] {
   const hasChildren = new Set(sections.filter((s) => s.kind === 'apartado').map((s) => s.parentId));
   const byId = new Map(sections.map((s) => [s.id, s]));
   return sections
-    .filter((s) => (s.kind === 'apartado') || ((s.kind === 'articulo' || s.kind === 'disposicion') && !hasChildren.has(s.id)))
+    .filter((s) => (s.kind === 'apartado') || ((s.kind === 'articulo' || s.kind === 'disposicion' || s.kind === 'anexo') && !hasChildren.has(s.id)))
     .filter((s) => s.text.trim().length > 0)
     .map((s) => {
       const parent = s.kind === 'apartado' ? byId.get(s.parentId) : undefined;

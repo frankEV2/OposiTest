@@ -193,6 +193,17 @@ test-fixtures/ PDF de prueba generados (ley-prueba, norma-prueba, escaneado) —
   original `opositest` (datos conservados); Ayuntamiento de Tarragona (PRL) = `opositest-ayto-tarragona-prl`, temario en
   `public/temario/Ayuntamiento de Tarragona/` (vacío). «Cambiar oposición» en el menú lateral. Nueva oposición = una entrada.
 
+- Ayuntamiento de Tarragona PRL (2026-11-11): temario por materias, no por artículos.
+  - General: apuntes propios (PDF → texto) → `node scripts/apunts-to-md.mjs <txt> "public/temario/Ayuntamiento de Tarragona/Temari general"`
+    (un .md por tema; subapartados = unidades de pregunta; viñetas = enumeraciones).
+  - Específic: `scripts/boe/prl-gen.mjs` (mapa epígrafe → normas y preceptos que lo fundamentan) → `temario-prl.json` →
+    `node scripts/boe/build.mjs scripts/boe/temario-prl.json` → una carpeta por epígrafe con un .md por norma;
+    `inventario-prl.md` marca con ⚠ lo que no tiene norma en el BOE (ergonomía, psicosocial, protocolos, REACH…).
+    `build.mjs` admite `parts`, anexos (`anexos: "I,II"`/`"unico"`) y fichero de temario como argumento.
+  - Clasificación automática por carpetas: Oposición / Temari general|específic / Tema NN.
+  - Motor: enunciados «En relación con «apartado» (Tema N…)» para apuntes; anexos como unidades; listas con viñetas.
+    ENGINE_VERSION 3 (corrige cleanItem que cortaba la última letra si era y/o/i).
+
 ## Limitaciones conocidas
 - Reglas de preguntas solo en castellano (los textos en catalán se estructuran pero no generan preguntas).
 - Sin OCR: los PDF escaneados se detectan pero no se procesan (OCR local, p. ej. Tesseract.js, sería pesado ~10 MB+; valorar más adelante).
