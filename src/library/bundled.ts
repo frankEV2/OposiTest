@@ -1,3 +1,4 @@
+import { activeWorkspace } from '../workspaces';
 import { db } from '../db/db';
 import { ensureTax, resolveCls } from '../sync/snapshot';
 import { deleteDocument, importPdf, replacePdf } from './service';
@@ -33,7 +34,7 @@ export function loadBundled(onProgress?: (done: number, total: number, name: str
 export async function restoreBundled(): Promise<number> {
   const r = await fetch(`${BASE}index.json`, { cache: 'no-cache' });
   if (!r.ok) throw new Error('No se pudo leer el índice del temario.');
-  const list: BundledEntry[] = await r.json();
+  const list = ((await r.json()) as BundledEntry[]).filter((e) => e.file.startsWith(activeWorkspace().temario));
   const have = new Set((await db.documents.toArray()).map((d) => d.sha256));
   const missing = list.filter((e) => !have.has(e.sha256));
   await db.deletions.bulkDelete(missing.map((e) => `doc:${e.sha256}`));
@@ -49,7 +50,8 @@ async function run(onProgress?: (done: number, total: number, name: string) => v
   try {
     const r = await fetch(`${BASE}index.json`, { cache: 'no-cache' });
     if (!r.ok) return 0;
-    list = await r.json();
+    // Solo el temario de la oposición abierta.
+    list = ((await r.json()) as BundledEntry[]).filter((e) => e.file.startsWith(activeWorkspace().temario));
   } catch {
     return 0;
   }

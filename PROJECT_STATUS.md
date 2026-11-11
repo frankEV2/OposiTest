@@ -187,6 +187,12 @@ test-fixtures/ PDF de prueba generados (ley-prueba, norma-prueba, escaneado) —
   (sale con código 1 si falta algo). Sustituye a los .md catalanes de OCR. Al abrir la app, el banco se genera solo
   para cada documento integrado nuevo o actualizado (ajuste `bundledBank` = SHA ya procesados): 913 preguntas, 270/272 artículos.
 
+- Oposiciones (2026-11-11): `src/workspaces.ts` define cada oposición (organismo, nombre, BD IndexedDB propia,
+  carpeta de temario, fichero de sync). `main.tsx` muestra `WorkspacePicker` si no hay oposición elegida (localStorage
+  `opositest.workspace`); la app se carga después con la BD de esa oposición (`db.ts`). Puerto de Tarragona = BD
+  original `opositest` (datos conservados); Ayuntamiento de Tarragona (PRL) = `opositest-ayto-tarragona-prl`, temario en
+  `public/temario/Ayuntamiento de Tarragona/` (vacío). «Cambiar oposición» en el menú lateral. Nueva oposición = una entrada.
+
 ## Limitaciones conocidas
 - Reglas de preguntas solo en castellano (los textos en catalán se estructuran pero no generan preguntas).
 - Sin OCR: los PDF escaneados se detectan pero no se procesan (OCR local, p. ej. Tesseract.js, sería pesado ~10 MB+; valorar más adelante).

@@ -1,9 +1,10 @@
+import { activeWorkspace } from '../workspaces';
 import { db } from '../db/db';
 import { clearSearchCache } from '../library/search';
 import type { RemoteStore } from './remote';
 import { applySnapshot, buildSnapshot, type ApplyDeps, type ApplyReport } from './snapshot';
 
-export const STATE_FILE = 'opositest-state.json';
+export const STATE_FILE = activeWorkspace().syncFile;
 export const pdfName = (sha256: string) => `pdf-${sha256}.pdf`;
 
 export interface SyncResult extends ApplyReport {

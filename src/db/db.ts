@@ -1,3 +1,4 @@
+import { activeWorkspace } from '../workspaces';
 import Dexie, { type EntityTable, type Table } from 'dexie';
 import type {
   Attempt,
@@ -57,4 +58,5 @@ export class OposiDB extends Dexie {
   }
 }
 
-export const db = new OposiDB();
+// Una base de datos por oposición (ver src/workspaces.ts).
+export const db = new OposiDB(activeWorkspace().dbName);
