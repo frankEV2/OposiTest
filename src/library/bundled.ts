@@ -98,7 +98,7 @@ async function run(onProgress?: (done: number, total: number, name: string) => v
     // (las validadas, editadas, manuales y rechazadas se conservan; el historial de exámenes también).
     const ids = (await db.documents.toArray()).filter((d) => files.has(d.fileName)).map((d) => d.id!);
     const old = (await db.questions.where('documentId').anyOf(ids).toArray())
-      .filter((q) => q.status === 'pending' && q.rule !== 'manual').map((q) => q.id!);
+      .filter((q) => (q.status === 'pending' && q.rule !== 'manual' && q.rule !== 'ia') || q.rule === 'rubrica' || q.rule === 'atribucion').map((q) => q.id!);
     await db.reviews.where('questionId').anyOf(old).delete();
     await db.questions.bulkDelete(old);
     bank = new Set();

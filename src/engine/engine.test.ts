@@ -156,13 +156,10 @@ describe('catalán, rúbrica y atribución', () => {
     const { drafts } = generate(UNITS_CA, 'Llei 39/2015');
     const rules = new Set(drafts.map((d) => d.rule));
     expect(rules.has('plazo')).toBe(true);
-    expect(rules.has('rubrica') || rules.has('atribucion') || rules.has('afirmacion')).toBe(true);
-    // Todos los artículos tienen al menos una pregunta.
-    expect(new Set(drafts.map((d) => d.sectionId)).size).toBe(UNITS_CA.length);
-    const all = norm(UNITS_CA.map((u) => `${u.heading} ${u.text}`).join(' '));
-    for (const d of drafts) {
-      if (d.rule === 'rubrica' || d.rule === 'atribucion') d.options.forEach((o) => expect(all).toContain(norm(o)));
-    }
+    // Estilo examen: nunca se pregunta por el número de artículo ni se cita en el enunciado.
+    expect(rules.has('rubrica') || rules.has('atribucion')).toBe(false);
+    for (const d of drafts) expect(d.stem).not.toMatch(/(art[ií]cle|art[ií]culo|art\.)\s*\d/i);
+    expect(drafts.every((d) => /^Según la Llei 39\/2015/.test(d.stem))).toBe(true);
     const exc = drafts.find((d) => d.rule === 'excepcion');
     if (exc) expect(exc.options[exc.correctIndex]).toMatch(/^llevat que/);
   });

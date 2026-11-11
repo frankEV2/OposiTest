@@ -77,7 +77,7 @@ export function pickQuestions(pool: Question[], cfg: ExamConfig): { questions: Q
     ? shuffled(pool)
     : [...pool].sort((a, b) => (a.documentId ?? 0) - (b.documentId ?? 0) || (a.sectionId ?? 0) - (b.sectionId ?? 0) || a.id! - b.id!);
   const questions = ordered.slice(0, cfg.count);
-  const orders = questions.map(() => (cfg.shuffle ? shuffled([0, 1, 2, 3]) : [0, 1, 2, 3]));
+  const orders = questions.map((q) => (cfg.shuffle && !q.fixedOrder ? shuffled([0, 1, 2, 3]) : [0, 1, 2, 3]));
   return { questions, orders };
 }
 

@@ -99,7 +99,7 @@ const COMMON_DUR: Record<string, string[]> = {
 };
 
 /** Sube cuando cambia el estilo de las preguntas: el temario integrado se regenera. */
-export const ENGINE_VERSION = 3;
+export const ENGINE_VERSION = 4;
 
 /** Frases aptas como afirmación completa: ni muy cortas ni muy largas y sin remisiones vacías. */
 function statementsOf(u: Unit): string[] {
@@ -223,8 +223,10 @@ export const refWithArticle = (label: string) =>
     : /^(anexo|pre[áa]mbulo)/i.test(label) ? `el ${label}` : `el ${shortRef(label)}`;
 /** Unidad de una norma (artículo, disposición, anexo) o apartado de unos apuntes/temario. */
 const isLegal = (label: string) => /^(Art[ií]culo|Article|Disposici|Anexo|ANEXO|Pre[áa]mbulo|Annex)/u.test(label);
+/** «la Ley 39/2015», «el Real Decreto…», «la Constitución Española», «el Convenio…». */
+const withArticle = (t: string) => (/^(Real|Reial|Convenio|Conveni|Texto|Text)/i.test(t) ? `el ${t}` : `la ${t}`);
 const intro = (c: Ctx) => isLegal(c.unit.label)
-  ? `Según ${refWithArticle(c.unit.label)} de ${c.docTitle}`
+  ? `Según ${withArticle(c.docTitle)}` // estilo examen: sin número de artículo (la referencia va en la explicación)
   : `En relación con «${c.unit.label}» (${c.docTitle})`;
 
 /** Elige `n` distractores distintos entre sí y de la respuesta (comparación normalizada). */
@@ -474,55 +476,6 @@ function* enumerationQuestions(c: Ctx): Generator<Result> {
   }
 }
 
-/** Rúbrica del artículo: cubre todos los artículos con título, aunque no tengan otras expresiones. */
-function* rubricaQuestions(c: Ctx, done: Set<string>): Generator<Result> {
-  const art = c.unit.article ?? c.unit.label;
-  const heads = c.pools.headings.get(c.unit.documentId);
-  const own = heads?.get(art);
-  if (!own || done.has(art)) return;
-  done.add(art);
-  let others = [...heads!.entries()].filter(([a, h]) => a !== art && norm(h) !== norm(own)).map(([, h]) => h);
-  // Documento con pocos artículos: rúbricas de las demás normas del temario (mismo idioma).
-  if (others.length < 3) {
-    others = others.concat([...c.pools.headings].filter(([d]) => d !== c.unit.documentId)
-      .flatMap(([, m]) => [...m.values()]).filter((h) => norm(h) !== norm(own)));
-  }
-  const d = pick(bySimilarity(others, [own]), own, c.rand) ?? pick(others, own, c.rand);
-  if (!d) { yield { discard: 'rúbrica sin suficientes alternativas' }; return; }
-  const ref = shortRef(art);
-  const stem = `En ${c.docTitle}, ¿cuál es la rúbrica (título) del ${ref}?`;
-  yield {
-    ...assemble(c, 'rubrica', stem, own, d, `El ${ref} de ${c.docTitle} lleva por título «${own}».`, `${art}. ${own}`, 2),
-    reference: `${c.docTitle}, ${ref}`,
-  };
-}
-
-/**
- * Atribución: una frase literal del artículo frente a tres frases literales de otros artículos.
- * Funciona con cualquier redacción, así que cubre todo el contenido aunque no haya plazos, órganos, etc.
- */
-function* atribucionQuestions(c: Ctx): Generator<Result> {
-  const own = statementsOf(c.unit);
-  if (!own.length) return;
-  const art = c.unit.article ?? c.unit.label;
-  const correct = own[Math.floor(c.rand() * own.length)];
-  const unitNorm = norm(c.unit.text);
-  const cands = c.pools.statements
-    .filter((x) => x.article !== art || x.documentId !== c.unit.documentId)
-    .filter((x) => !unitNorm.includes(norm(x.s)));
-  // Preferencia: mismo documento y longitud parecida (que no se distinga por el estilo).
-  const score = (x: typeof cands[number]) =>
-    (x.documentId === c.unit.documentId ? 0 : 1) + Math.abs(x.s.length - correct.length) / correct.length;
-  const close = [...cands].sort((a, b) => score(a) - score(b)).slice(0, 12).map((x) => x.s);
-  const d = pick(close, correct, c.rand);
-  if (!d) { yield { discard: 'atribución sin suficientes frases de otros artículos' }; return; }
-  const ref = isLegal(c.unit.label) ? shortRef(c.unit.label) : `apartado «${c.unit.label}»`;
-  const stem = `¿Cuál de los siguientes textos corresponde al ${ref} de ${c.docTitle}?`;
-  yield assemble(c, 'atribucion', stem, correct, d,
-    `El ${ref} de ${c.docTitle} dice literalmente: «${correct}». Las demás opciones pertenecen a otros artículos del temario.`,
-    correct, lenDifficulty(correct) === 3 ? 3 : 2);
-}
-
 // ---------------------------------------------------------------- validación
 
 export function validateDraft(d: Pick<Draft, 'stem' | 'options' | 'correctIndex'>): string | null {
@@ -559,7 +512,6 @@ export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pool
   const drafts: Draft[] = [];
   const discarded: Record<string, number> = {};
   const seen = new Set<string>();
-  const rubricas = new Set<string>();
   const lang = langOf(units.map((u) => u.text).join('\n'));
   const discard = (r: string) => { discarded[r] = (discarded[r] ?? 0) + 1; };
 
@@ -569,7 +521,7 @@ export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pool
     const gens = [
       definitionQuestions(c), afirmacionQuestions(c), plazoQuestions(c, sents), competenciaQuestions(c, sents),
       enumerationQuestions(c), quantityQuestions(c, sents), exceptionQuestions(c, sents),
-      obligationQuestions(c, sents), rubricaQuestions(c, rubricas), atribucionQuestions(c),
+      obligationQuestions(c, sents),
     ];
     let count = 0;
     for (const g of gens) {
@@ -596,7 +548,7 @@ export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pool
 
 export const RULE_LABEL: Record<QuestionRule, string> = {
   definicion: 'Definición', plazo: 'Plazo', competencia: 'Competencia', obligacion: 'Obligación',
-  excepcion: 'Excepción', enumeracion: 'Enumeración', concepto: 'Cuantía/mayoría', rubrica: 'Rúbrica', atribucion: 'Texto del artículo', afirmacion: 'Afirmación correcta/incorrecta', manual: 'Manual',
+  excepcion: 'Excepción', enumeracion: 'Enumeración', concepto: 'Cuantía/mayoría', rubrica: 'Rúbrica', atribucion: 'Texto del artículo', afirmacion: 'Afirmación correcta/incorrecta', ia: 'IA (estilo examen)', manual: 'Manual',
 };
 
 export { cap };

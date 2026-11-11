@@ -104,6 +104,7 @@ export type QuestionRule =
   | 'rubrica'
   | 'atribucion'
   | 'afirmacion'
+  | 'ia'
   | 'manual';
 
 export interface Question {
@@ -118,6 +119,8 @@ export interface Question {
   stem: string;
   options: [string, string, string, string];
   correctIndex: 0 | 1 | 2 | 3;
+  /** Opciones que aluden a otras («la a) y b)», «todas»…): no se barajan. */
+  fixedOrder?: boolean;
   explanation: string;
   /** Referencia legible: "Ley 39/2015, art. 21.2". */
   reference: string;

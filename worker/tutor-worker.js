@@ -27,9 +27,36 @@ Reglas obligatorias:
    exactamente lo que dice el texto (quién, qué, cuándo); si no estás seguro de aplicarlo bien, no pongas ejemplo.
 5. Si te piden un esquema o resumen, hazlo con viñetas breves y fieles al texto.
 6. Si te piden preguntas tipo test o un simulacro: plantea UNA pregunta cada vez con cuatro opciones (a, b, c, d),
-   una sola correcta y distractores plausibles basados en el temario. Espera la respuesta del alumno; después
-   corrígela, explica el porqué con la referencia y continúa con la siguiente si así se pidió.
+   una sola correcta y distractores plausibles basados en el temario, al estilo de los exámenes oficiales
+   (ver ESTILO). Espera la respuesta del alumno; después corrígela, explica el porqué con la referencia y
+   continúa con la siguiente si así se pidió.
 7. Responde en el idioma del alumno (castellano o catalán). Sé conciso: prioriza lo que pregunta.`;
+
+const STYLE = `ESTILO DE LOS EXÁMENES OFICIALES (imítalo):
+- Enunciados que preguntan por el contenido, nunca por el número de artículo: «La Ley 40/2015 tiene por objeto regular:»,
+  «Tendrán la consideración de órganos administrativos:», «¿Quién tiene el deber de garantizar la seguridad y salud
+  de los trabajadores?», «El tratamiento de datos de un menor solo podrá fundarse en su consentimiento cuando sea mayor de:».
+- PROHIBIDO: «¿Qué establece el artículo X?», «¿En qué artículo se regula…?», «Según el artículo X…» o citar números de
+  artículo en el enunciado. La referencia va solo en la explicación.
+- Temas preferentes: conceptos y definiciones, objeto y ámbito, funciones y competencias (quién), obligaciones y derechos,
+  procedimientos y fases, plazos y cifras, requisitos, excepciones y consecuencias jurídicas.
+- Supuestos prácticos breves cuando el texto lo permita: «Un trabajador de una Autoridad Portuaria… ¿qué derecho ejerce?».
+- Cuatro opciones completas y homogéneas (misma forma y longitud aproximada). Distractores plausibles que cambian un solo
+  elemento del texto (otro órgano, otra cifra o plazo, otro ámbito, negación invertida), nunca absurdos.
+- Se admiten como última opción «Todas las anteriores son correctas», «Ninguna de las anteriores es correcta» o
+  «Las respuestas a) y b) son correctas», con moderación (no en todas las preguntas).
+- Varía la posición de la respuesta correcta y la dificultad.`;
+
+const QUESTION_RULES = `Eres un tribunal de oposiciones que redacta preguntas tipo test nuevas.
+Usa EXCLUSIVAMENTE los FRAGMENTOS DEL TEMARIO. Cada respuesta correcta debe estar respaldada literalmente por un fragmento
+y solo una opción puede ser correcta según ese texto. No uses conocimientos externos ni amplíes el temario.
+${STYLE}
+Devuelve SOLO JSON: {"preguntas":[{"enunciado":"…","opciones":["…","…","…","…"],"correcta":0-3,
+"explicacion":"por qué es correcta y por qué fallan las demás, citando la referencia","fragmento":número del fragmento,
+"cita":"copia LITERAL (exacta, 15-300 caracteres) del fragmento que justifica la respuesta","tipo":"concepto|competencia|plazo|procedimiento|requisito|derecho|obligacion|practico",
+"orden_fijo":true si alguna opción alude a otras (a y b, todas, ninguna) y entonces debe ser la última}]}
+Reparte las preguntas entre todos los fragmentos, sin repetir la misma idea con otras palabras.`;
+
 
 function cors(origin, env) {
   const allowed = (env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
@@ -74,17 +101,42 @@ export default {
     let body;
     try { body = JSON.parse(raw); } catch { return json(400, { error: 'JSON no válido' }, c.headers); }
     const context = Array.isArray(body.context) ? body.context.slice(0, 12) : [];
+    const fragments = context.length
+      ? context.map((f, i) => `[${i + 1}] ${String(f.ref).slice(0, 200)}\n${String(f.text).slice(0, 4000)}`).join('\n\n---\n\n')
+      : '(No se ha encontrado ningún fragmento relevante en el temario para esta consulta.)';
+    const oposicion = String(body.oposicion || '').slice(0, 200);
+    const model = env.GEMINI_MODEL || 'gemini-flash-lite-latest';
+
+    // Generación de preguntas para el banco (respuesta JSON, sin streaming).
+    if (body.task === 'questions') {
+      if (!context.length) return json(400, { error: 'Faltan fragmentos' }, c.headers);
+      const count = Math.max(1, Math.min(10, Number(body.count) || 4));
+      const avoid = Array.isArray(body.avoid) ? body.avoid.slice(0, 40).map((s) => `- ${String(s).slice(0, 200)}`).join('\n') : '';
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: `${QUESTION_RULES}\n\nOposición: ${oposicion}\n\nFRAGMENTOS DEL TEMARIO:\n${fragments}` }] },
+          contents: [{ role: 'user', parts: [{ text: `Redacta ${count} preguntas nuevas sobre estos fragmentos.`
+            + (avoid ? `\nNo repitas estas ideas, ya están en el banco:\n${avoid}` : '') }] }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 4096, responseMimeType: 'application/json' },
+        }),
+      });
+      if (!r.ok) {
+        const msg = r.status === 429 ? 'Cuota gratuita de Gemini agotada por ahora.' : `Error de Gemini (${r.status})`;
+        return json(r.status === 429 ? 429 : 502, { error: msg }, c.headers);
+      }
+      const data = await r.json();
+      const text = (data.candidates?.[0]?.content?.parts ?? []).map((p) => p.text ?? '').join('');
+      return new Response(text || '{"preguntas":[]}', { headers: { ...c.headers, 'Content-Type': 'application/json' } });
+    }
+
     const messages = Array.isArray(body.messages) ? body.messages.slice(-MAX_MESSAGES) : [];
     if (!messages.length || messages[messages.length - 1].role !== 'user') {
       return json(400, { error: 'Falta la pregunta' }, c.headers);
     }
+    const system = `${RULES}\n\n${STYLE}\n\nOposición: ${oposicion}\n\nFRAGMENTOS DEL TEMARIO:\n${fragments}`;
 
-    const fragments = context.length
-      ? context.map((f, i) => `[${i + 1}] ${String(f.ref).slice(0, 200)}\n${String(f.text).slice(0, 4000)}`).join('\n\n---\n\n')
-      : '(No se ha encontrado ningún fragmento relevante en el temario para esta consulta.)';
-    const system = `${RULES}\n\nOposición: ${String(body.oposicion || '').slice(0, 200)}\n\nFRAGMENTOS DEL TEMARIO:\n${fragments}`;
-
-    const model = env.GEMINI_MODEL || 'gemini-flash-lite-latest';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`;
     const upstream = await fetch(url, {
       method: 'POST',
