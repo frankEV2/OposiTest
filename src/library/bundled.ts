@@ -69,6 +69,16 @@ async function run(onProgress?: (done: number, total: number, name: string) => v
       console.warn('No se pudo cargar', e.file, err);
     }
   }
+  // Banco de preguntas listo sin pasos manuales: se genera en local y queda guardado en IndexedDB.
+  // Se hace una sola vez por versión del documento (clave = SHA-256), aunque la carga se interrumpiera antes.
+  const bank = new Set(((await db.settings.get('bundledBank'))?.value as string[] | undefined) ?? []);
+  const todo = (await db.documents.toArray()).filter((d) => files.has(d.fileName) && !bank.has(d.sha256));
+  if (todo.length) {
+    const { generateForDocuments } = await import('../engine/store');
+    await generateForDocuments(todo.map((d) => d.id!));
+    todo.forEach((d) => bank.add(d.sha256));
+    await db.settings.put({ key: 'bundledBank', value: [...bank] });
+  }
   onProgress?.(pending.length, pending.length, '');
   return n;
 }

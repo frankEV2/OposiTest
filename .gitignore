@@ -6,3 +6,4 @@ dev-dist
 .claude/
 *.log
 *.tsbuildinfo
+scripts/boe/cache/

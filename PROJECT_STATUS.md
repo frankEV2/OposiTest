@@ -180,6 +180,13 @@ test-fixtures/ PDF de prueba generados (ley-prueba, norma-prueba, escaneado) —
   frases literales de otros artículos), que garantizan al menos una pregunta por artículo/apartado. Limpieza de cabeceras
   BOE y líneas cortadas en los .md. Temario integrado: 11 normas de `NORMATIVA PUERTO` (solo .md; los PDF son la misma fuente).
 
+- Temario oficial desde el BOE (2026-11-11): `scripts/boe/temario.json` (normas + apartados exigidos: rutas de
+  cabeceras o listas de artículos) → `npm run temario:boe` (`scripts/boe/build.mjs`): descarga una vez a
+  `scripts/boe/cache/` (gitignored; `--refresh` para reformas) desde la API de legislación consolidada (bloques, última
+  versión) o el XML del Diario (convenios), extrae literal solo lo exigido, verifica y escribe `scripts/boe/inventario.md`
+  (sale con código 1 si falta algo). Sustituye a los .md catalanes de OCR. Al abrir la app, el banco se genera solo
+  para cada documento integrado nuevo o actualizado (ajuste `bundledBank` = SHA ya procesados): 913 preguntas, 270/272 artículos.
+
 ## Limitaciones conocidas
 - Reglas de preguntas solo en castellano (los textos en catalán se estructuran pero no generan preguntas).
 - Sin OCR: los PDF escaneados se detectan pero no se procesan (OCR local, p. ej. Tesseract.js, sería pesado ~10 MB+; valorar más adelante).

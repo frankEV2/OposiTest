@@ -1,0 +1,63 @@
+{
+  "out": "public/temario/Puertos del Estado/Temario oficial",
+  "normas": [
+    {
+      "id": "BOE-A-1978-31229", "file": "01 Constitucion Espanola.md",
+      "title": "Constitución Española",
+      "select": [{ "path": ["TÍTULO I"] }, { "path": ["TÍTULO VIII"] }]
+    },
+    {
+      "id": "BOE-A-2011-16467", "file": "02 Real Decreto Legislativo 2-2011 Puertos.md",
+      "title": "Real Decreto Legislativo 2/2011, de 5 de septiembre, por el que se aprueba el Texto refundido de la Ley de Puertos del Estado y de la Marina Mercante",
+      "select": [{ "arts": "1-35,36,39,40,41,42,47,52-55,62,66,104,105,156,161,295" }]
+    },
+    {
+      "id": "BOE-A-2019-9021", "diario": true, "file": "03 III Convenio colectivo Puertos.md",
+      "title": "III Convenio colectivo de Puertos del Estado y Autoridades Portuarias",
+      "select": [{ "path": ["CAPÍTULO I"] }, { "path": ["CAPÍTULO II"] }, { "path": ["CAPÍTULO III"] }, { "path": ["CAPÍTULO IV"] }, { "path": ["CAPÍTULO V"] }]
+    },
+    {
+      "id": "BOE-A-2007-6115", "file": "04 Ley Organica 3-2007 Igualdad.md",
+      "title": "Ley Orgánica 3/2007, de 22 de marzo, para la igualdad efectiva de mujeres y hombres",
+      "select": [{ "path": ["TÍTULO PRELIMINAR"] }, { "path": ["TÍTULO I"] },
+        { "path": ["TÍTULO IV", "CAPÍTULO I"] }, { "path": ["TÍTULO IV", "CAPÍTULO II"] }, { "path": ["TÍTULO IV", "CAPÍTULO III"] }]
+    },
+    {
+      "id": "BOE-A-2019-3244", "file": "05 Real Decreto-ley 6-2019.md",
+      "title": "Real Decreto-ley 6/2019, de 1 de marzo, de medidas urgentes para garantía de la igualdad de trato y de oportunidades entre mujeres y hombres en el empleo y la ocupación",
+      "select": [{ "arts": "1" }]
+    },
+    {
+      "id": "BOE-A-2004-21760", "file": "06 Ley Organica 1-2004 Violencia de genero.md",
+      "title": "Ley Orgánica 1/2004, de 28 de diciembre, de Medidas de Protección Integral contra la Violencia de Género",
+      "select": [{ "path": ["TÍTULO PRELIMINAR"] }, { "path": ["TÍTULO II"] }]
+    },
+    {
+      "id": "BOE-A-2022-11589", "file": "07 Ley 15-2022 Igualdad de trato.md",
+      "title": "Ley 15/2022, de 12 de julio, integral para la igualdad de trato y la no discriminación",
+      "select": [{ "arts": "3" }, { "path": ["TÍTULO I", "CAPÍTULO I"] }, { "arts": "25" }]
+    },
+    {
+      "id": "BOE-A-2022-14630", "file": "08 Ley Organica 10-2022 Libertad sexual.md",
+      "title": "Ley Orgánica 10/2022, de 6 de septiembre, de garantía integral de la libertad sexual",
+      "select": [{ "path": ["TÍTULO PRELIMINAR"] }, { "arts": "12,13,40" }]
+    },
+    {
+      "id": "BOE-A-2015-10565", "file": "09 Ley 39-2015 Procedimiento administrativo.md",
+      "title": "Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas",
+      "select": [{ "path": ["TÍTULO PRELIMINAR"] }, { "path": ["TÍTULO I"] }]
+    },
+    {
+      "id": "BOE-A-2015-10566", "file": "10 Ley 40-2015 Regimen juridico.md",
+      "title": "Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público",
+      "select": [{ "path": ["TÍTULO PRELIMINAR", "CAPÍTULO I"] },
+        { "path": ["TÍTULO PRELIMINAR", "CAPÍTULO II", "Sección 1.ª"] }, { "path": ["TÍTULO PRELIMINAR", "CAPÍTULO II", "Sección 2.ª"] },
+        { "path": ["TÍTULO PRELIMINAR", "CAPÍTULO V"] }]
+    },
+    {
+      "id": "BOE-A-2018-16673", "file": "11 Ley Organica 3-2018 Proteccion de datos.md",
+      "title": "Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales",
+      "select": [{ "path": ["TÍTULO I"] }, { "path": ["TÍTULO II"] }, { "path": ["TÍTULO III"] }]
+    }
+  ]
+}

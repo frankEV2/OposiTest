@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "temario": "node scripts/temario-index.mjs",
+    "temario:boe": "node scripts/boe/build.mjs && node scripts/temario-index.mjs",
     "predev": "node scripts/temario-index.mjs",
     "prebuild": "node scripts/temario-index.mjs",
     "dev": "vite",
