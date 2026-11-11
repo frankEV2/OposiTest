@@ -40,7 +40,7 @@ function Setup({ onDone }: { onDone: () => void }) {
   const [url, setUrl] = useState(cfg.url);
   const [token, setToken] = useState(cfg.token);
   return (
-    <div className="card">
+    <div className="card tutor-setup">
       <h2>Configurar el Tutor IA</h2>
       <p className="sub">El tutor usa Gemini (cuota gratuita) a través de tu intermediario de Cloudflare, que guarda la clave.
         Pega aquí su dirección y tu código de acceso (se guardan solo en este dispositivo).</p>

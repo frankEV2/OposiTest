@@ -299,3 +299,5 @@ code { font-size: 0.85em; background: var(--bg); padding: 1px 5px; border-radius
   background: var(--bg); border-top: 1px solid var(--border); }
 .composer textarea { flex: 1; resize: none; font: inherit; font-size: 16px; padding: 10px; border-radius: 12px; border: 1px solid var(--border);
   background: var(--surface); color: var(--text); }
+.tutor-setup label { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; font-weight: 600; }
+.tutor-setup input { font: inherit; font-size: 16px; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
