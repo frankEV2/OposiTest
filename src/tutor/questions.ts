@@ -12,6 +12,7 @@ import type { ID, Question, Section } from '../db/types';
 import { shortDocTitle } from '../engine/generate';
 import { hash, norm, shuffle } from '../engine/text';
 import { tutorConfig } from './client';
+import { recordQuotaHit, recordUse } from './usage';
 
 interface Frag { ref: string; text: string; section: Section; key: string }
 interface AiQ {
@@ -54,7 +55,8 @@ async function callWorker(oposicion: string, frags: Frag[], count: number, avoid
     headers: { 'Content-Type': 'application/json', 'X-Tutor-Token': token },
     body: JSON.stringify({ task: 'questions', oposicion, count, avoid, context: frags.map((f) => ({ ref: f.ref, text: f.text })) }),
   });
-  if (res.status === 429) return { quota: true as const, items: [] };
+  if (res.status === 429) { recordQuotaHit(); return { quota: true as const, items: [] }; }
+  if (res.ok) recordUse('questions');
   if (res.status >= 500) return { busy: true as const, quota: false as const, items: [] };
   if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || `Error ${res.status}`);
   const data = await res.json().catch(() => ({ preguntas: [] }));

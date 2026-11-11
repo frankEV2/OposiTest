@@ -1,5 +1,6 @@
 /** Conexión con el intermediario (Cloudflare Worker). La clave de Gemini nunca está en el navegador. */
 import type { Chunk } from './rag';
+import { recordQuotaHit, recordUse } from './usage';
 
 export interface ChatMsg {
   role: 'user' | 'model';
@@ -36,6 +37,7 @@ export async function askTutor(
       messages: history.filter((m) => !m.error).slice(-12).map((m) => ({ role: m.role, text: m.text })),
     }),
   });
+  if (res.status === 429) recordQuotaHit(); else if (res.ok) recordUse('chat');
   if (!res.ok || !res.body) {
     const e = await res.json().catch(() => ({}));
     throw new Error(e.error || `Error ${res.status} del intermediario`);

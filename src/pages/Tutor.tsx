@@ -6,6 +6,7 @@ import { askTutor, saveTutorConfig, tutorConfig, type ChatMsg } from '../tutor/c
 import { retrieve } from '../tutor/rag';
 import { canListen, canSpeak, listenOnce, ScreenAwake, Speaker, takeSentences } from '../tutor/voice';
 import { activeWorkspace } from '../workspaces';
+import GeminiUsage from '../components/GeminiUsage';
 
 const HISTORY = 'tutorHistory'; // en la base de datos de la oposición abierta → historiales separados
 const MAX_HISTORY = 200;
@@ -276,6 +277,7 @@ export default function Tutor() {
         <div>
           <h1>Tutor IA</h1>
           <p className="sub">Responde solo con el temario de {ws.nombre} ({ws.organismo}).</p>
+          <GeminiUsage />
         </div>
         <div className="row">
           <div className="seg" role="tablist" aria-label="Modo">

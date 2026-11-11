@@ -330,3 +330,6 @@ code { font-size: 0.85em; background: var(--bg); padding: 1px 5px; border-radius
 @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.25); opacity: .7; } }
 @media (prefers-reduced-motion: reduce) { .vb-dot { animation: none !important; } }
 body:has(.voicebar) .update-banner { bottom: calc(96px + env(safe-area-inset-bottom)); }
+.usage { font-size: .82rem; color: var(--muted); margin: 0 0 10px; }
+.usage summary { cursor: pointer; }
+.usage p { margin: 6px 0 0; }

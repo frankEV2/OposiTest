@@ -6,6 +6,7 @@ import type { ID } from '../db/types';
 import { generateForDocuments, type DocReport } from '../engine/store';
 import { generateWithAI, resetAiProgress, type AiProgress } from '../tutor/questions';
 import { activeWorkspace } from '../workspaces';
+import GeminiUsage from '../components/GeminiUsage';
 import ExamSetup from '../components/ExamSetup';
 
 export default function Generate() {
@@ -90,6 +91,7 @@ export default function Generate() {
                 {busy ? 'Generando…' : `Generación rápida sin IA (${selected.size})`}
               </button>
             </div>
+            <GeminiUsage key={ai?.done ?? -1} />
             {ai && (
               <div className="card" style={{ marginTop: 10 }} role="status">
                 <p style={{ margin: 0 }}>
