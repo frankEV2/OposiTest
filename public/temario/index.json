@@ -1,0 +1,11 @@
+[
+ {
+  "file": "Ejemplo/Normativa/norma-ejemplo.md",
+  "size": 784,
+  "sha256": "5b0fd85b0e6cb62433d3ce742048f2abea0a48d3703c3c2b3d91cd42eb888ae1",
+  "tax": {
+   "opo": "Ejemplo",
+   "mat": "Normativa"
+  }
+ }
+]

@@ -3,6 +3,7 @@ import type { DocumentMeta, ID } from '../db/types';
 import { assessQuality, normalizeText, stripRepeatedLines } from '../pdf/clean';
 import { parseStructure } from '../pdf/structure';
 import { docKey, qKey, recordDeletions } from '../sync/keys';
+import { isMarkdownName, parseMarkdown } from './markdown';
 
 export async function sha256(buf: ArrayBuffer): Promise<string> {
   const h = await crypto.subtle.digest('SHA-256', buf);
@@ -23,10 +24,18 @@ export interface ProcessedPdf {
   sections: ReturnType<typeof parseStructure>;
 }
 
-export function processPages(rawPages: string[]): ProcessedPdf {
-  const pages = stripRepeatedLines(rawPages.map(normalizeText));
+export function processPages(
+  rawPages: string[],
+  opts: { markdown?: boolean; fallback?: ReturnType<typeof parseStructure> } = {},
+): ProcessedPdf {
+  const norm = rawPages.map(normalizeText);
+  const pages = opts.markdown ? norm : stripRepeatedLines(norm);
   const q = assessQuality(pages);
-  const sections = q.status === 'scanned' ? [] : parseStructure(pages);
+  let sections = q.status === 'scanned' ? [] : parseStructure(pages);
+  // Temarios en Markdown sin artículos: la estructura sale de los encabezados.
+  if (!sections.some((s) => s.kind === 'articulo') && opts.fallback?.some((s) => s.kind === 'articulo')) {
+    sections = opts.fallback;
+  }
   const warnings = [...q.warnings];
   if (q.status !== 'scanned' && !sections.some((s) => s.kind === 'articulo')) {
     warnings.push('No se han detectado artículos. El texto puede consultarse y buscarse, ' +
@@ -40,6 +49,19 @@ type Extractor = (buf: ArrayBuffer, onProgress?: (p: number, t: number) => void)
 
 async function defaultExtractor(): Promise<Extractor> {
   return (await import('../pdf/extract')).extractPdfPages;
+}
+
+/** Extrae y procesa un PDF o un Markdown (.md/.txt) según la extensión. */
+async function processFile(file: File, buf: ArrayBuffer, onProgress?: (p: number, t: number) => void, extract?: Extractor) {
+  if (isMarkdownName(file.name)) {
+    const md = parseMarkdown(new TextDecoder('utf-8').decode(buf));
+    return {
+      p: processPages(md.pages, { markdown: true, fallback: md.headingSections }),
+      title: md.title, type: 'text/markdown',
+    };
+  }
+  const { pages, title } = await (extract ?? (await defaultExtractor()))(buf, onProgress);
+  return { p: processPages(pages), title, type: 'application/pdf' };
 }
 
 export class DuplicateError extends Error {
@@ -77,16 +99,16 @@ export async function importPdf(
   const existing = await db.documents.where('sha256').equals(hash).first();
   if (existing) throw new DuplicateError(existing);
 
-  const { pages, title } = await (extract ?? (await defaultExtractor()))(buf, onProgress);
-  const p = processPages(pages);
+  const { p, title, type } = await processFile(file, buf, onProgress, extract);
+  const pages = p.pages;
   const now = Date.now();
   return db.transaction('rw', [db.documents, db.documentFiles, db.pages, db.sections], async () => {
     const id = (await db.documents.add({
-      title: title || file.name.replace(/\.pdf$/i, ''),
+      title: title || file.name.replace(/\.(pdf|md|markdown|txt)$/i, ''),
       fileName: file.name, size: file.size, sha256: hash, uid: hash, pageCount: pages.length,
       ...cls, extraction: p.extraction, warnings: p.warnings, importedAt: now, updatedAt: now,
     })) as ID;
-    await db.documentFiles.put({ documentId: id, blob: new Blob([buf], { type: 'application/pdf' }) });
+    await db.documentFiles.put({ documentId: id, blob: new Blob([buf], { type }) });
     await storeContent(id, p);
     return id;
   });
@@ -107,8 +129,8 @@ export async function replacePdf(
   const hash = await sha256(buf);
   const dup = await db.documents.where('sha256').equals(hash).first();
   if (dup && dup.id !== documentId) throw new DuplicateError(dup);
-  const { pages } = await (extract ?? (await defaultExtractor()))(buf, onProgress);
-  const p = processPages(pages);
+  const { p, type } = await processFile(file, buf, onProgress, extract);
+  const pages = p.pages;
   const before = await db.documents.get(documentId);
   await db.transaction('rw', [db.documents, db.documentFiles, db.pages, db.sections, db.questions], async () => {
     await db.documents.update(documentId, {
@@ -117,7 +139,7 @@ export async function replacePdf(
       fileName: file.name, size: file.size, sha256: hash, pageCount: pages.length,
       extraction: p.extraction, warnings: p.warnings, updatedAt: Date.now(),
     });
-    await db.documentFiles.put({ documentId, blob: new Blob([buf], { type: 'application/pdf' }) });
+    await db.documentFiles.put({ documentId, blob: new Blob([buf], { type }) });
     await storeContent(documentId, p);
     await db.questions.where('documentId').equals(documentId)
       .modify({ sectionId: undefined, status: 'pending', updatedAt: Date.now() });

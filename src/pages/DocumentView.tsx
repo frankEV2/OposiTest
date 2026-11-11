@@ -73,7 +73,9 @@ export default function DocumentView() {
   async function openPdf() {
     const f = await db.documentFiles.get(id);
     if (!f) return;
-    const url = URL.createObjectURL(f.blob);
+    // Markdown: se abre como texto plano UTF-8 para que el navegador lo muestre en vez de descargarlo.
+    const blob = /markdown|text/.test(f.blob.type) ? new Blob([f.blob], { type: 'text/plain;charset=utf-8' }) : f.blob;
+    const url = URL.createObjectURL(blob);
     setPdfUrl(url);
     window.open(url, '_blank', 'noopener');
   }
@@ -101,7 +103,7 @@ export default function DocumentView() {
           <h1>{doc.title}</h1>
           <p className="sub">{doc.fileName} · {doc.pageCount} páginas · {sections?.filter((s) => s.kind === 'articulo').length ?? 0} artículos</p>
         </div>
-        <button onClick={openPdf}>Abrir PDF original</button>
+        <button onClick={openPdf}>{/\.(md|markdown|txt)$/i.test(doc.fileName) ? 'Abrir original (.md)' : 'Abrir PDF original'}</button>
       </div>
       {doc.warnings.map((w) => <div key={w} className="warning">{w}</div>)}
 

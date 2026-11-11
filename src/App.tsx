@@ -29,7 +29,10 @@ function NotFound() {
 
 export default function App() {
   useTheme();
-  useEffect(() => { void autoSync(); }, []);
+  useEffect(() => {
+    // Primero el temario integrado (solo importa lo que falte) y luego la sincronización.
+    void import('./library/bundled').then((m) => m.loadBundled()).finally(() => void autoSync());
+  }, []);
   return (
     <Layout>
       <Suspense fallback={<p className="muted" role="status">Cargando…</p>}>

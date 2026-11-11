@@ -58,7 +58,7 @@ function DocumentRow({ doc, onReplace }: { doc: DocumentMeta; onReplace: (doc: D
           onChange={(c) => db.documents.update(doc.id!, { ...c, updatedAt: Date.now() })} />
         <div className="row">
           <button onClick={renameDoc}>Renombrar</button>
-          <button onClick={() => onReplace(doc)}>Sustituir PDF</button>
+          <button onClick={() => onReplace(doc)}>Sustituir fichero</button>
           <button className="danger" onClick={remove}>Eliminar</button>
         </div>
       </div>
@@ -100,7 +100,7 @@ export default function Library() {
   }
 
   async function onImport(list: FileList | null) {
-    const files = [...(list ?? [])].filter((f) => f.type === 'application/pdf' || /\.pdf$/i.test(f.name));
+    const files = [...(list ?? [])].filter((f) => f.type === 'application/pdf' || /\.(pdf|md|markdown|txt)$/i.test(f.name));
     if (importRef.current) importRef.current.value = '';
     if (files.length) await runJobs(files, (f, onP) => importPdf(f, cls, onP));
   }
@@ -110,7 +110,7 @@ export default function Library() {
     const target = replaceTarget.current;
     if (replaceRef.current) replaceRef.current.value = '';
     if (!f || !target) return;
-    if (!confirm(`¿Sustituir el PDF de «${target.title}» por «${f.name}»? Las preguntas generadas pasarán a revisión.`)) return;
+    if (!confirm(`¿Sustituir el fichero de «${target.title}» por «${f.name}»? Las preguntas generadas pasarán a revisión.`)) return;
     await runJobs([f], (file, onP) => replacePdf(target.id as ID, file, onP));
   }
 
@@ -119,12 +119,12 @@ export default function Library() {
       <div className="page-head">
         <div>
           <h1>Biblioteca</h1>
-          <p className="sub">Tus normas en PDF. El texto se extrae y se guarda solo en este dispositivo.</p>
+          <p className="sub">Tus normas y temarios (PDF o Markdown). Los .md de la carpeta temario/ se cargan solos. El texto se extrae y se guarda solo en este dispositivo.</p>
         </div>
-        <button className="primary" onClick={() => importRef.current?.click()}>Importar PDF</button>
-        <input ref={importRef} type="file" accept="application/pdf,.pdf" multiple hidden
+        <button className="primary" onClick={() => importRef.current?.click()}>Importar PDF o Markdown</button>
+        <input ref={importRef} type="file" accept="application/pdf,.pdf,.md,.markdown,.txt,text/markdown,text/plain" multiple hidden
           onChange={(e) => onImport(e.target.files)} />
-        <input ref={replaceRef} type="file" accept="application/pdf,.pdf" hidden
+        <input ref={replaceRef} type="file" accept="application/pdf,.pdf,.md,.markdown,.txt,text/markdown,text/plain" hidden
           onChange={(e) => onReplaceFile(e.target.files)} />
       </div>
 
@@ -164,7 +164,7 @@ export default function Library() {
 
       {docs?.length === 0 && (
         <div className="card muted">
-          No hay documentos. Pulsa «Importar PDF» para añadir normas (BOE, textos consolidados, temarios…).
+          No hay documentos. Pulsa «Importar PDF o Markdown» o copia los .md en public/temario/ para añadir normas (BOE, textos consolidados, temarios…).
           Se recomiendan PDF con texto seleccionable; los escaneados no pueden procesarse.
         </div>
       )}

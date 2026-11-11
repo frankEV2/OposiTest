@@ -168,6 +168,13 @@ test-fixtures/ PDF de prueba generados (ley-prueba, norma-prueba, escaneado) —
 - «Generar test» explica por qué un documento no da preguntas (`DocReport.hint`): escaneado, sin artículos, idioma
   catalán (las reglas del motor son en castellano) o sin expresiones reconocibles.
 
+- Markdown (2026-11-11): `.md/.markdown/.txt` se importan por la misma tubería que los PDF (`library/markdown.ts`,
+  `processFile` en `service.ts`); sync y copias funcionan igual (el blob se guarda como `text/markdown`).
+  Estructura: primero el parser jurídico; si no hay artículos, los encabezados `#` (hojas = unidades 'articulo').
+- Temario integrado: `public/temario/<Oposición>/<Materia>/<Tema>/*.md` → `scripts/temario-index.mjs` (predev/prebuild)
+  genera `index.json` con SHA-256. Al abrir la app `library/bundled.ts` importa solo lo que falta o cambió (si cambia,
+  sustituye el documento con el mismo `fileName`), clasifica por carpetas y respeta los borrados del usuario.
+
 ## Limitaciones conocidas
 - Reglas de preguntas solo en castellano (los textos en catalán se estructuran pero no generan preguntas).
 - Sin OCR: los PDF escaneados se detectan pero no se procesan (OCR local, p. ej. Tesseract.js, sería pesado ~10 MB+; valorar más adelante).

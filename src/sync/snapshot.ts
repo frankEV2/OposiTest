@@ -240,7 +240,7 @@ export async function applySnapshot(remote: Snapshot, deps: ApplyDeps): Promise<
       if (!l) {
         const blob = await deps.fetchPdf(r.sha256);
         if (!blob) { rep.failed.push(r.title); continue; }
-        const id = await importPdf(new File([blob], r.fileName, { type: 'application/pdf' }), cls, undefined, deps.extract);
+        const id = await importPdf(new File([blob], r.fileName, { type: blob.type || 'application/pdf' }), cls, undefined, deps.extract);
         await db.documents.update(id, { uid: r.key, title: r.title, importedAt: r.importedAt, updatedAt: r.updatedAt });
         byKey.set(r.key, (await db.documents.get(id))!);
         inc(rep.added, 'documentos');
@@ -248,7 +248,7 @@ export async function applySnapshot(remote: Snapshot, deps: ApplyDeps): Promise<
         if (r.sha256 !== l.sha256) {
           const blob = await deps.fetchPdf(r.sha256);
           if (!blob) { rep.failed.push(r.title); continue; }
-          await replacePdf(l.id!, new File([blob], r.fileName, { type: 'application/pdf' }), undefined, deps.extract);
+          await replacePdf(l.id!, new File([blob], r.fileName, { type: blob.type || 'application/pdf' }), undefined, deps.extract);
         }
         await db.documents.update(l.id!, {
           title: r.title, oposicionId: cls.oposicionId, materiaId: cls.materiaId, temaId: cls.temaId, updatedAt: r.updatedAt,
@@ -402,7 +402,7 @@ async function findTax(names: string[]): Promise<{ oposicionId?: ID; materiaId?:
   return t ? { oposicionId: o.id, materiaId: m.id, temaId: t.id } : null;
 }
 
-async function ensureTax(t: { opo: string; mat?: string; tema?: string }, order: number, createdAt: number) {
+export async function ensureTax(t: { opo: string; mat?: string; tema?: string }, order: number, createdAt: number) {
   let created = false;
   let o = await db.oposiciones.where('name').equals(t.opo).first();
   if (!o) { o = { id: (await db.oposiciones.add({ name: t.opo, createdAt })) as ID, name: t.opo, createdAt }; created = !t.mat; }
@@ -417,7 +417,7 @@ async function ensureTax(t: { opo: string; mat?: string; tema?: string }, order:
   return { created };
 }
 
-async function resolveCls(t: TaxRef): Promise<Pick<DocumentMeta, 'oposicionId' | 'materiaId' | 'temaId'>> {
+export async function resolveCls(t: TaxRef): Promise<Pick<DocumentMeta, 'oposicionId' | 'materiaId' | 'temaId'>> {
   const names = [t.opo, t.mat, t.tema];
   const cut = names.indexOf(undefined);
   const ids = await findTax((cut === -1 ? names : names.slice(0, cut)) as string[]);
