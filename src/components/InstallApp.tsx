@@ -25,7 +25,7 @@ export default function InstallApp() {
     };
   }, []);
 
-  if (done || !(isIOS || isAndroid || deferred)) return null; // només mòbil, o escriptori amb avís natiu
+  if (done) return null;
 
   const click = async () => {
     if (deferred && !isIOS) {
@@ -53,7 +53,7 @@ export default function InstallApp() {
               </ol>
             ) : (
               <ol style={{ paddingLeft: 20, lineHeight: 1.6 }}>
-                <li>Obre el menú del navegador (⋮).</li>
+                <li>{isAndroid ? 'Obre el menú del navegador (⋮).' : 'Fes servir Chrome o Edge i busca la icona d'instal·lar a la barra d'adreces (o al menú ⋮).'}</li>
                 <li>Selecciona «Instal·lar aplicació» o «Afegir a la pantalla d'inici».</li>
                 <li>Confirma la instal·lació.</li>
               </ol>
