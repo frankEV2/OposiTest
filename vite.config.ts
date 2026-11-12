@@ -15,7 +15,7 @@ export default defineConfig({
         name: 'OposiTest',
         short_name: 'OposiTest',
         description: 'Preparación de oposiciones con tus propios PDF, sin conexión.',
-        lang: 'es',
+        lang: 'ca',
         start_url: './',
         scope: './',
         display: 'standalone',

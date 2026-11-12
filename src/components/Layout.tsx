@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { NAV } from '../routes';
+import InstallApp from './InstallApp';
 import { activeWorkspace, leaveWorkspace } from '../workspaces';
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -32,6 +33,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             </NavLink>
           ))}
         </nav>
+        <div style={{ padding: '12px 16px' }}><InstallApp /></div>
       </aside>
       <main>{children}</main>
     </div>

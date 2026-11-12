@@ -342,3 +342,5 @@ body:has(.voicebar) .update-banner { bottom: calc(96px + env(safe-area-inset-bot
 .quick-replies button { border-radius: 999px; min-height: 40px; padding: 6px 14px; border: 1px solid var(--primary); color: var(--primary);
   background: transparent; font: inherit; cursor: pointer; }
 .quick-replies button:hover, .quick-replies button:focus-visible { background: var(--primary); color: var(--bg); }
+
+.install-btn { width: 100%; background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
