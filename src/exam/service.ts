@@ -4,22 +4,25 @@ import { filterQuestions, pickQuestions, scoreExam, type SelectionContext } from
 import { nextReview } from '../review/srs';
 import { qKey, recordDeletions } from '../sync/keys';
 
-export async function selectionContext(): Promise<SelectionContext> {
+export async function selectionContext(cfg?: ExamConfig): Promise<SelectionContext> {
   const seen = new Set((await db.attempts.toArray()).map((a) => a.questionId));
   const parentOf = new Map<ID, ID>();
   await db.sections.where('kind').equals('apartado').each((s) => {
     if (s.parentId !== undefined) parentOf.set(s.id!, s.parentId);
   });
-  return { seen, parentOf };
+  // Documentos con artículos concretos elegidos: el filtro por artículo solo se aplica a ellos.
+  const sectionDocs = cfg?.sectionIds.length
+    ? new Set((await db.sections.bulkGet(cfg.sectionIds)).flatMap((s) => (s ? [s.documentId] : []))) : undefined;
+  return { seen, parentOf, sectionDocs };
 }
 
 /** Número de preguntas disponibles para una configuración. */
 export async function countAvailable(cfg: ExamConfig): Promise<number> {
-  return filterQuestions(await db.questions.toArray(), cfg, await selectionContext()).length;
+  return filterQuestions(await db.questions.toArray(), cfg, await selectionContext(cfg)).length;
 }
 
 export async function createExam(cfg: ExamConfig): Promise<ID> {
-  const pool = filterQuestions(await db.questions.toArray(), cfg, await selectionContext());
+  const pool = filterQuestions(await db.questions.toArray(), cfg, await selectionContext(cfg));
   if (!pool.length) throw new Error('No hay preguntas que cumplan los criterios elegidos.');
   const { questions, orders } = pickQuestions(pool, cfg);
   return (await db.exams.add({

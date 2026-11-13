@@ -344,3 +344,10 @@ body:has(.voicebar) .update-banner { bottom: calc(96px + env(safe-area-inset-bot
 .quick-replies button:hover, .quick-replies button:focus-visible { background: var(--primary); color: var(--bg); }
 
 .install-btn { width: 100%; background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.docpick-block { border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; margin: 6px 0; }
+.docpick-block > summary { cursor: pointer; padding: 4px 0; }
+.docpick-actions { display: flex; gap: 14px; margin: 2px 0 6px; }
+.docpick-group { border-top: 1px solid var(--border); padding: 4px 0; }
+.docpick-row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.docpick-row .check { flex: 1; }
+.docpick-sub { margin-left: 24px; padding-bottom: 4px; }

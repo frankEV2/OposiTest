@@ -36,6 +36,8 @@ export interface SelectionContext {
   seen: Set<ID>;
   /** sectionId → id del artículo padre (para que elegir un artículo incluya sus apartados). */
   parentOf: Map<ID, ID>;
+  /** Documentos con artículos concretos seleccionados (el resto de documentos elegidos entran completos). */
+  sectionDocs?: Set<ID>;
 }
 
 /** Filtra el banco según la configuración (sin límite ni orden). */
@@ -49,7 +51,7 @@ export function filterQuestions(all: Question[], cfg: ExamConfig, ctx: Selection
     if (q.status === 'pending' && !cfg.includePending) return false;
     if (docs.size && (q.documentId === undefined || !docs.has(q.documentId))) return false;
     if (temas.size && (q.temaId === undefined || !temas.has(q.temaId))) return false;
-    if (secs.size) {
+    if (secs.size && (!ctx.sectionDocs || (q.documentId !== undefined && ctx.sectionDocs.has(q.documentId)))) {
       if (q.sectionId === undefined) return false;
       if (!secs.has(q.sectionId) && !secs.has(ctx.parentOf.get(q.sectionId) ?? -1)) return false;
     }

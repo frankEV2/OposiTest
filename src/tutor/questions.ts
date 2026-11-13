@@ -99,11 +99,13 @@ export function checkAiQuestion(q: AiQ, frags: { text: string; ref: string }[], 
 /** Genera preguntas con IA para los documentos indicados, repartidas por todos sus artículos/apartados. */
 export async function generateWithAI(
   documentIds: ID[], oposicion: string, onProgress: (p: AiProgress) => void, signal?: AbortSignal,
+  /** Volver a pasar por artículos ya procesados (ampliar el banco de una selección concreta). */
+  again = false,
 ): Promise<AiProgress> {
   const done = new Set(((await db.settings.get(DONE_KEY))?.value as string[] | undefined) ?? []);
   const all: Frag[] = [];
   for (const id of documentIds) all.push(...(await fragmentsOf(id)));
-  const todo = all.filter((f) => !done.has(f.key));
+  const todo = again ? all : all.filter((f) => !done.has(f.key));
   // Lotes de artículos consecutivos del mismo documento.
   const batches: Frag[][] = [];
   for (const f of todo) {
@@ -122,7 +124,7 @@ export async function generateWithAI(
   for (const batch of batches) {
     if (signal?.aborted) break;
     const docId = batch[0].section.documentId;
-    const count = Math.max(2, Math.min(8, Math.round(batch.reduce((a, f) => a + f.text.length, 0) / 700)));
+    const count = Math.max(3, Math.min(10, Math.round(batch.reduce((a, f) => a + f.text.length, 0) / 500)));
     const avoid = existing.filter((q) => q.documentId === docId && q.rule === 'ia').slice(-30).map((q) => q.stem);
     let r: Awaited<ReturnType<typeof callWorker>> = await callWorker(oposicion, batch, count, avoid, signal);
     // Reintentos: cuota por minuto (429) o Gemini saturado (5xx) son pasajeros.
@@ -146,7 +148,8 @@ export async function generateWithAI(
       // Incluso donde se admiten (estilo oficial del Puerto), las preguntas por artículo son la excepción.
       if (ARTICLE_IN_STEM.test(v.stem) && articleStems++ >= 1) { reject('pregunta por número de artículo'); continue; }
       // Reparto: como máximo 2 preguntas por artículo en cada tanda.
-      if ((perFrag.get(v.frag) ?? 0) >= 2) { reject('demasiadas del mismo artículo'); continue; }
+      // Varias por artículo si es largo (cada uno puede tener varios conceptos), nunca la misma idea dos veces.
+      if ((perFrag.get(v.frag) ?? 0) >= (batch[v.frag].text.length > 1500 ? 4 : 3)) { reject('demasiadas del mismo artículo'); continue; }
       perFrag.set(v.frag, (perFrag.get(v.frag) ?? 0) + 1);
       const h = hash(`${norm(v.stem)}|${norm(v.options[v.correct])}`);
       const w = words(v.stem);

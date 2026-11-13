@@ -101,7 +101,7 @@ const COMMON_DUR: Record<string, string[]> = {
 /** Sube cuando cambia el estilo de las preguntas: el temario integrado se regenera. */
 export const ENGINE_VERSION = 4;
 /** Versión del estilo natural (oposiciones sin el estilo oficial del Puerto); el Puerto sigue en ENGINE_VERSION. */
-export const NATURAL_VERSION = 5;
+export const NATURAL_VERSION = 6;
 
 /** Frases aptas como afirmación completa: ni muy cortas ni muy largas y sin remisiones vacías. */
 function statementsOf(u: Unit): string[] {
@@ -577,7 +577,9 @@ export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pool
         // La rúbrica no cuenta para el límite: asegura al menos una pregunta por artículo.
         // Rúbrica y atribución son más sencillas: solo se usan si el artículo no ha dado otra pregunta.
         if ((r.rule === 'rubrica' || r.rule === 'atribucion') && count > 0) continue;
-        if (r.rule !== 'definicion' && r.rule !== 'rubrica' && r.rule !== 'atribucion' && count >= MAX_PER_UNIT) { discard('límite de preguntas por artículo'); continue; }
+        // Estilo natural: un artículo largo contiene varios conceptos evaluables, así que admite más preguntas.
+        const max = natural ? Math.min(6, Math.max(MAX_PER_UNIT, Math.ceil(unit.text.length / 600))) : MAX_PER_UNIT;
+        if (r.rule !== 'definicion' && r.rule !== 'rubrica' && r.rule !== 'atribucion' && count >= max) { discard('límite de preguntas por artículo'); continue; }
         seen.add(r.hash);
         drafts.push(r);
         count++;

@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../db/db';
 import { getSettings, PENALTIES } from '../db/settings';
-import type { Difficulty, ExamConfig, ID } from '../db/types';
+import type { Difficulty, ExamConfig } from '../db/types';
 import { countAvailable, createExam } from '../exam/service';
+import DocPicker from './DocPicker';
+import type { AiProgress } from '../tutor/questions';
 
 const COUNTS: ExamConfig['count'][] = [5, 10, 20, 30, 50, 100];
 const DIFFS: [Difficulty, string][] = [[1, 'Fácil'], [2, 'Media'], [3, 'Difícil']];
@@ -19,6 +21,7 @@ export default function ExamSetup() {
   const [minutes, setMinutes] = useState(0);
   const [available, setAvailable] = useState<number | null>(null);
   const [error, setError] = useState('');
+  const [ai, setAi] = useState<AiProgress | null>(null);
 
   useEffect(() => {
     getSettings().then((s) => {
@@ -31,18 +34,8 @@ export default function ExamSetup() {
   }, []);
 
   const data = useLiveQuery(async () => ({
-    docs: await db.documents.toArray(),
-    temas: await db.temas.toArray(),
-    materias: await db.materias.toArray(),
     total: await db.questions.count(),
   }));
-  const oneDoc = cfg?.documentIds.length === 1 ? cfg.documentIds[0] : undefined;
-  const articles = useLiveQuery(
-    async () => (oneDoc === undefined ? [] : (await db.sections.where('documentId').equals(oneDoc).sortBy('order'))
-      .filter((s) => s.kind === 'articulo' || s.kind === 'disposicion')),
-    [oneDoc],
-  );
-
   useEffect(() => {
     if (!cfg) return;
     let alive = true;
@@ -52,6 +45,20 @@ export default function ExamSetup() {
 
   if (!cfg || !data) return null;
   const set = (patch: Partial<ExamConfig>) => setCfg({ ...cfg, ...patch });
+
+  // Amplía el banco solo con el contenido seleccionado (vuelve a pasar por sus artículos buscando conceptos nuevos).
+  async function expand() {
+    setError('');
+    try {
+      const [{ generateWithAI }, { activeWorkspace }] = await Promise.all([import('../tutor/questions'), import('../workspaces')]);
+      const ws = activeWorkspace();
+      const r = await generateWithAI(cfg!.documentIds, `${ws.organismo} · ${ws.nombre}`, setAi, undefined, true);
+      setAi(r.message ? r : null);
+    } catch (e) {
+      setError((e as Error).message);
+      setAi(null);
+    }
+  }
 
   async function start() {
     setError('');
@@ -63,8 +70,6 @@ export default function ExamSetup() {
       setError((e as Error).message);
     }
   }
-
-  const materiaName = (id: ID) => data.materias.find((m) => m.id === id)?.name ?? '';
 
   return (
     <div className="card">
@@ -105,49 +110,8 @@ export default function ExamSetup() {
           </div>
 
           <details className="setup-details">
-            <summary>Documentos, temas y artículos{(cfg.documentIds.length + cfg.temaIds.length + cfg.sectionIds.length) > 0 && ' (filtrado)'}</summary>
-            <div className="setup-grid">
-              <div>
-                <p className="muted small">Documentos (ninguno = todos)</p>
-                {data.docs.map((d) => (
-                  <label key={d.id} className="check">
-                    <input type="checkbox" checked={cfg.documentIds.includes(d.id!)}
-                      onChange={() => set({ documentIds: toggle(cfg.documentIds, d.id!), sectionIds: [] })} />
-                    {d.title}
-                  </label>
-                ))}
-              </div>
-              {data.temas.length > 0 && (
-                <div>
-                  <p className="muted small">Temas (ninguno = todos)</p>
-                  {data.temas.map((t) => (
-                    <label key={t.id} className="check">
-                      <input type="checkbox" checked={cfg.temaIds.includes(t.id!)}
-                        onChange={() => set({ temaIds: toggle(cfg.temaIds, t.id!) })} />
-                      {t.name} <span className="muted small">{materiaName(t.materiaId)}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-            {oneDoc !== undefined ? (
-              articles && articles.length > 0 && (
-                <div>
-                  <p className="muted small">Artículos concretos (ninguno = todos)
-                    {cfg.sectionIds.length > 0 && <button className="link" onClick={() => set({ sectionIds: [] })}>Quitar selección</button>}
-                  </p>
-                  <div className="article-list">
-                    {articles.map((a) => (
-                      <label key={a.id} className="check">
-                        <input type="checkbox" checked={cfg.sectionIds.includes(a.id!)}
-                          onChange={() => set({ sectionIds: toggle(cfg.sectionIds, a.id!) })} />
-                        {a.label}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              )
-            ) : <p className="muted small">Selecciona un único documento para elegir artículos concretos.</p>}
+            <summary>Documentos, temas y artículos{cfg.documentIds.length > 0 && ` (${cfg.documentIds.length} seleccionados)`}</summary>
+            <DocPicker cfg={cfg} set={set} />
           </details>
 
           <details className="setup-details">
@@ -192,6 +156,13 @@ export default function ExamSetup() {
                   : `${available} preguntas disponibles.`}
             </span>
           </div>
+          {available !== null && available < cfg.count && cfg.documentIds.length > 0 && (
+            <p className="muted small">
+              Con el temario seleccionado no hay más preguntas distintas y de calidad (no se rellenan con duplicados).{' '}
+              {ai ? (ai.message ?? `Ampliando con IA… ${ai.done}/${ai.total} tandas, ${ai.added} preguntas nuevas.`)
+                : <button className="link" onClick={expand}>Ampliar el banco con IA a partir de esta selección</button>}
+            </p>
+          )}
           {error && <p className="error">{error}</p>}
         </>
       )}

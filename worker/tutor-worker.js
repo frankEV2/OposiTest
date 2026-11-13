@@ -66,7 +66,7 @@ Devuelve SOLO JSON: {"preguntas":[{"enunciado":"…","opciones":["…","…","�
 "explicacion":"por qué es correcta y por qué fallan las demás, citando la referencia","fragmento":número del fragmento,
 "cita":"copia LITERAL (exacta, 15-300 caracteres) del fragmento que justifica la respuesta","tipo":"concepto|competencia|plazo|procedimiento|requisito|derecho|obligacion|practico","dificultad":"facil|media|dificil",
 "orden_fijo":true si alguna opción alude a otras (a y b, todas, ninguna) y entonces debe ser la última}]}
-Reparte las preguntas entre TODOS los fragmentos (como máximo 2 por fragmento), sin repetir la misma idea con otras palabras.`;
+Reparte las preguntas entre TODOS los fragmentos (hasta 3 por fragmento si contiene varios conceptos distintos: definiciones, obligaciones, competencias, procedimientos, medidas, responsabilidades o aplicación práctica), sin repetir la misma idea con otras palabras.`;
 
 
 function cors(origin, env) {
