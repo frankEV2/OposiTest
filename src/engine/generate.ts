@@ -100,6 +100,8 @@ const COMMON_DUR: Record<string, string[]> = {
 
 /** Sube cuando cambia el estilo de las preguntas: el temario integrado se regenera. */
 export const ENGINE_VERSION = 4;
+/** Versión del estilo natural (oposiciones sin el estilo oficial del Puerto); el Puerto sigue en ENGINE_VERSION. */
+export const NATURAL_VERSION = 5;
 
 /** Frases aptas como afirmación completa: ni muy cortas ni muy largas y sin remisiones vacías. */
 function statementsOf(u: Unit): string[] {
@@ -212,6 +214,9 @@ interface Ctx {
   docTitle: string;
   pools: Pools;
   rand: () => number;
+  /** Estilo natural (oposiciones sin el estilo oficial del Puerto): sin «Según la Ley…» en cada enunciado,
+   *  sin «complete el texto» y explicaciones didácticas en lugar de «dice literalmente». */
+  natural?: boolean;
 }
 
 type Result = Draft | { discard: string };
@@ -225,9 +230,33 @@ export const refWithArticle = (label: string) =>
 const isLegal = (label: string) => /^(Art[ií]culo|Article|Disposici|Anexo|ANEXO|Pre[áa]mbulo|Annex)/u.test(label);
 /** «la Ley 39/2015», «el Real Decreto…», «la Constitución Española», «el Convenio…». */
 const withArticle = (t: string) => (/^(Real|Reial|Convenio|Conveni|Texto|Text)/i.test(t) ? `el ${t}` : `la ${t}`);
-const intro = (c: Ctx) => isLegal(c.unit.label)
-  ? `Según ${withArticle(c.docTitle)}` // estilo examen: sin número de artículo (la referencia va en la explicación)
-  : `En relación con «${c.unit.label}» (${c.docTitle})`;
+/** Materia del apartado en minúscula: «Derechos de protección» → «derechos de protección»; «Tema 03. Drets…» → «drets…». */
+const topicOf = (c: Ctx) => {
+  const t = cleanItem((isLegal(c.unit.label) ? c.unit.heading : c.unit.label) ?? '').replace(/^(Tema|Apartat|Apartado)\s+\d+[.:]?\s*/i, '');
+  if (/^(definici|objeto|objecte|ámbito|àmbit|disposici|generalidades|introducci)/iu.test(t)) return '';
+  return t.length >= 6 && t.length <= 90 ? t.charAt(0).toLowerCase() + t.slice(1) : '';
+};
+const intro = (c: Ctx) => {
+  if (c.natural) {
+    // Variedad: unas veces la materia, otras la norma, sin repetir la misma fórmula en todas las preguntas.
+    const topic = topicOf(c);
+    const r = c.rand();
+    if (topic && r < 0.55) return c.lang === 'ca' ? `En matèria de ${topic}` : `En materia de ${topic}`;
+    if (isLegal(c.unit.label)) return r < 0.8 ? `Según ${withArticle(c.docTitle)}` : `De acuerdo con ${withArticle(c.docTitle)}`;
+    return topic ? (c.lang === 'ca' ? `Pel que fa a ${topic}` : `En relación con ${topic}`) : `En relación con «${c.unit.label}»`;
+  }
+  return isLegal(c.unit.label)
+    ? `Según ${withArticle(c.docTitle)}` // estilo examen: sin número de artículo (la referencia va en la explicación)
+    : `En relación con «${c.unit.label}» (${c.docTitle})`;
+};
+/** «Así lo establece el art. 21 de la Ley 31/1995: «…»» (natural) o «El art. 21 dice literalmente: «…»». */
+const says = (c: Ctx) => (!c.natural ? `${cap(refWithArticle(c.unit.label))} dice literalmente:`
+  : isLegal(c.unit.label) ? `Así lo establece ${src(c)}:`
+    : c.lang === 'ca' ? `Ho recullen els apunts («${c.unit.label}»):` : `Así lo recogen los apuntes («${c.unit.label}»):`);
+/** Fuente para las explicaciones: «el art. 14 (Ley 31/1995)» o «los apuntes («Deures»)». */
+const src = (c: Ctx) => (isLegal(c.unit.label) ? `${refWithArticle(c.unit.label)} (${c.docTitle})`
+  : c.lang === 'ca' ? `els apunts («${c.unit.label}»)` : `los apuntes («${c.unit.label}»)`);
+const DEICTIC = /(?<!\p{L})(esta|este|estos|estas|siguientes|anteriores?|aquesta|aquest|aquests|aquestes|següents|anteriors?)(?!\p{L})/iu;
 
 /** Elige `n` distractores distintos entre sí y de la respuesta (comparación normalizada). */
 function pick(cands: Iterable<string>, correct: string, rand: () => number, n = 3, exclude: string[] = []): string[] | null {
@@ -269,7 +298,7 @@ function cloze(c: Ctx, rule: QuestionRule, sentence: string, at: number, answer:
     const filled = norm(sentence.slice(Math.max(0, at - 30), at) + d + sentence.slice(at + answer.length, at + answer.length + 30));
     if (unitNorm.includes(filled)) return { discard: 'distractor también válido en el texto' };
   }
-  const expl = `${cap(refWithArticle(c.unit.label))} dice literalmente: «${windowAround(sentence, at, at + answer.length, 420)}»`;
+  const expl = `${says(c)} «${windowAround(sentence, at, at + answer.length, 420)}»`;
   // Estilo de examen oficial: el enunciado es el inicio de la frase y las opciones, su continuación
   // completa, que solo se diferencia en el dato preguntado (plazo, órgano, cifra, verbo…).
   const before = sentence.slice(0, at).trimEnd();
@@ -281,6 +310,8 @@ function cloze(c: Ctx, rule: QuestionRule, sentence: string, at: number, answer:
     const stem = `${intro(c)}, ${lead.charAt(0).toLowerCase()}${lead.slice(1)}…`;
     return assemble(c, rule, stem, opt(answer), distractors.map(opt), expl, sentence, difficulty);
   }
+  // «Complete el texto» es artificial: en estilo natural se descarta.
+  if (c.natural) return { discard: 'completar texto literal' };
   const stem = `${intro(c)}, complete el texto: «${shown}»`;
   return assemble(c, rule, stem, answer, distractors, expl, sentence, difficulty);
 }
@@ -340,7 +371,7 @@ function* afirmacionQuestions(c: Ctx): Generator<Result> {
   const sts = shuffle(statementsOf(c.unit), c.rand);
   if (!sts.length) return;
   const ref = refWithArticle(c.unit.label);
-  const head = `${intro(c)}, señale la afirmación`;
+  const head = c.natural && c.lang === 'ca' ? `${intro(c)}, assenyaleu l'afirmació` : `${intro(c)}, señale la afirmación`;
   const withMut = sts.map((s) => ({ s, m: mutations(s, c) })).filter((x) => x.m.length);
   if (!withMut.length) return;
   const negative = sts.length >= 4 && c.rand() < 0.5;
@@ -348,7 +379,8 @@ function* afirmacionQuestions(c: Ctx): Generator<Result> {
     const { s, m } = withMut[0];
     const others = sts.filter((x) => x !== s).slice(0, 3);
     yield assemble(c, 'afirmacion', `${head} INCORRECTA:`, m[0], others,
-      `Es incorrecta: ${ref} dice «${s}». Las demás reproducen literalmente el artículo.`, s, 3);
+      c.natural ? `Es incorrecta porque altera lo que establece ${src(c)}: «${s}». Las demás son conformes con el temario.`
+        : `Es incorrecta: ${ref} dice «${s}». Las demás reproducen literalmente el artículo.`, s, 3);
     return;
   }
   const { s, m } = withMut[0];
@@ -356,7 +388,7 @@ function* afirmacionQuestions(c: Ctx): Generator<Result> {
   const d = pick(fill, s, c.rand);
   if (!d) { yield { discard: 'afirmación sin suficientes variantes' }; return; }
   yield assemble(c, 'afirmacion', `${head} correcta:`, s, d,
-    `${cap(ref)} dice literalmente: «${s}». Las demás opciones alteran algún dato del texto.`, s, 3);
+    `${says(c)} «${s}». Las demás opciones cambian algún dato esencial (sujeto, plazo, requisito o consecuencia).`, s, 3);
 }
 
 const lenDifficulty = (s: string): Difficulty => (s.split(/\s+/).length > 45 ? 3 : 2);
@@ -449,29 +481,40 @@ function* enumerationQuestions(c: Ctx): Generator<Result> {
     const foreign = sameDoc.length >= 3 ? sameDoc : all.map((x) => x.item);
     const listing = e.items.map((it, i) => `${String.fromCharCode(97 + i)}) ${it}`).join('; ');
     const introTxt = windowAround(e.intro.replace(/^\d{1,2}\.\s+/, ''), 0, 0, 220);
-    const expl = `${cap(refWithArticle(c.unit.label))} enumera: ${listing}.`;
+    const listTopic = introTxt.replace(/^[-–•]\s*/, '').replace(/[:.\s]+$/, '');
+    // Estilo natural: sin citar entre comillas el arranque de la lista; si remite a otro texto («esta definición»), se omite.
+    if (c.natural && (listTopic.length < 12 || DEICTIC.test(listTopic))) { yield { discard: 'enumeración sin enunciado autónomo' }; continue; }
+    const ca = c.natural && c.lang === 'ca';
+    // Si la materia del apartado ya es el arranque de la lista, no se repite.
+    const sameTopic = norm(listTopic).includes(norm(topicOf(c)) || '\u0000') || norm(topicOf(c)).includes(norm(listTopic));
+    const lead = sameTopic ? `${cap(listTopic)}:` : `${intro(c)}. ${cap(listTopic)}:`;
+    const allOk = ca ? 'Totes les altres opcions són correctes' : ALL_OK;
+    const expl = c.natural ? `${cap(src(c))}${sameTopic ? '' : ` (${listTopic.charAt(0).toLowerCase()}${listTopic.slice(1)})`}: ${listing}.`
+      : `${cap(refWithArticle(c.unit.label))} enumera: ${listing}.`;
 
     // Forma negativa: tres elementos de la lista y uno ajeno.
     const own = pick(e.items, '', c.rand, 3);
     const close = bySimilarity(foreign, e.items);
     const outsider = pick(close, '', c.rand, 1, e.items);
     if (own && outsider) {
-      const stem = `${intro(c)} («${introTxt}»), ¿cuál de los siguientes NO figura en la enumeración?`;
-      yield assemble(c, 'enumeracion', stem, outsider[0], own, `${expl} «${outsider[0]}» no aparece en ella.`,
+      const stem = c.natural ? `${lead} ${ca ? "quin dels següents NO s'hi inclou?" : '¿cuál de los siguientes NO se incluye?'}`
+        : `${intro(c)} («${introTxt}»), ¿cuál de los siguientes NO figura en la enumeración?`;
+      yield assemble(c, 'enumeracion', stem, outsider[0], own, `${expl} «${outsider[0]}» ${ca ? 'no hi figura' : 'no aparece en ella'}.`,
         `${e.intro}\n${listing}`, 3);
     } else {
       yield { discard: 'enumeración sin elementos ajenos en el corpus' };
     }
     // Forma positiva, al estilo de los exámenes oficiales, con «Todas las demás opciones son correctas»
     // unas veces como respuesta verdadera (tres elementos de la lista) y otras como falsa (uno solo).
-    const stemPos = `${intro(c)} («${introTxt}»), ¿cuál de las siguientes respuestas es correcta?`;
+    const stemPos = c.natural ? `${lead} ${ca ? 'quina de les respostes següents és correcta?' : '¿cuál de las siguientes respuestas es correcta?'}`
+      : `${intro(c)} («${introTxt}»), ¿cuál de las siguientes respuestas es correcta?`;
     const three = pick(e.items, '', c.rand, 3);
     if (three && e.items.length >= 3 && c.rand() < 0.5) {
-      yield assemble(c, 'enumeracion', stemPos, ALL_OK, three, `${expl} Los tres elementos figuran en ella.`, `${e.intro}\n${listing}`, 3);
+      yield assemble(c, 'enumeracion', stemPos, allOk, three, `${expl} ${ca ? 'Els tres elements hi figuren.' : 'Los tres elementos figuran en ella.'}`, `${e.intro}\n${listing}`, 3);
     } else {
       const correct = e.items[Math.floor(c.rand() * e.items.length)];
       const others = pick(close, correct, c.rand, 2, e.items);
-      if (others) yield assemble(c, 'enumeracion', stemPos, correct, [...others, ALL_OK], expl, `${e.intro}\n${listing}`, 3);
+      if (others) yield assemble(c, 'enumeracion', stemPos, correct, [...others, allOk], expl, `${e.intro}\n${listing}`, 3);
     }
   }
 }
@@ -506,7 +549,7 @@ function capShare(drafts: Draft[], discard: (r: string) => void): Draft[] {
 }
 
 /** Genera preguntas para un documento. `corpus` aporta distractores (por defecto, las propias unidades). */
-export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pools = units): GenerationReport {
+export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pools = units, natural = false): GenerationReport {
   const docTitle = shortDocTitle(fullTitle);
   const pools = Array.isArray(corpus) ? buildPools(corpus) : corpus;
   const drafts: Draft[] = [];
@@ -516,7 +559,7 @@ export function generate(units: Unit[], fullTitle: string, corpus: Unit[] | Pool
   const discard = (r: string) => { discarded[r] = (discarded[r] ?? 0) + 1; };
 
   for (const unit of units) {
-    const c: Ctx = { lang, unit, docTitle, pools, rand: rng(`${docTitle}|${unit.label}|${unit.text.length}`) };
+    const c: Ctx = { lang, unit, docTitle, pools, natural, rand: rng(`${docTitle}|${unit.label}|${unit.text.length}`) };
     const sents = sentences(unit.text).map((s) => s.replace(/^\d{1,2}\.\s+/, "")).filter((s) => s.length >= 30 && s.length <= 900);
     const gens = [
       definitionQuestions(c), afirmacionQuestions(c), plazoQuestions(c, sents), competenciaQuestions(c, sents),

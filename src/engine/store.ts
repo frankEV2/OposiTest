@@ -2,6 +2,7 @@ import { db } from '../db/db';
 import type { ID, Question, Section } from '../db/types';
 import { buildPools, generate, langOf, validateDraft, type Pools, type Unit } from './generate';
 import { hash, norm } from './text';
+import { questionProfile } from '../tutor/profiles';
 
 /** Convierte las secciones en unidades de pregunta: apartados si existen, si no el artículo entero. */
 export function unitsFromSections(sections: Section[]): Unit[] {
@@ -63,17 +64,18 @@ export async function generateForDocuments(documentIds: ID[]): Promise<DocReport
   const docLang = new Map([...byDoc].map(([d, us]) => [d, langOf(us.map((u) => u.text).join('\n'))]));
   const poolsByLang = new Map<string, Pools>(); // se construyen una sola vez y solo si hace falta
 
+  const natural = !questionProfile().allowArticleStems;
   for (const id of documentIds) {
     const doc = await db.documents.get(id);
     if (!doc) continue;
     const units = byDoc.get(id) ?? [];
     const lang = docLang.get(id) ?? 'es';
     const libraryUnits = allUnits.filter((u) => docLang.get(u.documentId) === lang);
-    const own = generate(units, doc.title, units);
+    const own = generate(units, doc.title, units, natural);
     // Segunda pasada con el corpus completo para recuperar descartes por falta de alternativas.
     const widen = libraryUnits.length > units.length;
     if (widen && !poolsByLang.has(lang)) poolsByLang.set(lang, buildPools(libraryUnits));
-    const wide = widen ? generate(units, doc.title, poolsByLang.get(lang)!) : null;
+    const wide = widen ? generate(units, doc.title, poolsByLang.get(lang)!, natural) : null;
     const byHash = new Map(own.drafts.map((d) => [d.hash, d]));
     const ownSections = new Set(own.drafts.map((d) => `${d.sectionId}|${d.rule}`));
     for (const d of wide?.drafts ?? []) {

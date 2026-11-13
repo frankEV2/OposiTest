@@ -91,7 +91,9 @@ async function run(onProgress?: (done: number, total: number, name: string) => v
   }
   // Banco de preguntas listo sin pasos manuales: se genera en local y queda guardado en IndexedDB.
   // Se hace una sola vez por versión del documento (clave = SHA-256), aunque la carga se interrumpiera antes.
-  const { ENGINE_VERSION } = await import('../engine/generate');
+  const [{ ENGINE_VERSION: BASE_VERSION, NATURAL_VERSION }, { questionProfile }] = await Promise.all([import('../engine/generate'), import('../tutor/profiles')]);
+  // Cada oposición tiene su versión de estilo: cambiar el de una no regenera el banco de la otra.
+  const ENGINE_VERSION = questionProfile().allowArticleStems ? BASE_VERSION : NATURAL_VERSION;
   let bank = new Set(((await db.settings.get('bundledBank'))?.value as string[] | undefined) ?? []);
   if ((await db.settings.get('bundledBankVersion'))?.value !== ENGINE_VERSION) {
     // Motor nuevo: se sustituyen las preguntas automáticas sin revisar del temario integrado

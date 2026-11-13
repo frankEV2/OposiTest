@@ -46,6 +46,25 @@ ESTILO PROPIO (Técnico de Gestión Documental, Autoridad Portuaria de Tarragona
 - Como en sus exámenes, se admite alguna pregunta sobre un artículo concreto (como máximo 1 de cada 10), siempre
   sobre artículos relevantes; el resto pregunta por el contenido.`,
   },
+  'ayto-tarragona-prl': {
+    allowArticleStems: false,
+    guide: `${COMMON}
+${NO_ARTICLES}
+- Tampoco aludas al texto en sí («según lo que dice el artículo», «de acuerdo con lo dispuesto», «el texto establece»):
+  pregunta directamente por la obligación, el derecho, el concepto o la actuación correcta.
+ENFOQUE PROPIO (Técnico de Prevención de Riesgos Laborales, Ayuntamiento de Tarragona). Básate solo en su temario:
+- Temario general (régimen local, procedimiento, derechos de la ciudadanía, bienes, presupuesto, igualdad):
+  conceptos, competencias municipales, fases y plazos relevantes.
+- Temario específico: lo que hace un técnico de PRL en su día a día: evaluación de riesgos y planificación, modalidades
+  de organización preventiva, consulta y participación (delegados y comité), formación e información, vigilancia de la
+  salud, trabajadores especialmente sensibles y maternidad, coordinación de actividades empresariales, recurso
+  preventivo, emergencias e incendios, EPI, equipos de trabajo, señalización, agentes físicos, químicos y biológicos,
+  ergonomía, accidentes de trabajo y su investigación.
+- Supuestos prácticos realistas en dependencias municipales (brigadas de obras, parques y jardines, oficinas, escuelas,
+  policía local, instalaciones deportivas, contratas): «Una contrata de limpieza trabaja en un edificio municipal… ¿qué
+  obligación tiene el Ayuntamiento?».
+- Evita opciones del tipo «Todas las anteriores…» salvo que la enumeración del texto lo justifique de verdad.`,
+  },
   default: {
     allowArticleStems: false,
     guide: `${COMMON}
