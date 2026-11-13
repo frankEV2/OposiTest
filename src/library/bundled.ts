@@ -111,6 +111,39 @@ async function run(onProgress?: (done: number, total: number, name: string) => v
     todo.forEach((d) => bank.add(d.sha256));
     await db.settings.put({ key: 'bundledBank', value: [...bank] });
   }
+  await reviewBank();
   onProgress?.(pending.length, pending.length, '');
   return n;
+}
+
+/**
+ * Revisión de calidad del banco (una sola vez por versión): se RECHAZAN (no se borran, son recuperables y el historial
+ * se conserva) los casi duplicados y, donde el estilo de la oposición no lo admite, las preguntas por número de artículo.
+ * Las preguntas manuales y validadas no se tocan.
+ */
+async function reviewBank() {
+  const VERSION = 1;
+  if ((await db.settings.get('bankReview'))?.value === VERSION) return;
+  const [{ questionProfile }, { ARTICLE_IN_STEM }, { nearDuplicate }, { norm }] = await Promise.all([
+    import('../tutor/profiles'), import('../tutor/questions'), import('../exam/logic'), import('../engine/text'),
+  ]);
+  const { allowArticleStems } = questionProfile();
+  const words = (s: string) => new Set(norm(s).split(/\W+/u).filter((w) => w.length > 3));
+  const trusted = (q: { rule: string; status: string }) => q.rule === 'manual' || q.status === 'validated';
+  const all = (await db.questions.toArray()).filter((q) => q.status !== 'rejected')
+    .sort((a, b) => Number(trusted(b)) - Number(trusted(a)) || Number(b.rule === 'ia') - Number(a.rule === 'ia') || a.id! - b.id!);
+  const kept = new Map<number | undefined, Set<string>[]>();
+  const out: number[] = [];
+  for (const q of all) {
+    const w = words(q.stem);
+    const list = kept.get(q.documentId) ?? [];
+    kept.set(q.documentId, list);
+    if (!trusted(q) && ((!allowArticleStems && ARTICLE_IN_STEM.test(q.stem)) || list.some((k) => nearDuplicate(k, w)))) {
+      out.push(q.id!);
+      continue;
+    }
+    list.push(w);
+  }
+  if (out.length) await db.questions.where('id').anyOf(out).modify({ status: 'rejected', updatedAt: Date.now() });
+  await db.settings.put({ key: 'bankReview', value: VERSION });
 }

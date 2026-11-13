@@ -58,13 +58,13 @@ const STYLE = `ESTILO DE LOS EXÁMENES OFICIALES (imítalo):
 - Nombra la norma en el enunciado cuando haga falta para entenderlo («La Ley Orgánica 10/2022 tiene por objeto:»), nunca
   «la norma» o «esta ley» a secas.`;
 
-const QUESTION_RULES = `Eres un tribunal de oposiciones que redacta preguntas tipo test nuevas.
+const QUESTION_RULES = (style) => `Eres un tribunal de oposiciones que redacta preguntas tipo test nuevas.
 Usa EXCLUSIVAMENTE los FRAGMENTOS DEL TEMARIO. Cada respuesta correcta debe estar respaldada literalmente por un fragmento
 y solo una opción puede ser correcta según ese texto. No uses conocimientos externos ni amplíes el temario.
-${STYLE}
+${style}
 Devuelve SOLO JSON: {"preguntas":[{"enunciado":"…","opciones":["…","…","…","…"],"correcta":0-3,
 "explicacion":"por qué es correcta y por qué fallan las demás, citando la referencia","fragmento":número del fragmento,
-"cita":"copia LITERAL (exacta, 15-300 caracteres) del fragmento que justifica la respuesta","tipo":"concepto|competencia|plazo|procedimiento|requisito|derecho|obligacion|practico",
+"cita":"copia LITERAL (exacta, 15-300 caracteres) del fragmento que justifica la respuesta","tipo":"concepto|competencia|plazo|procedimiento|requisito|derecho|obligacion|practico","dificultad":"facil|media|dificil",
 "orden_fijo":true si alguna opción alude a otras (a y b, todas, ninguna) y entonces debe ser la última}]}
 Reparte las preguntas entre TODOS los fragmentos (como máximo 2 por fragmento), sin repetir la misma idea con otras palabras.`;
 
@@ -117,6 +117,8 @@ export default {
       : '(No se ha encontrado ningún fragmento relevante en el temario para esta consulta.)';
     const oposicion = String(body.oposicion || '').slice(0, 200);
     const model = env.GEMINI_MODEL || 'gemini-flash-lite-latest';
+    // Criterios propios de cada oposición (los envía la app); si faltan, el estilo genérico.
+    const style = typeof body.guide === 'string' && body.guide.trim() ? body.guide.slice(0, 6000) : STYLE;
 
     // Generación de preguntas para el banco (respuesta JSON, sin streaming).
     if (body.task === 'questions') {
@@ -146,7 +148,7 @@ export default {
     if (!messages.length || messages[messages.length - 1].role !== 'user') {
       return json(400, { error: 'Falta la pregunta' }, c.headers);
     }
-    const system = `${RULES}\n\n${STYLE}\n\nOposición: ${oposicion}\n\nFRAGMENTOS DEL TEMARIO:\n${fragments}`;
+    const system = `${RULES}\n\n${style}\n\nOposición: ${oposicion}\n\nFRAGMENTOS DEL TEMARIO:\n${fragments}`;
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`;
     const upstream = await fetch(url, {

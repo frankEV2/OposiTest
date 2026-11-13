@@ -1,6 +1,7 @@
 /** Conexión con el intermediario (Cloudflare Worker). La clave de Gemini nunca está en el navegador. */
 import type { Chunk } from './rag';
 import { recordQuotaHit, recordUse } from './usage';
+import { questionProfile } from './profiles';
 
 export interface ChatMsg {
   role: 'user' | 'model';
@@ -33,6 +34,7 @@ export async function askTutor(
     headers: { 'Content-Type': 'application/json', 'X-Tutor-Token': token },
     body: JSON.stringify({
       oposicion,
+      guide: questionProfile().guide,
       context: context.map((c) => ({ ref: c.ref, text: c.text })),
       messages: history.filter((m) => !m.error).slice(-12).map((m) => ({ role: m.role, text: m.text })),
     }),

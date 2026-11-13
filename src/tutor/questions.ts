@@ -12,12 +12,13 @@ import type { ID, Question, Section } from '../db/types';
 import { shortDocTitle } from '../engine/generate';
 import { hash, norm, shuffle } from '../engine/text';
 import { tutorConfig } from './client';
+import { questionProfile } from './profiles';
 import { recordQuotaHit, recordUse } from './usage';
 
 interface Frag { ref: string; text: string; section: Section; key: string }
 interface AiQ {
   enunciado: string; opciones: string[]; correcta: number; explicacion: string;
-  fragmento: number; cita: string; tipo?: string; orden_fijo?: boolean;
+  fragmento: number; cita: string; tipo?: string; orden_fijo?: boolean; dificultad?: string;
 }
 export interface AiProgress { done: number; total: number; added: number; rejected: Record<string, number>; message?: string }
 
@@ -25,8 +26,9 @@ const DONE_KEY = 'aiQuestionsDone';
 const PAUSE_MS = 4500; // ritmo compatible con la cuota gratuita por minuto
 const BATCH_CHARS = 5500;
 const COMPOUND = /^(todas|ninguna|las respuestas|la\s+a\)|las\s+opciones|ambas)/i;
-const ARTICLE_IN_STEM = /(art[ií]culo|art\.)\s*\d|qu[ée]\s+art[ií]culo|en\s+qu[ée]\s+(art[ií]culo|precepto)/i;
+export const ARTICLE_IN_STEM = /(art[ií]culo|art\.)\s*\d|qu[ée]\s+art[ií]culo|en\s+qu[ée]\s+(art[ií]culo|precepto)/i;
 
+const DIFF: Record<string, 1 | 2 | 3> = { facil: 1, media: 2, medio: 2, dificil: 3 };
 const words = (s: string) => new Set(norm(s).split(/\W+/u).filter((w) => w.length > 3));
 function similar(a: Set<string>, b: Set<string>) {
   let inter = 0;
@@ -53,7 +55,7 @@ async function callWorker(oposicion: string, frags: Frag[], count: number, avoid
   const res = await fetch(url, {
     method: 'POST', signal,
     headers: { 'Content-Type': 'application/json', 'X-Tutor-Token': token },
-    body: JSON.stringify({ task: 'questions', oposicion, count, avoid, context: frags.map((f) => ({ ref: f.ref, text: f.text })) }),
+    body: JSON.stringify({ task: 'questions', oposicion, guide: questionProfile().guide, count, avoid, context: frags.map((f) => ({ ref: f.ref, text: f.text })) }),
   });
   if (res.status === 429) { recordQuotaHit(); return { quota: true as const, items: [] }; }
   if (res.ok) recordUse('questions');
@@ -64,13 +66,13 @@ async function callWorker(oposicion: string, frags: Frag[], count: number, avoid
 }
 
 /** Valida una pregunta de la IA; devuelve el motivo de rechazo o la pregunta lista para guardar. */
-export function checkAiQuestion(q: AiQ, frags: { text: string; ref: string }[]):
+export function checkAiQuestion(q: AiQ, frags: { text: string; ref: string }[], allowArticles = false):
   { reason: string } | { stem: string; options: [string, string, string, string]; correct: 0 | 1 | 2 | 3; frag: number; fixed: boolean } {
   const stem = String(q.enunciado ?? '').trim();
   const opts = (q.opciones ?? []).map((o) => String(o).replace(/^[a-d]\)\s*/i, '').trim());
   if (stem.length < 20 || opts.length !== 4 || opts.some((o) => !o || o.length > 320)) return { reason: 'formato incorrecto' };
   if (!(q.correcta >= 0 && q.correcta <= 3)) return { reason: 'formato incorrecto' };
-  if (ARTICLE_IN_STEM.test(stem)) return { reason: 'pregunta por número de artículo' };
+  if (!allowArticles && ARTICLE_IN_STEM.test(stem)) return { reason: 'pregunta por número de artículo' };
   if (new Set(opts.map(norm)).size !== 4) return { reason: 'opciones repetidas' };
   const fi = Number(q.fragmento) - 1;
   const frag = frags[fi] ?? frags.find((f) => norm(f.text).includes(norm(q.cita ?? '')));
@@ -136,9 +138,13 @@ export async function generateWithAI(
     const doc = await db.documents.get(docId);
     const fresh: Question[] = [];
     const perFrag = new Map<number, number>();
+    const profile = questionProfile();
+    let articleStems = 0;
     for (const q of r.items) {
-      const v = checkAiQuestion(q, batch);
+      const v = checkAiQuestion(q, batch, profile.allowArticleStems);
       if ('reason' in v) { reject(v.reason); continue; }
+      // Incluso donde se admiten (estilo oficial del Puerto), las preguntas por artículo son la excepción.
+      if (ARTICLE_IN_STEM.test(v.stem) && articleStems++ >= 1) { reject('pregunta por número de artículo'); continue; }
       // Reparto: como máximo 2 preguntas por artículo en cada tanda.
       if ((perFrag.get(v.frag) ?? 0) >= 2) { reject('demasiadas del mismo artículo'); continue; }
       perFrag.set(v.frag, (perFrag.get(v.frag) ?? 0) + 1);
@@ -160,7 +166,7 @@ export async function generateWithAI(
         hash: h, uid: h, documentId: docId, sectionId: f.section.id, temaId: doc?.temaId,
         stem: v.stem, options, correctIndex: correct, fixedOrder: v.fixed || undefined,
         explanation: String(q.explicacion ?? '').trim() || `Lo establece ${f.ref}.`,
-        reference: f.ref, sourceExcerpt: String(q.cita), difficulty: q.tipo === 'practico' ? 3 : 2,
+        reference: f.ref, sourceExcerpt: String(q.cita), difficulty: DIFF[norm(String(q.dificultad ?? ''))] ?? (q.tipo === 'practico' ? 3 : 2),
         status: 'pending', rule: 'ia', createdAt: now, updatedAt: now,
       });
     }

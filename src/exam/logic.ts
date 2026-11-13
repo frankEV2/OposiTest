@@ -1,4 +1,5 @@
 import type { ExamConfig, ID, Question } from '../db/types';
+import { norm } from '../engine/text';
 
 export interface Score {
   total: number;
@@ -68,6 +69,43 @@ const shuffled = <T,>(a: T[]): T[] => {
   return r;
 };
 
+const stemWords = (s: string) => new Set(norm(s).split(/\W+/u).filter((w) => w.length > 3));
+/** Dos enunciados casi iguales (misma idea con otras palabras). */
+export function nearDuplicate(a: Set<string>, b: Set<string>): boolean {
+  let inter = 0;
+  for (const w of a) if (b.has(w)) inter++;
+  return inter / Math.max(1, Math.min(a.size, b.size)) >= 0.8;
+}
+
+/**
+ * Examen variado, como uno real: reparte las preguntas entre artículos/apartados (una por apartado en cada vuelta),
+ * prefiere las redactadas con IA, manuales o validadas y evita dos preguntas casi iguales.
+ * `pool` llega ya barajado; el orden relativo se conserva dentro de cada grupo.
+ */
+export function diversify(pool: Question[], count: number): Question[] {
+  const rank = (q: Question) => (q.rule === 'ia' || q.rule === 'manual' || q.status === 'validated' ? 0 : 1);
+  const groups = new Map<string, Question[]>();
+  for (const q of [...pool].sort((a, b) => rank(a) - rank(b))) {
+    const k = q.sectionId !== undefined ? `s${q.sectionId}` : `d${q.documentId}:${q.id}`;
+    groups.set(k, [...(groups.get(k) ?? []), q]);
+  }
+  const out: Question[] = [];
+  const picked: Set<string>[] = [];
+  const skipped: Question[] = [];
+  const lists = [...groups.values()];
+  for (let round = 0; out.length < count && lists.some((l) => l.length > round); round++) {
+    for (const l of lists) {
+      const q = l[round];
+      if (!q || out.length >= count) continue;
+      const w = stemWords(q.stem);
+      if (picked.some((p) => nearDuplicate(p, w))) { skipped.push(q); continue; }
+      out.push(q);
+      picked.push(w);
+    }
+  }
+  return out.length < count ? [...out, ...skipped.slice(0, count - out.length)] : out;
+}
+
 /**
  * Elige las preguntas del examen. Con `shuffle` el orden y las opciones son aleatorios;
  * sin él se sigue el orden del documento y las opciones no se barajan.
@@ -76,7 +114,7 @@ export function pickQuestions(pool: Question[], cfg: ExamConfig): { questions: Q
   const ordered = cfg.shuffle
     ? shuffled(pool)
     : [...pool].sort((a, b) => (a.documentId ?? 0) - (b.documentId ?? 0) || (a.sectionId ?? 0) - (b.sectionId ?? 0) || a.id! - b.id!);
-  const questions = ordered.slice(0, cfg.count);
+  const questions = cfg.shuffle ? diversify(ordered, cfg.count) : ordered.slice(0, cfg.count);
   const orders = questions.map((q) => (cfg.shuffle && !q.fixedOrder ? shuffled([0, 1, 2, 3]) : [0, 1, 2, 3]));
   return { questions, orders };
 }
