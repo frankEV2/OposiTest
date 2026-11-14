@@ -9,6 +9,7 @@ import { autoSync } from './sync/auto';
 // Cada sección se descarga al visitarla por primera vez (el service worker las precachea igualmente).
 const Settings = lazy(() => import('./pages/Settings'));
 const Library = lazy(() => import('./pages/Library'));
+const Documentation = lazy(() => import('./pages/Documentation'));
 const DocumentView = lazy(() => import('./pages/DocumentView'));
 const Generate = lazy(() => import('./pages/Generate'));
 const Bank = lazy(() => import('./pages/Bank'));
@@ -40,6 +41,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/configuracion" element={<Settings />} />
+          <Route path="/documentacion" element={<Documentation />} />
           <Route path="/biblioteca" element={<Library />} />
           <Route path="/biblioteca/:id" element={<DocumentView />} />
           <Route path="/generar" element={<Generate />} />

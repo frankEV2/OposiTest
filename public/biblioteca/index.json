@@ -1,0 +1,1073 @@
+{
+ "puerto-tarragona": {
+  "normativa": [
+   {
+    "key": "BOE-A-1978-31229",
+    "title": "Constitución Española",
+    "bloque": "Temario oficial",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229",
+    "pdf": "https://www.boe.es/buscar/pdf/1978/BOE-A-1978-31229-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [],
+    "textos": [
+     {
+      "file": "Puertos del Estado/Temario oficial/01 Constitucion Espanola.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2011-16467",
+    "title": "Real Decreto Legislativo 2/2011, de 5 de septiembre, por el que se aprueba el Texto refundido de la Ley de Puertos del Estado y de la Marina Mercante",
+    "bloque": "Temario oficial",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2011-16467",
+    "pdf": "https://www.boe.es/buscar/pdf/2011/BOE-A-2011-16467-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [],
+    "textos": [
+     {
+      "file": "Puertos del Estado/Temario oficial/02 Real Decreto Legislativo 2-2011 Puertos.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2019-9021",
+    "title": "III Convenio colectivo de Puertos del Estado y Autoridades Portuarias",
+    "bloque": "Temario oficial",
+    "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2019-9021",
+    "fuente": "BOE (texto publicado)",
+    "temas": [],
+    "textos": [
+     {
+      "file": "Puertos del Estado/Temario oficial/03 III Convenio colectivo Puertos.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2007-6115",
+    "title": "Ley Orgánica 3/2007, de 22 de marzo, para la igualdad efectiva de mujeres y hombres",
+    "bloque": "Temario oficial",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-6115",
+    "pdf": "https://www.boe.es/buscar/pdf/2007/BOE-A-2007-6115-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [],
+    "textos": [
+     {
+      "file": "Puertos del Estado/Temario oficial/04 Ley Organica 3-2007 Igualdad.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2019-3244",
+    "title": "Real Decreto-ley 6/2019, de 1 de marzo, de medidas urgentes para garantía de la igualdad de trato y de oportunidades entre mujeres y hombres en el empleo y la ocupación",
+    "bloque": "Temario oficial",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2019-3244",
+    "pdf": "https://www.boe.es/buscar/pdf/2019/BOE-A-2019-3244-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [],
+    "textos": [
+     {
+      "file": "Puertos del Estado/Temario oficial/05 Real Decreto-ley 6-2019.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2004-21760",
+    "title": "Ley Orgánica 1/2004, de 28 de diciembre, de Medidas de Protección Integral contra la Violencia de Género",
+    "bloque": "Temario oficial",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2004-21760",
+    "pdf": "https://www.boe.es/buscar/pdf/2004/BOE-A-2004-21760-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [],
+    "textos": [
+     {
+      "file": "Puertos del Estado/Temario oficial/06 Ley Organica 1-2004 Violencia de genero.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2022-11589",
+    "title": "Ley 15/2022, de 12 de julio, integral para la igualdad de trato y la no discriminación",
+    "bloque": "Temario oficial",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-11589",
+    "pdf": "https://www.boe.es/buscar/pdf/2022/BOE-A-2022-11589-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [],
+    "textos": [
+     {
+      "file": "Puertos del Estado/Temario oficial/07 Ley 15-2022 Igualdad de trato.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2022-14630",
+    "title": "Ley Orgánica 10/2022, de 6 de septiembre, de garantía integral de la libertad sexual",
+    "bloque": "Temario oficial",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-14630",
+    "pdf": "https://www.boe.es/buscar/pdf/2022/BOE-A-2022-14630-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [],
+    "textos": [
+     {
+      "file": "Puertos del Estado/Temario oficial/08 Ley Organica 10-2022 Libertad sexual.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2015-10565",
+    "title": "Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas",
+    "bloque": "Temario oficial",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-10565",
+    "pdf": "https://www.boe.es/buscar/pdf/2015/BOE-A-2015-10565-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [],
+    "textos": [
+     {
+      "file": "Puertos del Estado/Temario oficial/09 Ley 39-2015 Procedimiento administrativo.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2015-10566",
+    "title": "Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público",
+    "bloque": "Temario oficial",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-10566",
+    "pdf": "https://www.boe.es/buscar/pdf/2015/BOE-A-2015-10566-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [],
+    "textos": [
+     {
+      "file": "Puertos del Estado/Temario oficial/10 Ley 40-2015 Regimen juridico.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2018-16673",
+    "title": "Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales",
+    "bloque": "Temario oficial",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2018-16673",
+    "pdf": "https://www.boe.es/buscar/pdf/2018/BOE-A-2018-16673-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [],
+    "textos": [
+     {
+      "file": "Puertos del Estado/Temario oficial/11 Ley Organica 3-2018 Proteccion de datos.md"
+     }
+    ]
+   }
+  ],
+  "apuntes": [
+   {
+    "file": "Puertos del Estado/Temario oficial/01 Constitucion Espanola.md",
+    "bloque": "Temario oficial",
+    "tema": "",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Constitución Española"
+   },
+   {
+    "file": "Puertos del Estado/Temario oficial/02 Real Decreto Legislativo 2-2011 Puertos.md",
+    "bloque": "Temario oficial",
+    "tema": "",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto Legislativo 2/2011, de 5 de septiembre, por el que se aprueba el Texto refundido de la Ley de Puertos del Estado y de la Marina Mercante"
+   },
+   {
+    "file": "Puertos del Estado/Temario oficial/03 III Convenio colectivo Puertos.md",
+    "bloque": "Temario oficial",
+    "tema": "",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "III Convenio colectivo de Puertos del Estado y Autoridades Portuarias"
+   },
+   {
+    "file": "Puertos del Estado/Temario oficial/04 Ley Organica 3-2007 Igualdad.md",
+    "bloque": "Temario oficial",
+    "tema": "",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley Orgánica 3/2007, de 22 de marzo, para la igualdad efectiva de mujeres y hombres"
+   },
+   {
+    "file": "Puertos del Estado/Temario oficial/05 Real Decreto-ley 6-2019.md",
+    "bloque": "Temario oficial",
+    "tema": "",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto-ley 6/2019, de 1 de marzo, de medidas urgentes para garantía de la igualdad de trato y de oportunidades entre mujeres y hombres en el empleo y la ocupación"
+   },
+   {
+    "file": "Puertos del Estado/Temario oficial/06 Ley Organica 1-2004 Violencia de genero.md",
+    "bloque": "Temario oficial",
+    "tema": "",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley Orgánica 1/2004, de 28 de diciembre, de Medidas de Protección Integral contra la Violencia de Género"
+   },
+   {
+    "file": "Puertos del Estado/Temario oficial/07 Ley 15-2022 Igualdad de trato.md",
+    "bloque": "Temario oficial",
+    "tema": "",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 15/2022, de 12 de julio, integral para la igualdad de trato y la no discriminación"
+   },
+   {
+    "file": "Puertos del Estado/Temario oficial/08 Ley Organica 10-2022 Libertad sexual.md",
+    "bloque": "Temario oficial",
+    "tema": "",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley Orgánica 10/2022, de 6 de septiembre, de garantía integral de la libertad sexual"
+   },
+   {
+    "file": "Puertos del Estado/Temario oficial/09 Ley 39-2015 Procedimiento administrativo.md",
+    "bloque": "Temario oficial",
+    "tema": "",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas"
+   },
+   {
+    "file": "Puertos del Estado/Temario oficial/10 Ley 40-2015 Regimen juridico.md",
+    "bloque": "Temario oficial",
+    "tema": "",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público"
+   },
+   {
+    "file": "Puertos del Estado/Temario oficial/11 Ley Organica 3-2018 Proteccion de datos.md",
+    "bloque": "Temario oficial",
+    "tema": "",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales"
+   }
+  ],
+  "examenes": [
+   {
+    "grupo": "Primer proceso selectivo (2024)",
+    "title": "Test de conocimientos · Modelo A (con plantilla)",
+    "file": "biblioteca/puerto-tarragona/examenes/2024-1-test-modelo-a.pdf"
+   },
+   {
+    "grupo": "Primer proceso selectivo (2024)",
+    "title": "Test de conocimientos · Modelo B (con plantilla)",
+    "file": "biblioteca/puerto-tarragona/examenes/2024-1-test-modelo-b.pdf"
+   },
+   {
+    "grupo": "Primer proceso selectivo (2024)",
+    "title": "Ejercicio práctico",
+    "file": "biblioteca/puerto-tarragona/examenes/2024-1-practico.pdf"
+   },
+   {
+    "grupo": "Segundo proceso selectivo (2024)",
+    "title": "Test · Modelo A",
+    "file": "biblioteca/puerto-tarragona/examenes/2024-2-test-modelo-a.pdf"
+   },
+   {
+    "grupo": "Segundo proceso selectivo (2024)",
+    "title": "Test · Modelo B",
+    "file": "biblioteca/puerto-tarragona/examenes/2024-2-test-modelo-b.pdf"
+   },
+   {
+    "grupo": "Segundo proceso selectivo (2024)",
+    "title": "Caso práctico",
+    "file": "biblioteca/puerto-tarragona/examenes/2024-2-caso-practico.pdf"
+   },
+   {
+    "grupo": "Tercer proceso selectivo (marzo 2026)",
+    "title": "Test de conocimientos · plantilla de respuestas",
+    "file": "biblioteca/puerto-tarragona/examenes/2026-03-test-plantilla.pdf"
+   },
+   {
+    "grupo": "Tercer proceso selectivo (marzo 2026)",
+    "title": "Caso práctico · plantilla de respuestas",
+    "file": "biblioteca/puerto-tarragona/examenes/2026-03-caso-practico-plantilla.pdf"
+   }
+  ]
+ },
+ "ayto-tarragona-prl": {
+  "normativa": [
+   {
+    "key": "BOE-A-1985-5392",
+    "title": "Ley 7/1985, de 2 de abril, Reguladora de las Bases del Régimen Local",
+    "bloque": "Temari general",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1985-5392",
+    "pdf": "https://www.boe.es/buscar/pdf/1985/BOE-A-1985-5392-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 01. Règim jurídic de la prevenció de riscos laborals",
+     "Tema 04. Comitè de seguretat i salut",
+     "Tema 05. El Pla de prevenció de riscos laborals"
+    ],
+    "textos": []
+   },
+   {
+    "key": "https://portaljuridic.gencat.cat/eli/es-ct/dlg/2003/04/28/2",
+    "title": "Decret legislatiu 2/2003, de 28 d'abril, pel qual s'aprova el Text refós de la Llei municipal i de règim local de Catalunya",
+    "bloque": "Temari general",
+    "url": "https://portaljuridic.gencat.cat/eli/es-ct/dlg/2003/04/28/2",
+    "fuente": "Portal Jurídic de Catalunya (DOGC)",
+    "temas": [
+     "Tema 01. Règim jurídic de la prevenció de riscos laborals",
+     "Tema 04. Comitè de seguretat i salut",
+     "Tema 05. El Pla de prevenció de riscos laborals"
+    ],
+    "textos": []
+   },
+   {
+    "key": "BOE-A-2015-10565",
+    "title": "Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas",
+    "bloque": "Temari general",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-10565",
+    "pdf": "https://www.boe.es/buscar/pdf/2015/BOE-A-2015-10565-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 02. Organització de la prevenció",
+     "Tema 03. Informació, consulta, participació i representació"
+    ],
+    "textos": []
+   },
+   {
+    "key": "BOE-A-1986-17958",
+    "title": "Real Decreto 1372/1986, de 13 de junio, por el que se aprueba el Reglamento de Bienes de las Entidades Locales",
+    "bloque": "Temari general",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1986-17958",
+    "pdf": "https://www.boe.es/buscar/pdf/1986/BOE-A-1986-17958-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 05. El Pla de prevenció de riscos laborals"
+    ],
+    "textos": []
+   },
+   {
+    "key": "BOE-A-2004-4214",
+    "title": "Real Decreto Legislativo 2/2004, de 5 de marzo, por el que se aprueba el texto refundido de la Ley Reguladora de las Haciendas Locales",
+    "bloque": "Temari general",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2004-4214",
+    "pdf": "https://www.boe.es/buscar/pdf/2004/BOE-A-2004-4214-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 06. Avaluació de riscos i planificació"
+    ],
+    "textos": []
+   },
+   {
+    "key": "BOE-A-1995-24292",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-24292",
+    "pdf": "https://www.boe.es/buscar/pdf/1995/BOE-A-1995-24292-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 01. Règim jurídic de la prevenció de riscos laborals",
+     "Tema 02. Organització de la prevenció",
+     "Tema 03. Informació, consulta, participació i representació",
+     "Tema 04. Comitè de seguretat i salut",
+     "Tema 05. El Pla de prevenció de riscos laborals",
+     "Tema 08. Formació i informació en matèria de prevenció",
+     "Tema 11. Vigilància de la salut",
+     "Tema 12. Protecció dels empleats especialment sensibles",
+     "Tema 13. Protecció de la maternitat i la lactància natural",
+     "Tema 14. Documentació preventiva",
+     "Tema 16. Actuacions en cas d’emergència",
+     "Tema 17. Coordinació d’activitats empresarials",
+     "Tema 18. La figura del recurs preventiu",
+     "Tema 22. Protecció individual i col·lectiva. Equips de protecció individual"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 01. Règim jurídic de la prevenció de riscos laborals",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 01. Règim jurídic de la prevenció de riscos laborals/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 02. Organització de la prevenció",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 02. Organització de la prevenció/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 03. Informació, consulta, participació i representació",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 03. Informació, consulta, participació i representació/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 04. Comitè de seguretat i salut",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 04. Comitè de seguretat i salut/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 05. El Pla de prevenció de riscos laborals",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 05. El Pla de prevenció de riscos laborals/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 08. Formació i informació en matèria de prevenció",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 08. Formació i informació en matèria de prevenció/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 11. Vigilància de la salut",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 11. Vigilància de la salut/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 12. Protecció dels empleats especialment sensibles",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 12. Protecció dels empleats especialment sensibles/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 13. Protecció de la maternitat i la lactància natural",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 13. Protecció de la maternitat i la lactància natural/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 14. Documentació preventiva",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 14. Documentació preventiva/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 16. Actuacions en cas d’emergència",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 16. Actuacions en cas d’emergència/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 17. Coordinació d’activitats empresarials",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 17. Coordinació d’activitats empresarials/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 18. La figura del recurs preventiu",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 18. La figura del recurs preventiu/Ley 31-1995 PRL.md"
+     },
+     {
+      "tema": "Tema 22. Protecció individual i col·lectiva. Equips de protecció individual",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 22. Protecció individual i col·lectiva. Equips de protecció individual/Ley 31-1995 PRL.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-1997-1853",
+    "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1997-1853",
+    "pdf": "https://www.boe.es/buscar/pdf/1997/BOE-A-1997-1853-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 02. Organització de la prevenció",
+     "Tema 05. El Pla de prevenció de riscos laborals",
+     "Tema 06. Avaluació de riscos i planificació",
+     "Tema 07. Seguiment de la planificació de l’activitat preventiva",
+     "Tema 11. Vigilància de la salut",
+     "Tema 18. La figura del recurs preventiu"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 02. Organització de la prevenció",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 02. Organització de la prevenció/RD 39-1997 Servicios de prevencion.md"
+     },
+     {
+      "tema": "Tema 05. El Pla de prevenció de riscos laborals",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 05. El Pla de prevenció de riscos laborals/RD 39-1997 Servicios de prevencion.md"
+     },
+     {
+      "tema": "Tema 06. Avaluació de riscos i planificació",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 06. Avaluació de riscos i planificació/RD 39-1997 Servicios de prevencion.md"
+     },
+     {
+      "tema": "Tema 07. Seguiment de la planificació de l’activitat preventiva",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 07. Seguiment de la planificació de l’activitat preventiva/RD 39-1997 Servicios de prevencion.md"
+     },
+     {
+      "tema": "Tema 11. Vigilància de la salut",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 11. Vigilància de la salut/RD 39-1997 Servicios de prevencion.md"
+     },
+     {
+      "tema": "Tema 18. La figura del recurs preventiu",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 18. La figura del recurs preventiu/RD 39-1997 Servicios de prevencion.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2015-11724",
+    "title": "Real Decreto Legislativo 8/2015, de 30 de octubre, texto refundido de la Ley General de la Seguridad Social",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2015-11724",
+    "pdf": "https://www.boe.es/buscar/pdf/2015/BOE-A-2015-11724-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 09. Accidents de treball. Concepte i marc normatiu",
+     "Tema 13. Protecció de la maternitat i la lactància natural"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 09. Accidents de treball. Concepte i marc normatiu",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 09. Accidents de treball. Concepte i marc normatiu/RDL 8-2015 LGSS.md"
+     },
+     {
+      "tema": "Tema 13. Protecció de la maternitat i la lactància natural",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 13. Protecció de la maternitat i la lactància natural/RDL 8-2015 LGSS.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2002-22650",
+    "title": "Orden TAS/2926/2002, de 19 de noviembre, nuevos modelos para la notificación de los accidentes de trabajo",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-22650",
+    "pdf": "https://www.boe.es/buscar/pdf/2002/BOE-A-2002-22650-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 10. Accidents de treball. Tramitació, notificació i investigació"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 10. Accidents de treball. Tramitació, notificació i investigació",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 10. Accidents de treball. Tramitació, notificació i investigació/Orden TAS-2926-2002.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2017-6606",
+    "title": "Real Decreto 513/2017, de 22 de mayo, Reglamento de instalaciones de protección contra incendios",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2017-6606",
+    "pdf": "https://www.boe.es/buscar/pdf/2017/BOE-A-2017-6606-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 15. Prevenció i actuació en incendis"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 15. Prevenció i actuació en incendis",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 15. Prevenció i actuació en incendis/RD 513-2017 RIPCI.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2007-6237",
+    "title": "Real Decreto 393/2007, de 23 de marzo, Norma Básica de Autoprotección",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-6237",
+    "pdf": "https://www.boe.es/buscar/pdf/2007/BOE-A-2007-6237-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 16. Actuacions en cas d’emergència"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 16. Actuacions en cas d’emergència",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 16. Actuacions en cas d’emergència/RD 393-2007 Autoproteccion.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2004-1848",
+    "title": "Real Decreto 171/2004, de 30 de enero, coordinación de actividades empresariales",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2004-1848",
+    "pdf": "https://www.boe.es/buscar/pdf/2004/BOE-A-2004-1848-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 17. Coordinació d’activitats empresarials"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 17. Coordinació d’activitats empresarials",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 17. Coordinació d’activitats empresarials/RD 171-2004 Coordinacion.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-1997-8669",
+    "title": "Real Decreto 486/1997, de 14 de abril, disposiciones mínimas de seguridad y salud en los lugares de trabajo",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1997-8669",
+    "pdf": "https://www.boe.es/buscar/pdf/1997/BOE-A-1997-8669-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 19. Condicions generals de seguretat i salut en els llocs de treball"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 19. Condicions generals de seguretat i salut en els llocs de treball",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 19. Condicions generals de seguretat i salut en els llocs de treball/RD 486-1997 Lugares de trabajo.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-1997-8668",
+    "title": "Real Decreto 485/1997, de 14 de abril, señalización de seguridad y salud en el trabajo",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1997-8668",
+    "pdf": "https://www.boe.es/buscar/pdf/1997/BOE-A-1997-8668-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 20. Senyalització de seguretat i salut en el treball"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 20. Senyalització de seguretat i salut en el treball",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 20. Senyalització de seguretat i salut en el treball/RD 485-1997 Senalizacion.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-1997-17824",
+    "title": "Real Decreto 1215/1997, de 18 de julio, utilización de los equipos de trabajo",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1997-17824",
+    "pdf": "https://www.boe.es/buscar/pdf/1997/BOE-A-1997-17824-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 21. Equips de treball"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 21. Equips de treball",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 21. Equips de treball/RD 1215-1997 Equipos de trabajo.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-1997-12735",
+    "title": "Real Decreto 773/1997, de 30 de mayo, utilización de equipos de protección individual",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1997-12735",
+    "pdf": "https://www.boe.es/buscar/pdf/1997/BOE-A-1997-12735-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 22. Protecció individual i col·lectiva. Equips de protecció individual"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 22. Protecció individual i col·lectiva. Equips de protecció individual",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 22. Protecció individual i col·lectiva. Equips de protecció individual/RD 773-1997 EPI.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2001-11881",
+    "title": "Real Decreto 614/2001, de 8 de junio, protección frente al riesgo eléctrico",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-11881",
+    "pdf": "https://www.boe.es/buscar/pdf/2001/BOE-A-2001-11881-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 23. Risc elèctric"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 23. Risc elèctric",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 23. Risc elèctric/RD 614-2001 Riesgo electrico.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2001-8436",
+    "title": "Real Decreto 374/2001, de 6 de abril, riesgos relacionados con los agentes químicos",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2001-8436",
+    "pdf": "https://www.boe.es/buscar/pdf/2001/BOE-A-2001-8436-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 24. Higiene industrial",
+     "Tema 25. Contaminants químics. Fitxa de dades de seguretat"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 24. Higiene industrial",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 24. Higiene industrial/RD 374-2001 Agentes quimicos.md"
+     },
+     {
+      "tema": "Tema 25. Contaminants químics. Fitxa de dades de seguretat",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 25. Contaminants químics. Fitxa de dades de seguretat/RD 374-2001 Agentes quimicos.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2006-4414",
+    "title": "Real Decreto 286/2006, de 10 de marzo, exposición al ruido",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2006-4414",
+    "pdf": "https://www.boe.es/buscar/pdf/2006/BOE-A-2006-4414-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 26. Exposició al soroll"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 26. Exposició al soroll",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 26. Exposició al soroll/RD 286-2006 Ruido.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-1997-11144",
+    "title": "Real Decreto 664/1997, de 12 de mayo, exposición a agentes biológicos",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1997-11144",
+    "pdf": "https://www.boe.es/buscar/pdf/1997/BOE-A-1997-11144-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 27. Agents biològics"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 27. Agents biològics",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 27. Agents biològics/RD 664-1997 Agentes biologicos.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-1997-8670",
+    "title": "Real Decreto 487/1997, de 14 de abril, manipulación manual de cargas",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1997-8670",
+    "pdf": "https://www.boe.es/buscar/pdf/1997/BOE-A-1997-8670-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 29. Manipulació manual de càrregues, moviments repetitius i postures forçades"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 29. Manipulació manual de càrregues, moviments repetitius i postures forçades",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 29. Manipulació manual de càrregues, moviments repetitius i postures forçades/RD 487-1997 Manipulacion de cargas.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-1997-8671",
+    "title": "Real Decreto 488/1997, de 14 de abril, equipos con pantallas de visualización",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1997-8671",
+    "pdf": "https://www.boe.es/buscar/pdf/1997/BOE-A-1997-8671-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 30. Pantalles de visualització de dades"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 30. Pantalles de visualització de dades",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 30. Pantalles de visualització de dades/RD 488-1997 Pantallas.md"
+     }
+    ]
+   },
+   {
+    "key": "BOE-A-2007-6115",
+    "title": "Ley Orgánica 3/2007, de 22 de marzo, para la igualdad efectiva de mujeres y hombres",
+    "bloque": "Temari específic",
+    "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-6115",
+    "pdf": "https://www.boe.es/buscar/pdf/2007/BOE-A-2007-6115-consolidado.pdf",
+    "fuente": "BOE · texto consolidado vigente",
+    "temas": [
+     "Tema 32. Violència laboral i assetjament",
+     "Tema 07. Seguiment de la planificació de l’activitat preventiva"
+    ],
+    "textos": [
+     {
+      "tema": "Tema 32. Violència laboral i assetjament",
+      "file": "Ayuntamiento de Tarragona/Temari específic/Tema 32. Violència laboral i assetjament/LO 3-2007 Igualdad.md"
+     }
+    ]
+   }
+  ],
+  "apuntes": [
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 01. Règim jurídic de la prevenció de riscos laborals/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 01. Règim jurídic de la prevenció de riscos laborals",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 02. Organització de la prevenció/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 02. Organització de la prevenció",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 02. Organització de la prevenció/RD 39-1997 Servicios de prevencion.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 02. Organització de la prevenció",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 03. Informació, consulta, participació i representació/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 03. Informació, consulta, participació i representació",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 04. Comitè de seguretat i salut/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 04. Comitè de seguretat i salut",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 05. El Pla de prevenció de riscos laborals/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 05. El Pla de prevenció de riscos laborals",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 05. El Pla de prevenció de riscos laborals/RD 39-1997 Servicios de prevencion.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 05. El Pla de prevenció de riscos laborals",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 06. Avaluació de riscos i planificació/RD 39-1997 Servicios de prevencion.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 06. Avaluació de riscos i planificació",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 07. Seguiment de la planificació de l’activitat preventiva/RD 39-1997 Servicios de prevencion.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 07. Seguiment de la planificació de l’activitat preventiva",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 08. Formació i informació en matèria de prevenció/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 08. Formació i informació en matèria de prevenció",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 09. Accidents de treball. Concepte i marc normatiu/RDL 8-2015 LGSS.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 09. Accidents de treball. Concepte i marc normatiu",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto Legislativo 8/2015, de 30 de octubre, texto refundido de la Ley General de la Seguridad Social"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 10. Accidents de treball. Tramitació, notificació i investigació/Orden TAS-2926-2002.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 10. Accidents de treball. Tramitació, notificació i investigació",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Orden TAS/2926/2002, de 19 de noviembre, nuevos modelos para la notificación de los accidentes de trabajo"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 11. Vigilància de la salut/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 11. Vigilància de la salut",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 11. Vigilància de la salut/RD 39-1997 Servicios de prevencion.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 11. Vigilància de la salut",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 12. Protecció dels empleats especialment sensibles/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 12. Protecció dels empleats especialment sensibles",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 13. Protecció de la maternitat i la lactància natural/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 13. Protecció de la maternitat i la lactància natural",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 13. Protecció de la maternitat i la lactància natural/RDL 8-2015 LGSS.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 13. Protecció de la maternitat i la lactància natural",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto Legislativo 8/2015, de 30 de octubre, texto refundido de la Ley General de la Seguridad Social"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 14. Documentació preventiva/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 14. Documentació preventiva",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 15. Prevenció i actuació en incendis/RD 513-2017 RIPCI.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 15. Prevenció i actuació en incendis",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 513/2017, de 22 de mayo, Reglamento de instalaciones de protección contra incendios"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 16. Actuacions en cas d’emergència/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 16. Actuacions en cas d’emergència",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 16. Actuacions en cas d’emergència/RD 393-2007 Autoproteccion.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 16. Actuacions en cas d’emergència",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 393/2007, de 23 de marzo, Norma Básica de Autoprotección"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 17. Coordinació d’activitats empresarials/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 17. Coordinació d’activitats empresarials",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 17. Coordinació d’activitats empresarials/RD 171-2004 Coordinacion.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 17. Coordinació d’activitats empresarials",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 171/2004, de 30 de enero, coordinación de actividades empresariales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 18. La figura del recurs preventiu/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 18. La figura del recurs preventiu",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 18. La figura del recurs preventiu/RD 39-1997 Servicios de prevencion.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 18. La figura del recurs preventiu",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 39/1997, de 17 de enero, por el que se aprueba el Reglamento de los Servicios de Prevención"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 19. Condicions generals de seguretat i salut en els llocs de treball/RD 486-1997 Lugares de trabajo.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 19. Condicions generals de seguretat i salut en els llocs de treball",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 486/1997, de 14 de abril, disposiciones mínimas de seguridad y salud en los lugares de trabajo"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 20. Senyalització de seguretat i salut en el treball/RD 485-1997 Senalizacion.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 20. Senyalització de seguretat i salut en el treball",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 485/1997, de 14 de abril, señalización de seguridad y salud en el trabajo"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 21. Equips de treball/RD 1215-1997 Equipos de trabajo.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 21. Equips de treball",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 1215/1997, de 18 de julio, utilización de los equipos de trabajo"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 22. Protecció individual i col·lectiva. Equips de protecció individual/Ley 31-1995 PRL.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 22. Protecció individual i col·lectiva. Equips de protecció individual",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley 31/1995, de 8 de noviembre, de Prevención de Riesgos Laborales"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 22. Protecció individual i col·lectiva. Equips de protecció individual/RD 773-1997 EPI.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 22. Protecció individual i col·lectiva. Equips de protecció individual",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 773/1997, de 30 de mayo, utilización de equipos de protección individual"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 23. Risc elèctric/RD 614-2001 Riesgo electrico.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 23. Risc elèctric",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 614/2001, de 8 de junio, protección frente al riesgo eléctrico"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 24. Higiene industrial/RD 374-2001 Agentes quimicos.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 24. Higiene industrial",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 374/2001, de 6 de abril, riesgos relacionados con los agentes químicos"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 25. Contaminants químics. Fitxa de dades de seguretat/RD 374-2001 Agentes quimicos.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 25. Contaminants químics. Fitxa de dades de seguretat",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 374/2001, de 6 de abril, riesgos relacionados con los agentes químicos"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 26. Exposició al soroll/RD 286-2006 Ruido.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 26. Exposició al soroll",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 286/2006, de 10 de marzo, exposición al ruido"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 27. Agents biològics/RD 664-1997 Agentes biologicos.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 27. Agents biològics",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 664/1997, de 12 de mayo, exposición a agentes biológicos"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 29. Manipulació manual de càrregues, moviments repetitius i postures forçades/RD 487-1997 Manipulacion de cargas.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 29. Manipulació manual de càrregues, moviments repetitius i postures forçades",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 487/1997, de 14 de abril, manipulación manual de cargas"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 30. Pantalles de visualització de dades/RD 488-1997 Pantallas.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 30. Pantalles de visualització de dades",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Real Decreto 488/1997, de 14 de abril, equipos con pantallas de visualización"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari específic/Tema 32. Violència laboral i assetjament/LO 3-2007 Igualdad.md",
+    "bloque": "Temari específic",
+    "tema": "Tema 32. Violència laboral i assetjament",
+    "tipo": "Temario (artículos seleccionados)",
+    "title": "Ley Orgánica 3/2007, de 22 de marzo, para la igualdad efectiva de mujeres y hombres"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari general/Tema 01. El terme municipal. La població. L'empadronament/Apunts.md",
+    "bloque": "Temari general",
+    "tema": "Tema 01. El terme municipal. La població. L'empadronament",
+    "tipo": "Apuntes",
+    "title": "Apuntes · Tema 01. El terme municipal. La població. L'empadronament"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari general/Tema 02. El procediment administratiu general. Principis del procediment administratiu. F/Apunts.md",
+    "bloque": "Temari general",
+    "tema": "Tema 02. El procediment administratiu general. Principis del procediment administratiu. F",
+    "tipo": "Apuntes",
+    "title": "Apuntes · Tema 02. El procediment administratiu general. Principis del procediment administratiu. F"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari general/Tema 03. Drets i deures de la ciutadania davant l'Administració/Apunts.md",
+    "bloque": "Temari general",
+    "tema": "Tema 03. Drets i deures de la ciutadania davant l'Administració",
+    "tipo": "Apuntes",
+    "title": "Apuntes · Tema 03. Drets i deures de la ciutadania davant l'Administració"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari general/Tema 04. Ordenances i reglaments de les entitats locals. Classes/Apunts.md",
+    "bloque": "Temari general",
+    "tema": "Tema 04. Ordenances i reglaments de les entitats locals. Classes",
+    "tipo": "Apuntes",
+    "title": "Apuntes · Tema 04. Ordenances i reglaments de les entitats locals. Classes"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari general/Tema 05. Classes de béns de les entitats locals/Apunts.md",
+    "bloque": "Temari general",
+    "tema": "Tema 05. Classes de béns de les entitats locals",
+    "tipo": "Apuntes",
+    "title": "Apuntes · Tema 05. Classes de béns de les entitats locals"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari general/Tema 06. El pressupost general de les entitats locals. Concepte i contingut. La gestió de/Apunts.md",
+    "bloque": "Temari general",
+    "tema": "Tema 06. El pressupost general de les entitats locals. Concepte i contingut. La gestió de",
+    "tipo": "Apuntes",
+    "title": "Apuntes · Tema 06. El pressupost general de les entitats locals. Concepte i contingut. La gestió de"
+   },
+   {
+    "file": "Ayuntamiento de Tarragona/Temari general/Tema 07. La igualtat d'oportunitats. Principis d'igualtat/Apunts.md",
+    "bloque": "Temari general",
+    "tema": "Tema 07. La igualtat d'oportunitats. Principis d'igualtat",
+    "tipo": "Apuntes",
+    "title": "Apuntes · Tema 07. La igualtat d'oportunitats. Principis d'igualtat"
+   }
+  ],
+  "examenes": []
+ }
+}

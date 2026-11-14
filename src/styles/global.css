@@ -351,3 +351,22 @@ body:has(.voicebar) .update-banner { bottom: calc(96px + env(safe-area-inset-bot
 .docpick-row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .docpick-row .check { flex: 1; }
 .docpick-sub { margin-left: 24px; padding-bottom: 4px; }
+/* Biblioteca */
+.lib-search { width: 100%; box-sizing: border-box; padding: 10px 12px; margin: 0 0 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); font-size: 1rem; }
+.lib-sec { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--primary); border-radius: var(--radius); padding: 8px 14px; margin-bottom: 12px; }
+.lib-sec > summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
+.lib-apuntes { border-left-color: var(--ok); }
+.lib-examenes { border-left-color: var(--warn); }
+.lib-bloque { font-size: 0.95rem; margin: 12px 0 4px; color: var(--muted); }
+.lib-tema > p { margin: 8px 0 2px; }
+.lib-item { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid var(--border); }
+.lib-main { display: flex; flex-direction: column; gap: 2px; flex: 1 1 320px; min-width: 0; }
+.lib-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.lib-actions .btn, .lib-actions button { font-size: 0.85rem; padding: 5px 10px; }
+.lib-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 12px; }
+.lib-modal-box { background: var(--surface); border-radius: var(--radius); width: min(980px, 100%); height: min(92vh, 100%); display: flex; flex-direction: column; overflow: hidden; }
+.lib-modal-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.lib-modal-body { flex: 1; overflow: auto; }
+.lib-modal-body iframe { width: 100%; height: 100%; border: 0; }
+.lib-md { padding: 12px 18px; line-height: 1.55; }
+.lib-md h2 { font-size: 1.15rem; } .lib-md h3 { font-size: 1rem; }

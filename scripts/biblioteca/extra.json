@@ -1,0 +1,27 @@
+{
+  "_info": "Datos de la Biblioteca que no salen de scripts/boe/*.json. Para añadir documentos: normativa (con id BOE o url oficial), examenes (pdf en public/biblioteca/<oposición>/) o apuntes (cualquier .md del temario aparece solo). Ejecuta npm run biblioteca (también lo hace build).",
+  "ayto-tarragona-prl": {
+    "normativa": [
+      { "bloque": "Temari general", "id": "BOE-A-1985-5392", "title": "Ley 7/1985, de 2 de abril, Reguladora de las Bases del Régimen Local", "temas": ["Tema 01", "Tema 04", "Tema 05"] },
+      { "bloque": "Temari general", "eli": "https://portaljuridic.gencat.cat/eli/es-ct/dlg/2003/04/28/2", "title": "Decret legislatiu 2/2003, de 28 d'abril, pel qual s'aprova el Text refós de la Llei municipal i de règim local de Catalunya", "fuente": "Portal Jurídic de Catalunya (DOGC)", "temas": ["Tema 01", "Tema 04", "Tema 05"] },
+      { "bloque": "Temari general", "id": "BOE-A-2015-10565", "title": "Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común de las Administraciones Públicas", "temas": ["Tema 02", "Tema 03"] },
+      { "bloque": "Temari general", "id": "BOE-A-1986-17958", "title": "Real Decreto 1372/1986, de 13 de junio, por el que se aprueba el Reglamento de Bienes de las Entidades Locales", "temas": ["Tema 05"] },
+      { "bloque": "Temari general", "id": "BOE-A-2004-4214", "title": "Real Decreto Legislativo 2/2004, de 5 de marzo, por el que se aprueba el texto refundido de la Ley Reguladora de las Haciendas Locales", "temas": ["Tema 06"] },
+      { "bloque": "Temari general", "id": "BOE-A-2007-6115", "title": "Ley Orgánica 3/2007, de 22 de marzo, para la igualdad efectiva de mujeres y hombres", "temas": ["Tema 07"] }
+    ],
+    "examenes": []
+  },
+  "puerto-tarragona": {
+    "normativa": [],
+    "examenes": [
+      { "grupo": "Primer proceso selectivo (2024)", "title": "Test de conocimientos · Modelo A (con plantilla)", "file": "examenes/2024-1-test-modelo-a.pdf" },
+      { "grupo": "Primer proceso selectivo (2024)", "title": "Test de conocimientos · Modelo B (con plantilla)", "file": "examenes/2024-1-test-modelo-b.pdf" },
+      { "grupo": "Primer proceso selectivo (2024)", "title": "Ejercicio práctico", "file": "examenes/2024-1-practico.pdf" },
+      { "grupo": "Segundo proceso selectivo (2024)", "title": "Test · Modelo A", "file": "examenes/2024-2-test-modelo-a.pdf" },
+      { "grupo": "Segundo proceso selectivo (2024)", "title": "Test · Modelo B", "file": "examenes/2024-2-test-modelo-b.pdf" },
+      { "grupo": "Segundo proceso selectivo (2024)", "title": "Caso práctico", "file": "examenes/2024-2-caso-practico.pdf" },
+      { "grupo": "Tercer proceso selectivo (marzo 2026)", "title": "Test de conocimientos · plantilla de respuestas", "file": "examenes/2026-03-test-plantilla.pdf" },
+      { "grupo": "Tercer proceso selectivo (marzo 2026)", "title": "Caso práctico · plantilla de respuestas", "file": "examenes/2026-03-caso-practico-plantilla.pdf" }
+    ]
+  }
+}

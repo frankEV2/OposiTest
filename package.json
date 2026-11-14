@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "temario": "node scripts/temario-index.mjs",
+    "biblioteca": "node scripts/temario-index.mjs && node scripts/biblioteca.mjs",
     "temario:boe": "node scripts/boe/build.mjs && node scripts/temario-index.mjs",
-    "predev": "node scripts/temario-index.mjs",
-    "prebuild": "node scripts/temario-index.mjs",
+    "predev": "node scripts/temario-index.mjs && node scripts/biblioteca.mjs",
+    "prebuild": "node scripts/temario-index.mjs && node scripts/biblioteca.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",

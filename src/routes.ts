@@ -1,7 +1,8 @@
 /** Rutas del menú lateral. */
 export const NAV = [
   { path: '/', label: 'Inicio' },
-  { path: '/biblioteca', label: 'Biblioteca' },
+  { path: '/documentacion', label: 'Biblioteca' },
+  { path: '/biblioteca', label: 'Mis documentos' },
   { path: '/generar', label: 'Generar test' },
   { path: '/banco', label: 'Banco de preguntas' },
   { path: '/errores', label: 'Mis errores' },

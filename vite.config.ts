@@ -32,6 +32,8 @@ export default defineConfig({
         globPatterns: ['**/*.{js,mjs,css,html,svg,png,woff2}'],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         navigateFallback: 'index.html',
+        // Los PDF y textos de la Biblioteca y del temario se abren tal cual en otra pestaña.
+        navigateFallbackDenylist: [/\/biblioteca\//, /\/temario\//],
         cleanupOutdatedCaches: true,
       },
     }),
