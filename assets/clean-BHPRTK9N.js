@@ -1,0 +1,9 @@
+var e=e=>(e.match(/\p{L}/gu)??[]).length,t=e=>e.trim().replace(/\d+/g,`#`).toLowerCase();function n(e){if(e.length<3)return e;let n=e=>{let t=e.split(`
+`).map((e,t)=>({l:e,i:t})).filter(e=>e.l.trim());return[...t.slice(0,4),...t.slice(-4)]},i=new Map;for(let r of e)for(let e of new Set(n(r).map(e=>t(e.l))))i.set(e,(i.get(e)??0)+1);let a=Math.max(3,Math.ceil(e.length*.5)),o=new Set([...i].filter(([e,t])=>t>=a&&e.length<=120&&!r.test(e)).map(([e])=>e));return e.map(e=>{let r=new Set(n(e).filter(e=>o.has(t(e.l))).map(e=>e.i));return e.split(`
+`).filter((e,t)=>!r.has(t)).join(`
+`)})}var r=/^(art[íi]culo|article|t[íi]tulo|t[íi]tol|cap[íi]tulo|cap[íi]tol|secci[óo]n?|disposici[óo]n?|anexo|annex|libro|llibre)\b/i;function i(e){return e.replace(/\u00ad/g,``).replace(/[ \t\u00a0]+/g,` `).replace(/(\p{Ll})-\n(\p{Ll})/gu,`$1$2`).replace(/ *\n */g,`
+`).replace(/\n{3,}/g,`
+
+`).trim()}function a(e){let t=e.split(`
+`),n=[];for(let e of t){let t=n[n.length-1],r=/^(\d+\.|[a-zñ]\)|\d+\.ª|[–—•-] |[IVXLC]+\.)\s/.test(e);t!==void 0&&t!==``&&e!==``&&!r&&(/^\p{Ll}/u.test(e)||!/[.:;]$/.test(t))?n[n.length-1]=`${t} ${e}`:n.push(e)}return n.join(`
+`)}var o=e=>e.normalize(`NFD`).replace(/\p{M}/gu,``).toLowerCase();function s(t){let n=t.map((t,n)=>e(t)<40?n+1:0).filter(Boolean);if(t.length===0||n.length>=t.length*.8)return{status:`scanned`,warnings:[`El PDF parece escaneado (imagen sin capa de texto). No se puede extraer su contenido; aplícale OCR con otra herramienta y vuelve a importarlo.`]};if(n.length>0){let e=n.length>15?`${n.slice(0,15).join(`, `)}…`:n.join(`, `);return{status:`partial`,warnings:[`${n.length} página(s) sin texto extraíble (${e}). Pueden ser portadas, imágenes o páginas escaneadas.`]}}return{status:`ok`,warnings:[]}}export{n as a,i,o as n,a as r,s as t};
